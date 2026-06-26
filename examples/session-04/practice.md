@@ -1,52 +1,53 @@
 # Session 4 — Practice (25 min)
 
-## Task 1 — Average two ways
-Given `scores = [91, 58, 73, 64]`, compute the mean (a) with a manual loop and a running
-total, and (b) with `sum(scores) / len(scores)`. Confirm they match.
-
-## Task 2 — Pass/fail roster
-With `names = ["Ana","Ben","Cara","Dev"]` and the scores above, use `zip` to print
-`"<name>: PASS"` (score ≥ 60) or `"<name>: FAIL"`. Then count passes using `sum(...)`.
-
-## Task 3 — Validation loop
-Write a real `while True:` prompt that keeps asking for a score until the user types an
-integer 0–100, then prints it. (Use `.isdigit()`.)
-
-## Task 4 — Trap check
-Why does this go wrong, and what's the fix?
+Start from:
 ```python
-xs = [1, 2, 3, 4]
-for x in xs:
-    if x % 2 == 0:
-        xs.remove(x)
-print(xs)   # not [1, 3] — why?
+roster = [
+    {"name": "Ana", "score": 91}, {"name": "Ben", "score": 58},
+    {"name": "Cara", "score": 73}, {"name": "Dev", "score": 64},
+]
 ```
+
+## Task 1 — Rank
+Print names sorted by score, highest first.
+
+## Task 2 — Map (dict comprehension)
+Build `{name: score}` in one line.
+
+## Task 3 — Group
+Build `{"pass": [...names...], "fail": [...names...]}` using a loop.
+
+## Task 4 — Dedup
+From `["A","B","A","C","B"]`, get the distinct values and how many there are.
+
+## Task 5 — Aliasing
+Show that `b = roster` then `roster.append({...})` also changes `b`. Then make `b` an
+independent copy so it doesn't. (Hint: nested dicts → `copy.deepcopy`.)
 
 ---
 ## Solutions
 
 ```python
-# Task 1
-total = 0
-for s in scores:
-    total += s
-print(total / len(scores), sum(scores) / len(scores))   # 71.5 71.5
+# 1
+print([s["name"] for s in sorted(roster, key=lambda s: s["score"], reverse=True)])
+# ['Ana', 'Cara', 'Dev', 'Ben']
 
-# Task 2
-for name, score in zip(names, scores):
-    print(f"{name}: {'PASS' if score >= 60 else 'FAIL'}")
-passes = sum(score >= 60 for score in scores)   # bools sum! (Session 2)
-print("passes:", passes)                         # 3
+# 2
+name_to_score = {s["name"]: s["score"] for s in roster}
 
-# Task 3
-while True:
-    raw = input("Score 0–100: ")
-    if raw.isdigit() and 0 <= int(raw) <= 100:
-        print("Got", int(raw)); break
-    print("Try again.")
+# 3
+groups = {"pass": [], "fail": []}
+for s in roster:
+    groups["pass" if s["score"] >= 60 else "fail"].append(s["name"])
 
-# Task 4
-# Removing while iterating shifts indices, so the loop skips elements.
-# Fix: iterate a copy, or build a new list:
-xs = [x for x in xs if x % 2 != 0]   # [1, 3]
+# 4
+vals = ["A","B","A","C","B"]
+distinct = set(vals); print(distinct, len(distinct))   # {'A','B','C'} 3
+
+# 5
+import copy
+b = roster                       # alias
+roster.append({"name": "Eve", "score": 80})
+# b now also has Eve. To stay independent:
+b = copy.deepcopy(roster)        # changes to roster no longer touch b
 ```

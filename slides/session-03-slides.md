@@ -1,48 +1,44 @@
 ---
 marp: true
-title: "Session 3 — Conditionals & Boolean Logic"
+title: "Session 3 — Control Flow: Conditionals & Loops"
 paginate: true
 ---
 
 # Session 3
-## Conditionals & Boolean Logic
+## Control Flow: Conditionals & Loops
 
-Make decisions; write them the Pythonic way.
+Make decisions, and repeat work — the two halves of control flow.
 
 ---
 
-## if / elif / else
+## Part 1 — Conditionals
 
 ```python
 if score >= 90:
     grade = "A"
 elif score >= 80:
     grade = "B"
-elif score >= 70:
-    grade = "C"
 else:
     grade = "F"
 ```
 
-Indentation defines the block. `elif` = "else if". Only the **first** true branch runs.
+Indentation defines the block. Only the **first** true branch runs.
 
 ---
 
-## Comparison operators
+## Comparison + chained comparisons
 
 `==`  `!=`  `<`  `<=`  `>`  `>=`
 
 ```python
-score == 100      # equal (VALUE — recall Session 2)
-score != 0
-0 <= score <= 100 # chained! reads like math
+0 <= score <= 100      # chained — reads like math
 ```
 
 🧠 No need for `score >= 0 and score <= 100` — chain it.
 
 ---
 
-## Logical operators
+## Logical operators (and the gotcha)
 
 ```python
 passed and submitted     # both
@@ -50,47 +46,71 @@ late or excused          # either
 not flagged              # negate
 ```
 
-**Short-circuit:** `a and b` skips `b` if `a` is falsy; `a or b` skips `b` if `a` is truthy.
-
----
-
-## `and`/`or` return a VALUE, not a bool
+**Short-circuit:** `a and b` skips `b` if `a` is falsy.
+And `and`/`or` return an **operand, not a bool**:
 
 ```python
-5 and 0        # 0      (and → first falsy / last)
-0 or "hi"      # "hi"   (or → first truthy / last)
-name = user_input or "Anonymous"   # default-value idiom
+5 and 0        # 0
+"" or "N/A"    # "N/A"   ← default-value idiom
 ```
 
-So don't write `if x == True` — just `if x:`.
+So write `if x:` — never `if x == True`.
 
 ---
 
-## The Likert classifier (live)
+## Part 2 — Loops
 
 ```python
-def likert_label(n):
-    if n == 5: return "Strongly agree"
-    if n == 4: return "Agree"
-    if n == 3: return "Neutral"
-    if n == 2: return "Disagree"
-    if n == 1: return "Strongly disagree"
-    return "Invalid"
+for s in scores:          # each element directly
+    print(s)
+
+for i in range(5):        # 0,1,2,3,4
+    print(i)
+
+while not done:           # repeat until a condition flips
+    ...
 ```
 
-Early `return` → no nesting needed.
+⚠️ `range(1, 5)` → `1,2,3,4` — **stop is excluded** (off-by-one!).
 
 ---
 
-## Ternary & match
+## break / continue
 
 ```python
-status = "pass" if score >= 60 else "fail"   # ternary
+for x in data:
+    if x is None:
+        continue          # skip this one
+    if x == "STOP":
+        break             # leave the loop entirely
+    process(x)
+```
 
-match command:                                # Python 3.10+
-    case "start":      run()
-    case "stop"|"halt": halt()    # multiple values
-    case _:            unknown()  # default (_ = wildcard)
+---
+
+## Stop juggling indices: enumerate & zip
+
+```python
+for i, name in enumerate(names):       # index + value
+    print(i, name)
+
+for name, score in zip(names, scores): # two lists together
+    print(name, score)
+```
+
+🧠 If you write `range(len(x))`, stop — use `enumerate`/`zip`.
+
+---
+
+## The validation loop (you'll reuse this everywhere)
+
+```python
+while True:
+    raw = input("Score 0–100: ")
+    if raw.isdigit() and 0 <= int(raw) <= 100:
+        score = int(raw)
+        break
+    print("Try again.")
 ```
 
 ---
@@ -99,17 +119,20 @@ match command:                                # Python 3.10+
 
 `examples/session-03/practice.md`:
 1. Grade-band classifier — test the boundaries (89.999 / 90 / 90.001).
-2. `is_valid_likert(n)` → only 1–5 integers are valid.
+2. Average a roster and label each student PASS/FAIL with `zip`.
+3. A robust "ask until valid" loop.
 
 ---
 
 ## Traps recap
 
-- `if x == True` → just `if x:`.
-- Use `x is None`, not `x == None`.
-- `=` (assign) vs `==` (compare) — a classic typo.
-- Test your **boundaries**; `>=` vs `>` decides a grade.
+- `if x == True` → just `if x:`; use `x is None` (not `== None`).
+- `=` (assign) vs `==` (compare) — classic typo.
+- `range(1, 5)` excludes 5; test your boundaries.
+- Don't modify a list while looping it; prefer `enumerate`/`zip` over `range(len(...))`.
+
+*(More in the cheat sheet: `match`/`case`, the ternary, `for/else`.)*
 
 ## Summary
-You can branch cleanly, chain comparisons, and use boolean values directly.
-**Next:** Loops — do something many times.
+You can branch and repeat cleanly.
+**Next:** the containers you loop over — lists, dicts, sets.

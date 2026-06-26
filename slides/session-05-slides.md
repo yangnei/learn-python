@@ -1,136 +1,144 @@
 ---
 marp: true
-title: "Session 5 — Data Structures"
+title: "Session 5 — Functions, Scope & Reusability"
 paginate: true
 ---
 
 # Session 5
-## Data Structures: list · tuple · dict · set
+## Functions, Scope & Reusability
 
-The containers that hold your data.
-
----
-
-## Four containers, four jobs
-
-| Type | Syntax | Mutable? | Use for |
-|---|---|---|---|
-| `list` | `[1, 2, 3]` | yes | ordered, changing collection |
-| `tuple` | `(1, 2)` | no | fixed record / coordinates |
-| `dict` | `{"k": v}` | yes | key → value lookup |
-| `set` | `{1, 2, 3}` | yes | unique items |
+Define a rule once; apply it everywhere. (Reproducibility!)
 
 ---
 
-## Lists & slicing
+## Defining & calling
 
 ```python
-xs = [10, 20, 30, 40]
-xs[0]      # 10     xs[-1]   # 40 (last)
-xs[1:3]    # [20, 30]   (stop excluded)
-xs[:2]     # [10, 20]
-xs[::-1]   # reversed
-xs.append(50); xs.sort()      # mutate in place
+def class_average(scores):
+    """Return the mean of a list of scores."""
+    return sum(scores) / len(scores)
+
+class_average([91, 58, 73])     # 74.0
 ```
 
-⚠️ `xs.sort()` returns **None** — it sorts in place. Use `sorted(xs)` for a new list.
+🧠 A function is a formula/coding-scheme: same input → same output.
 
 ---
 
-## Dicts = labeled records
+## return vs print
 
 ```python
-student = {"name": "Ana", "gpa": 3.9}
-student["name"]              # "Ana"
-student.get("major", "N/A")  # safe access with default
-student["major"] = "Ed"      # add/update
-for key, val in student.items(): ...
+def avg(xs): return sum(xs) / len(xs)   # hands value back
+def show(xs): print(sum(xs) / len(xs))  # just displays
+
+x = avg([1,2,3])     # x = 2.0
+y = show([1,2,3])    # prints 2.0, but y is None!
+```
+
+`print` shows; `return` gives the value to the next step.
+
+---
+
+## Parameters: positional, keyword, default
+
+```python
+def grade(score, scale=100, passing=60):
+    ...
+grade(85)                 # uses defaults
+grade(85, passing=50)     # keyword arg
+```
+
+⚠️ Defaults must be **immutable** (numbers, strings, `None`) — never `[]` or `{}`.
+
+---
+
+## *args / **kwargs
+
+```python
+def total(*args):        # any number of positionals -> tuple
+    return sum(args)
+total(1, 2, 3)           # 6
+
+def tag(**kwargs):       # any number of keywords -> dict
+    return kwargs
+tag(name="Ana", gpa=3.9) # {'name':'Ana','gpa':3.9}
+
+func(*my_list)           # unpack list into args
+func(**my_dict)          # unpack dict into kwargs
 ```
 
 ---
 
-## A list of dicts = a dataset 🧠
+## TRAP: mutable default argument 😱
 
 ```python
-roster = [
-    {"name": "Ana", "score": 91},
-    {"name": "Ben", "score": 58},
-]
+def add_student(name, roster=[]):    # ❌
+    roster.append(name)
+    return roster
+
+add_student("Ana")    # ['Ana']
+add_student("Ben")    # ['Ana', 'Ben']  — the list PERSISTS!
 ```
 
-Each dict = a **row/respondent**; each key = a **variable/column**.
-This is your tidy dataset until pandas shows up (Session 8).
+The default `[]` is created **once**, at definition. Fix on next slide.
 
 ---
 
-## Sets: unique, fast membership
+## The fix: default to None
 
 ```python
-answers = ["yes", "no", "yes", "maybe", "no"]
-set(answers)            # {'yes', 'no', 'maybe'}  — dedup
-"yes" in set(answers)   # True, very fast
+def add_student(name, roster=None):   # ✅
+    if roster is None:
+        roster = []
+    roster.append(name)
+    return roster
 ```
 
-Great for "distinct responses" and "have I seen this ID?"
+**Rule:** mutable default? Use `None` and create inside.
 
 ---
 
-## Comprehensions
+## Scope (LEGB) & globals
+
+Python looks up names: **L**ocal → **E**nclosing → **G**lobal → **B**uilt-in.
 
 ```python
-[s["score"] for s in roster]                 # list
-[s for s in roster if s["score"] >= 60]      # with filter
-{s["name"]: s["score"] for s in roster}      # dict
-{s["score"] // 10 for s in roster}           # set of score-decades
+count = 0
+def bump():
+    count = count + 1   # 💥 UnboundLocalError
 ```
-
-Read as: *expr, for each item, (optionally) if condition.*
+Assigning `count` makes it local. Avoid `global`; **return** a value and reassign instead.
 
 ---
 
-## Sorting with a key
+## Docstrings & type hints
 
 ```python
-sorted(roster, key=lambda s: s["score"])               # ascending
-sorted(roster, key=lambda s: s["score"], reverse=True) # descending
+def class_average(scores: list[float]) -> float:
+    """Return the arithmetic mean of `scores`."""
+    return sum(scores) / len(scores)
 ```
 
-`lambda s: s["score"]` = "sort by the score field."
-
----
-
-## TRAP: aliasing (labels, not boxes)
-
-```python
-a = [1, 2, 3]
-b = a                # SAME list
-a.append(4)
-b                    # [1, 2, 3, 4]  😱
-
-b = a.copy()         # ✅ independent copy
-```
-
-`[[0]*3]*3` makes 3 references to ONE row — use `[[0]*3 for _ in range(3)]`.
+Type hints document intent. **They are NOT enforced at runtime** (`mypy` checks them).
 
 ---
 
 ## Your turn
 
 `examples/session-05/practice.md`:
-1. Build the roster (list of dicts); sort by score.
-2. `{name: score}` dict comprehension.
-3. Group students into pass/fail buckets.
-4. Demonstrate the aliasing trap and fix it.
+1. A small grade-functions module (with docstrings + hints).
+2. Reproduce the mutable-default bug, then fix it.
+3. `summary(*scores)` using `*args`.
 
 ---
 
 ## Traps recap
 
-- `=` aliases; use `.copy()` / `copy.deepcopy()`.
-- `.sort()` returns None (in place); `sorted()` returns new.
-- list ≠ tuple even with same contents (Session 2).
-- `dict.get(key, default)` avoids `KeyError`.
+- Mutable default arg → use `None`.
+- `print` ≠ `return` (forgot return → `None`).
+- Assigning a global inside a function → `UnboundLocalError`.
+- Type hints aren't enforced.
 
 ## Summary
-You can store, look up, dedup, sort, and reshape data.
-**Next:** package logic into reusable functions.
+You can write reusable, documented, reproducible functions.
+**Next:** make them survive messy real-world input — exceptions.

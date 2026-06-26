@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Session 5 — Data Structures</title>
+<title>Session 5 — Functions, Scope &amp; Reusability</title>
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
 </head>
 <body data-page="session-05">
-<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Python<span class="py">·</span>for Researchers</a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Conditionals &amp; Boolean Logic">S3</a><a href="session-04.html" data-page="session-04" title="Loops &amp; Iteration">S4</a><a href="session-05.html" class="active" data-page="session-05" title="Data Structures">S5</a><a href="session-06.html" data-page="session-06" title="Functions, Scope &amp; Reusability">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a></nav></div></header>
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" class="active" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Exceptions &amp; Defensive Code">S6</a><a href="session-07.html" data-page="session-07" title="Files, Libraries &amp; Research Data">S7</a><a href="session-08.html" data-page="session-08" title="Regular Expressions &amp; Text Cleaning">S8</a><a href="session-09.html" data-page="session-09" title="Modules, OOP &amp; the Pythonic Toolkit">S9</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
 <main>
 
 <article>
@@ -24,197 +24,204 @@
       <a href="session-04.html">&larr; Prev</a>
       <a href="session-06.html">Next &rarr;</a>
     </div>
+    <p class="dl-line"><a class="dl-btn" href="learn-python-student.pdf" download>&#8595; Download the full course (PDF)</a></p>
   </div>
 </article>
 
 </main>
 <script type="text/markdown" id="lesson-md">
 # Session 5
-## Data Structures: list · tuple · dict · set
+## Functions, Scope & Reusability
 
-The containers that hold your data.
-
----
-
-## Four containers, four jobs
-
-| Type | Syntax | Mutable? | Use for |
-|---|---|---|---|
-| `list` | `[1, 2, 3]` | yes | ordered, changing collection |
-| `tuple` | `(1, 2)` | no | fixed record / coordinates |
-| `dict` | `{"k": v}` | yes | key → value lookup |
-| `set` | `{1, 2, 3}` | yes | unique items |
+Define a rule once; apply it everywhere. (Reproducibility!)
 
 ---
 
-## Lists & slicing
+## Defining & calling
 
 ```python
-xs = [10, 20, 30, 40]
-xs[0]      # 10     xs[-1]   # 40 (last)
-xs[1:3]    # [20, 30]   (stop excluded)
-xs[:2]     # [10, 20]
-xs[::-1]   # reversed
-xs.append(50); xs.sort()      # mutate in place
+def class_average(scores):
+    """Return the mean of a list of scores."""
+    return sum(scores) / len(scores)
+
+class_average([91, 58, 73])     # 74.0
 ```
 
-⚠️ `xs.sort()` returns **None** — it sorts in place. Use `sorted(xs)` for a new list.
+🧠 A function is a formula/coding-scheme: same input → same output.
 
 ---
 
-## Dicts = labeled records
+## return vs print
 
 ```python
-student = {"name": "Ana", "gpa": 3.9}
-student["name"]              # "Ana"
-student.get("major", "N/A")  # safe access with default
-student["major"] = "Ed"      # add/update
-for key, val in student.items(): ...
+def avg(xs): return sum(xs) / len(xs)   # hands value back
+def show(xs): print(sum(xs) / len(xs))  # just displays
+
+x = avg([1,2,3])     # x = 2.0
+y = show([1,2,3])    # prints 2.0, but y is None!
+```
+
+`print` shows; `return` gives the value to the next step.
+
+---
+
+## Parameters: positional, keyword, default
+
+```python
+def grade(score, scale=100, passing=60):
+    ...
+grade(85)                 # uses defaults
+grade(85, passing=50)     # keyword arg
+```
+
+⚠️ Defaults must be **immutable** (numbers, strings, `None`) — never `[]` or `{}`.
+
+---
+
+## *args / **kwargs
+
+```python
+def total(*args):        # any number of positionals -> tuple
+    return sum(args)
+total(1, 2, 3)           # 6
+
+def tag(**kwargs):       # any number of keywords -> dict
+    return kwargs
+tag(name="Ana", gpa=3.9) # {'name':'Ana','gpa':3.9}
+
+func(*my_list)           # unpack list into args
+func(**my_dict)          # unpack dict into kwargs
 ```
 
 ---
 
-## A list of dicts = a dataset 🧠
+## TRAP: mutable default argument 😱
 
 ```python
-roster = [
-    {"name": "Ana", "score": 91},
-    {"name": "Ben", "score": 58},
-]
+def add_student(name, roster=[]):    # ❌
+    roster.append(name)
+    return roster
+
+add_student("Ana")    # ['Ana']
+add_student("Ben")    # ['Ana', 'Ben']  — the list PERSISTS!
 ```
 
-Each dict = a **row/respondent**; each key = a **variable/column**.
-This is your tidy dataset until pandas shows up (Session 8).
+The default `[]` is created **once**, at definition. Fix on next slide.
 
 ---
 
-## Sets: unique, fast membership
+## The fix: default to None
 
 ```python
-answers = ["yes", "no", "yes", "maybe", "no"]
-set(answers)            # {'yes', 'no', 'maybe'}  — dedup
-"yes" in set(answers)   # True, very fast
+def add_student(name, roster=None):   # ✅
+    if roster is None:
+        roster = []
+    roster.append(name)
+    return roster
 ```
 
-Great for "distinct responses" and "have I seen this ID?"
+**Rule:** mutable default? Use `None` and create inside.
 
 ---
 
-## Comprehensions
+## Scope (LEGB) & globals
+
+Python looks up names: **L**ocal → **E**nclosing → **G**lobal → **B**uilt-in.
 
 ```python
-[s["score"] for s in roster]                 # list
-[s for s in roster if s["score"] >= 60]      # with filter
-{s["name"]: s["score"] for s in roster}      # dict
-{s["score"] // 10 for s in roster}           # set of score-decades
+count = 0
+def bump():
+    count = count + 1   # 💥 UnboundLocalError
 ```
-
-Read as: *expr, for each item, (optionally) if condition.*
+Assigning `count` makes it local. Avoid `global`; **return** a value and reassign instead.
 
 ---
 
-## Sorting with a key
+## Docstrings & type hints
 
 ```python
-sorted(roster, key=lambda s: s["score"])               # ascending
-sorted(roster, key=lambda s: s["score"], reverse=True) # descending
+def class_average(scores: list[float]) -> float:
+    """Return the arithmetic mean of `scores`."""
+    return sum(scores) / len(scores)
 ```
 
-`lambda s: s["score"]` = "sort by the score field."
-
----
-
-## TRAP: aliasing (labels, not boxes)
-
-```python
-a = [1, 2, 3]
-b = a                # SAME list
-a.append(4)
-b                    # [1, 2, 3, 4]  😱
-
-b = a.copy()         # ✅ independent copy
-```
-
-`[[0]*3]*3` makes 3 references to ONE row — use `[[0]*3 for _ in range(3)]`.
+Type hints document intent. **They are NOT enforced at runtime** (`mypy` checks them).
 
 ---
 
 ## Your turn
 
 `examples/session-05/practice.md`:
-1. Build the roster (list of dicts); sort by score.
-2. `{name: score}` dict comprehension.
-3. Group students into pass/fail buckets.
-4. Demonstrate the aliasing trap and fix it.
+1. A small grade-functions module (with docstrings + hints).
+2. Reproduce the mutable-default bug, then fix it.
+3. `summary(*scores)` using `*args`.
 
 ---
 
 ## Traps recap
 
-- `=` aliases; use `.copy()` / `copy.deepcopy()`.
-- `.sort()` returns None (in place); `sorted()` returns new.
-- list ≠ tuple even with same contents (Session 2).
-- `dict.get(key, default)` avoids `KeyError`.
+- Mutable default arg → use `None`.
+- `print` ≠ `return` (forgot return → `None`).
+- Assigning a global inside a function → `UnboundLocalError`.
+- Type hints aren't enforced.
 
 ## Summary
-You can store, look up, dedup, sort, and reshape data.
-**Next:** package logic into reusable functions.
+You can write reusable, documented, reproducible functions.
+**Next:** make them survive messy real-world input — exceptions.
 
 </script>
 <script type="text/markdown" id="practice-md">
 # Session 5 — Practice (25 min)
 
-Start from:
-```python
-roster = [
-    {"name": "Ana", "score": 91}, {"name": "Ben", "score": 58},
-    {"name": "Cara", "score": 73}, {"name": "Dev", "score": 64},
-]
-```
+## Task 1 — Grade-functions module
+Write three functions with docstrings and type hints:
+- `class_average(scores: list[float]) -> float`
+- `letter_grade(score: float) -> str`  (reuse Session 3)
+- `pass_rate(scores: list[float], passing: float = 60) -> float`  (fraction passing, 0–1)
 
-## Task 1 — Rank
-Print names sorted by score, highest first.
+Use bool-summing for `pass_rate` (recall `sum(s >= passing for s in scores)`).
 
-## Task 2 — Map (dict comprehension)
-Build `{name: score}` in one line.
+## Task 2 — Reproduce & fix the mutable-default bug
+Write `add_note(text, notes=[])` that appends and returns. Call it three times and watch
+the list grow. Then fix it with the `None` pattern and prove each call starts fresh.
 
-## Task 3 — Group
-Build `{"pass": [...names...], "fail": [...names...]}` using a loop.
-
-## Task 4 — Dedup
-From `["A","B","A","C","B"]`, get the distinct values and how many there are.
-
-## Task 5 — Aliasing
-Show that `b = roster` then `roster.append({...})` also changes `b`. Then make `b` an
-independent copy so it doesn't. (Hint: nested dicts → `copy.deepcopy`.)
+## Task 3 — *args summary
+Write `summary(*scores)` that returns a dict `{"n":..., "mean":..., "max":..., "min":...}`.
+Call it both as `summary(91, 58, 73)` and as `summary(*my_list)`.
 
 ---
 
 <details><summary>Show solutions</summary>
 
 ```python
-# 1
-print([s["name"] for s in sorted(roster, key=lambda s: s["score"], reverse=True)])
-# ['Ana', 'Cara', 'Dev', 'Ben']
+def class_average(scores: list[float]) -> float:
+    """Mean of scores."""
+    return sum(scores) / len(scores)
 
-# 2
-name_to_score = {s["name"]: s["score"] for s in roster}
+def letter_grade(score: float) -> str:
+    """A/B/C/D/F by 90/80/70/60 cutoffs."""
+    for cutoff, letter in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
+        if score >= cutoff:
+            return letter
+    return "F"
 
-# 3
-groups = {"pass": [], "fail": []}
-for s in roster:
-    groups["pass" if s["score"] >= 60 else "fail"].append(s["name"])
+def pass_rate(scores: list[float], passing: float = 60) -> float:
+    """Fraction of scores >= passing (0..1)."""
+    return sum(s >= passing for s in scores) / len(scores)
 
-# 4
-vals = ["A","B","A","C","B"]
-distinct = set(vals); print(distinct, len(distinct))   # {'A','B','C'} 3
+# Task 2
+def add_note(text, notes=None):     # fixed version
+    if notes is None:
+        notes = []
+    notes.append(text)
+    return notes
 
-# 5
-import copy
-b = roster                       # alias
-roster.append({"name": "Eve", "score": 80})
-# b now also has Eve. To stay independent:
-b = copy.deepcopy(roster)        # changes to roster no longer touch b
+# Task 3
+def summary(*scores):
+    return {"n": len(scores), "mean": sum(scores)/len(scores),
+            "max": max(scores), "min": min(scores)}
+print(summary(91, 58, 73))
+print(summary(*[91, 58, 73]))
 ```
 
 
@@ -222,20 +229,21 @@ b = copy.deepcopy(roster)        # changes to roster no longer touch b
 
 </script>
 <script type="text/markdown" id="quiz-md">
-### Quiz — Data Structures
-1. Which are mutable: list, tuple, dict, set?
-2. What does `xs.sort()` return? How do you get a *new* sorted list?
-3. `a = [1,2]; b = a; a.append(3)` — what is `b`? Why?
-4. (Practical) One-line dict comprehension mapping each name in `names` to `0`.
+### Quiz — Functions & Scope
+1. What's the difference between `return` and `print`?
+2. Why is `def f(x, items=[])` dangerous? What's the fix?
+3. What does a function return if it has no `return` statement?
+4. Are type hints enforced at runtime?
 
 <details><summary>Show answers</summary>
 
-**Answers:** 1. list, dict, set are mutable; tuple is not. 2. `None` (sorts in place);
-`sorted(xs)`. 3. `[1, 2, 3]` — `b` is an alias for the same list. 4. `{n: 0 for n in names}`.
+**Answers:** 1. `return` hands a value to the caller; `print` only displays. 2. The default
+list is created once and persists across calls; use `items=None` then create inside. 3. `None`.
+4. No — they're documentation; `mypy` checks them optionally.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "structures_and_aliasing.py", "code": "roster = [{\"name\": \"Ana\", \"score\": 91},\n          {\"name\": \"Ben\", \"score\": 58},\n          {\"name\": \"Cara\", \"score\": 73}]\n\nranked = sorted(roster, key=lambda s: s[\"score\"], reverse=True)\nprint(\"ranked:\", [s[\"name\"] for s in ranked])\nprint(\"map:   \", {s[\"name\"]: s[\"score\"] for s in roster})   # dict comprehension\n\n# Aliasing: assignment does NOT copy.\na = [1, 2, 3]; b = a; a.append(4)\nprint(\"alias b:\", b)        # [1, 2, 3, 4]\nc = a.copy(); a.append(5)\nprint(\"copy  c:\", c)        # unaffected\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "mutable_default_bug.py", "code": "def add_bad(name, roster=[]):     # BUG: default list is shared across calls\n    roster.append(name)\n    return roster\n\nprint(\"BUGGY:\", add_bad(\"Ana\"))   # ['Ana']\nprint(\"BUGGY:\", add_bad(\"Ben\"))   # ['Ana', 'Ben']  <- persists!\n\ndef add_ok(name, roster=None):    # FIX: default None, create inside\n    if roster is None:\n        roster = []\n    roster.append(name)\n    return roster\n\nprint(\"FIXED:\", add_ok(\"Ana\"))    # ['Ana']\nprint(\"FIXED:\", add_ok(\"Ben\"))    # ['Ben']\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

@@ -197,4 +197,4 @@ x=[1]; y=x; x.append(2); y   # ?
 - list ≠ tuple even with same contents.
 - `isinstance` over `type`; bools are ints.
 
-**Next:** Conditionals & Boolean logic — now you know what's *really* being compared.
+**Next:** Control flow — conditionals & loops, now that you know what's *really* being compared.

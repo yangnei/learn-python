@@ -1,56 +1,59 @@
 """
-Session 5 — Data Structures: list, tuple, dict, set
+Session 5 — Functions, Scope & Reusability
 Run me:  python3 demo.py
 """
-import copy
 
-# --- 1. A list of dicts is a tidy dataset -------------------------------
-roster = [
-    {"name": "Ana",  "score": 91},
-    {"name": "Ben",  "score": 58},
-    {"name": "Cara", "score": 73},
-    {"name": "Dev",  "score": 64},
-]
+# --- 1. return vs print --------------------------------------------------
+def avg(xs: list[float]) -> float:
+    """Return the mean of xs."""
+    return sum(xs) / len(xs)
 
-# --- 2. Slicing ----------------------------------------------------------
-xs = [10, 20, 30, 40]
-print("xs[1:3]:", xs[1:3], "| xs[-1]:", xs[-1], "| xs[::-1]:", xs[::-1])
+def show(xs):
+    print("mean is", sum(xs) / len(xs))
 
-# --- 3. Sorting by a key ------------------------------------------------
-top = sorted(roster, key=lambda s: s["score"], reverse=True)
-print("\nRanked:", [s["name"] for s in top])
+x = avg([1, 2, 3])      # 2.0  (a value we can keep using)
+y = show([1, 2, 3])     # prints, but...
+print("x =", x, "| y =", y)     # y is None!
 
-# --- 4. Comprehensions ---------------------------------------------------
-name_to_score = {s["name"]: s["score"] for s in roster}      # dict comp
-passers = [s["name"] for s in roster if s["score"] >= 60]    # filtered list
-print("map:", name_to_score)
-print("passers:", passers)
+# --- 2. defaults, *args, **kwargs ---------------------------------------
+def grade(score, scale=100, passing=60):
+    pct = score / scale
+    return "PASS" if score >= passing else "FAIL", round(pct, 3)
 
-# --- 5. Grouping into buckets -------------------------------------------
-buckets = {"pass": [], "fail": []}
-for s in roster:
-    key = "pass" if s["score"] >= 60 else "fail"
-    buckets[key].append(s["name"])
-print("buckets:", buckets)
+print(grade(85), grade(40, passing=35))
 
-# --- 6. Sets: dedup survey answers --------------------------------------
-answers = ["yes", "no", "yes", "maybe", "no"]
-print("\ndistinct answers:", set(answers))
+def total(*args):              # collect positionals into a tuple
+    return sum(args)
+print("total:", total(1, 2, 3, 4))
 
-# --- 7. TRAP: aliasing ---------------------------------------------------
-a = [1, 2, 3]
-b = a                 # alias — SAME list
-a.append(4)
-print("\nalias b:", b)          # [1, 2, 3, 4]  (changed!)
+def tag(**kwargs):             # collect keywords into a dict
+    return kwargs
+print("tag:", tag(name="Ana", gpa=3.9))
 
-c = a.copy()          # independent shallow copy
-a.append(5)
-print("copy c:", c)             # [1, 2, 3, 4]  (unaffected)
+scores = [91, 58, 73]
+print("unpacked into total:", total(*scores))   # * unpacks the list
 
-# Nested data needs deepcopy:
-grid_bad = [[0] * 3] * 3        # 3 refs to ONE row
-grid_bad[0][0] = 9
-print("shared-row grid:", grid_bad)   # [[9,0,0],[9,0,0],[9,0,0]]  😱
-grid_ok = [[0] * 3 for _ in range(3)]
-grid_ok[0][0] = 9
-print("independent grid:", grid_ok)   # [[9,0,0],[0,0,0],[0,0,0]]
+# --- 3. TRAP: mutable default argument ----------------------------------
+def add_bad(name, roster=[]):       # ❌ shared default
+    roster.append(name)
+    return roster
+
+print("\nBUGGY:")
+print(add_bad("Ana"))               # ['Ana']
+print(add_bad("Ben"))               # ['Ana', 'Ben']  <- persists!
+
+def add_ok(name, roster=None):      # ✅
+    if roster is None:
+        roster = []
+    roster.append(name)
+    return roster
+
+print("FIXED:")
+print(add_ok("Ana"))                # ['Ana']
+print(add_ok("Ben"))                # ['Ben']  <- fresh each call
+
+# --- 4. Scope: UnboundLocalError demo (commented) -----------------------
+# count = 0
+# def bump():
+#     count = count + 1   # UnboundLocalError: assigning makes `count` local
+# Prefer returning a value and reassigning at the call site.

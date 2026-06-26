@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Session 4 — Loops &amp; Iteration</title>
+<title>Session 4 — Data Structures</title>
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
 </head>
 <body data-page="session-04">
-<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Python<span class="py">·</span>for Researchers</a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Conditionals &amp; Boolean Logic">S3</a><a href="session-04.html" class="active" data-page="session-04" title="Loops &amp; Iteration">S4</a><a href="session-05.html" data-page="session-05" title="Data Structures">S5</a><a href="session-06.html" data-page="session-06" title="Functions, Scope &amp; Reusability">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a></nav></div></header>
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" class="active" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Exceptions &amp; Defensive Code">S6</a><a href="session-07.html" data-page="session-07" title="Files, Libraries &amp; Research Data">S7</a><a href="session-08.html" data-page="session-08" title="Regular Expressions &amp; Text Cleaning">S8</a><a href="session-09.html" data-page="session-09" title="Modules, OOP &amp; the Pythonic Toolkit">S9</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
 <main>
 
 <article>
@@ -24,160 +24,198 @@
       <a href="session-03.html">&larr; Prev</a>
       <a href="session-05.html">Next &rarr;</a>
     </div>
+    <p class="dl-line"><a class="dl-btn" href="learn-python-student.pdf" download>&#8595; Download the full course (PDF)</a></p>
   </div>
 </article>
 
 </main>
 <script type="text/markdown" id="lesson-md">
 # Session 4
-## Loops & Iteration
+## Data Structures: list · tuple · dict · set
 
-Do something many times — the Pythonic way.
+The containers that hold your data.
 
 ---
 
-## while loops
+## Four containers, four jobs
+
+| Type | Syntax | Mutable? | Use for |
+|---|---|---|---|
+| `list` | `[1, 2, 3]` | yes | ordered, changing collection |
+| `tuple` | `(1, 2)` | no | fixed record / coordinates |
+| `dict` | `{"k": v}` | yes | key → value lookup |
+| `set` | `{1, 2, 3}` | yes | unique items |
+
+---
+
+## Lists & slicing
 
 ```python
-count = 0
-while count < 3:
-    print(count)
-    count += 1
+xs = [10, 20, 30, 40]
+xs[0]      # 10     xs[-1]   # 40 (last)
+xs[1:3]    # [20, 30]   (stop excluded)
+xs[:2]     # [10, 20]
+xs[::-1]   # reversed
+xs.append(50); xs.sort()      # mutate in place
 ```
 
-⚠️ Forget to change the condition → **infinite loop**. Kill it with **Ctrl+C**.
+⚠️ `xs.sort()` returns **None** — it sorts in place. Use `sorted(xs)` for a new list.
 
 ---
 
-## for loops + range
+## Dicts = labeled records
 
 ```python
-for i in range(5):        # 0,1,2,3,4
-    print(i)
-
-for x in [10, 20, 30]:    # each element directly
-    print(x)
-```
-
-`range(1, 5)` → `1,2,3,4` — **stop is excluded** (off-by-one!).
-`range(0, 10, 2)` → `0,2,4,6,8`.
-
----
-
-## break & continue
-
-```python
-for x in data:
-    if x is None:
-        continue          # skip this one
-    if x == "STOP":
-        break             # leave the loop entirely
-    process(x)
+student = {"name": "Ana", "gpa": 3.9}
+student["name"]              # "Ana"
+student.get("major", "N/A")  # safe access with default
+student["major"] = "Ed"      # add/update
+for key, val in student.items(): ...
 ```
 
 ---
 
-## The validation loop (you'll reuse this everywhere)
+## A list of dicts = a dataset 🧠
 
 ```python
-while True:
-    raw = input("Score 0–100: ")
-    if raw.isdigit() and 0 <= int(raw) <= 100:
-        score = int(raw)
-        break
-    print("Try again.")
+roster = [
+    {"name": "Ana", "score": 91},
+    {"name": "Ben", "score": 58},
+]
 ```
+
+Each dict = a **row/respondent**; each key = a **variable/column**.
+This is your tidy dataset until pandas shows up (Session 7).
 
 ---
 
-## Stop juggling indices: enumerate & zip
+## Sets: unique, fast membership
 
 ```python
-for i, name in enumerate(names):     # index + value
-    print(i, name)
-
-for name, score in zip(names, scores):   # two lists together
-    print(name, score)
+answers = ["yes", "no", "yes", "maybe", "no"]
+set(answers)            # {'yes', 'no', 'maybe'}  — dedup
+"yes" in set(answers)   # True, very fast
 ```
 
-🧠 If you write `range(len(x))`, stop — `enumerate`/`zip` is cleaner.
+Great for "distinct responses" and "have I seen this ID?"
+
+---
+
+## Comprehensions
+
+```python
+[s["score"] for s in roster]                 # list
+[s for s in roster if s["score"] >= 60]      # with filter
+{s["name"]: s["score"] for s in roster}      # dict
+{s["score"] // 10 for s in roster}           # set of score-decades
+```
+
+Read as: *expr, for each item, (optionally) if condition.*
+
+---
+
+## Sorting with a key
+
+```python
+sorted(roster, key=lambda s: s["score"])               # ascending
+sorted(roster, key=lambda s: s["score"], reverse=True) # descending
+```
+
+`lambda s: s["score"]` = "sort by the score field."
+
+---
+
+## TRAP: aliasing (labels, not boxes)
+
+```python
+a = [1, 2, 3]
+b = a                # SAME list
+a.append(4)
+b                    # [1, 2, 3, 4]  😱
+
+b = a.copy()         # ✅ independent copy
+```
+
+`[[0]*3]*3` makes 3 references to ONE row — use `[[0]*3 for _ in range(3)]`.
 
 ---
 
 ## Your turn
 
 `examples/session-04/practice.md`:
-1. Average a list of scores (no `sum()` — use a loop), then with `sum()/len()`.
-2. Walk `names` and `scores` together; print "name: PASS/FAIL".
-3. Robust "ask until valid" prompt.
+1. Build the roster (list of dicts); sort by score.
+2. `{name: score}` dict comprehension.
+3. Group students into pass/fail buckets.
+4. Demonstrate the aliasing trap and fix it.
 
 ---
 
 ## Traps recap
 
-- `range(1, 5)` excludes 5.
-- **Don't modify a list while looping it** — iterate a copy or build a new list.
-- Prefer `enumerate`/`zip` over `range(len(...))`.
-- Infinite loop? Ctrl+C.
+- `=` aliases; use `.copy()` / `copy.deepcopy()`.
+- `.sort()` returns None (in place); `sorted()` returns new.
+- list ≠ tuple even with same contents (Session 2).
+- `dict.get(key, default)` avoids `KeyError`.
 
 ## Summary
-You can repeat work, control loops, and iterate cleanly.
-**Next:** the containers you loop *over* — lists, dicts, sets.
+You can store, look up, dedup, sort, and reshape data.
+**Next:** package logic into reusable functions.
 
 </script>
 <script type="text/markdown" id="practice-md">
 # Session 4 — Practice (25 min)
 
-## Task 1 — Average two ways
-Given `scores = [91, 58, 73, 64]`, compute the mean (a) with a manual loop and a running
-total, and (b) with `sum(scores) / len(scores)`. Confirm they match.
-
-## Task 2 — Pass/fail roster
-With `names = ["Ana","Ben","Cara","Dev"]` and the scores above, use `zip` to print
-`"<name>: PASS"` (score ≥ 60) or `"<name>: FAIL"`. Then count passes using `sum(...)`.
-
-## Task 3 — Validation loop
-Write a real `while True:` prompt that keeps asking for a score until the user types an
-integer 0–100, then prints it. (Use `.isdigit()`.)
-
-## Task 4 — Trap check
-Why does this go wrong, and what's the fix?
+Start from:
 ```python
-xs = [1, 2, 3, 4]
-for x in xs:
-    if x % 2 == 0:
-        xs.remove(x)
-print(xs)   # not [1, 3] — why?
+roster = [
+    {"name": "Ana", "score": 91}, {"name": "Ben", "score": 58},
+    {"name": "Cara", "score": 73}, {"name": "Dev", "score": 64},
+]
 ```
+
+## Task 1 — Rank
+Print names sorted by score, highest first.
+
+## Task 2 — Map (dict comprehension)
+Build `{name: score}` in one line.
+
+## Task 3 — Group
+Build `{"pass": [...names...], "fail": [...names...]}` using a loop.
+
+## Task 4 — Dedup
+From `["A","B","A","C","B"]`, get the distinct values and how many there are.
+
+## Task 5 — Aliasing
+Show that `b = roster` then `roster.append({...})` also changes `b`. Then make `b` an
+independent copy so it doesn't. (Hint: nested dicts → `copy.deepcopy`.)
 
 ---
 
 <details><summary>Show solutions</summary>
 
 ```python
-# Task 1
-total = 0
-for s in scores:
-    total += s
-print(total / len(scores), sum(scores) / len(scores))   # 71.5 71.5
+# 1
+print([s["name"] for s in sorted(roster, key=lambda s: s["score"], reverse=True)])
+# ['Ana', 'Cara', 'Dev', 'Ben']
 
-# Task 2
-for name, score in zip(names, scores):
-    print(f"{name}: {'PASS' if score >= 60 else 'FAIL'}")
-passes = sum(score >= 60 for score in scores)   # bools sum! (Session 2)
-print("passes:", passes)                         # 3
+# 2
+name_to_score = {s["name"]: s["score"] for s in roster}
 
-# Task 3
-while True:
-    raw = input("Score 0–100: ")
-    if raw.isdigit() and 0 <= int(raw) <= 100:
-        print("Got", int(raw)); break
-    print("Try again.")
+# 3
+groups = {"pass": [], "fail": []}
+for s in roster:
+    groups["pass" if s["score"] >= 60 else "fail"].append(s["name"])
 
-# Task 4
-# Removing while iterating shifts indices, so the loop skips elements.
-# Fix: iterate a copy, or build a new list:
-xs = [x for x in xs if x % 2 != 0]   # [1, 3]
+# 4
+vals = ["A","B","A","C","B"]
+distinct = set(vals); print(distinct, len(distinct))   # {'A','B','C'} 3
+
+# 5
+import copy
+b = roster                       # alias
+roster.append({"name": "Eve", "score": 80})
+# b now also has Eve. To stay independent:
+b = copy.deepcopy(roster)        # changes to roster no longer touch b
 ```
 
 
@@ -185,21 +223,20 @@ xs = [x for x in xs if x % 2 != 0]   # [1, 3]
 
 </script>
 <script type="text/markdown" id="quiz-md">
-### Quiz — Loops
-1. What does `list(range(1, 5))` produce?
-2. When should you use `enumerate` instead of `range(len(x))`?
-3. Why can removing items from a list *while looping it* go wrong?
-4. (Practical) Use `zip` to print each `name` with its `score`.
+### Quiz — Data Structures
+1. Which are mutable: list, tuple, dict, set?
+2. What does `xs.sort()` return? How do you get a *new* sorted list?
+3. `a = [1,2]; b = a; a.append(3)` — what is `b`? Why?
+4. (Practical) One-line dict comprehension mapping each name in `names` to `0`.
 
 <details><summary>Show answers</summary>
 
-**Answers:** 1. `[1, 2, 3, 4]` (5 excluded). 2. When you need both index and value.
-3. Removing shifts indices, so the loop skips elements; iterate a copy or build a new list.
-4. `for name, score in zip(names, scores): print(name, score)`.
+**Answers:** 1. list, dict, set are mutable; tuple is not. 2. `None` (sorts in place);
+`sorted(xs)`. 3. `[1, 2, 3]` — `b` is an alias for the same list. 4. `{n: 0 for n in names}`.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "enumerate_zip.py", "code": "names  = [\"Ana\", \"Ben\", \"Cara\", \"Dev\"]\nscores = [91, 58, 73, 64]\n\nfor i, name in enumerate(names, start=1):     # index + value\n    print(i, name)\n\nprint(\"---\")\nfor name, score in zip(names, scores):        # two lists together\n    print(f\"{name}: {'PASS' if score >= 60 else 'FAIL'}\")\n\nprint(\"passes:\", sum(s >= 60 for s in scores))  # bools sum!\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "structures_and_aliasing.py", "code": "roster = [{\"name\": \"Ana\", \"score\": 91},\n          {\"name\": \"Ben\", \"score\": 58},\n          {\"name\": \"Cara\", \"score\": 73}]\n\nranked = sorted(roster, key=lambda s: s[\"score\"], reverse=True)\nprint(\"ranked:\", [s[\"name\"] for s in ranked])\nprint(\"map:   \", {s[\"name\"]: s[\"score\"] for s in roster})   # dict comprehension\n\n# Aliasing: assignment does NOT copy.\na = [1, 2, 3]; b = a; a.append(4)\nprint(\"alias b:\", b)        # [1, 2, 3, 4]\nc = a.copy(); a.append(5)\nprint(\"copy  c:\", c)        # unaffected\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

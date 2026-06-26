@@ -1,4 +1,4 @@
-# Course Brief — Python for an Education Researcher
+# Course Brief — Learn Python
 
 ## Topic
 Introduction to Programming with Python, sequenced for a fast-moving adult learner and

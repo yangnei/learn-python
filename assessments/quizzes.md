@@ -30,30 +30,21 @@ raises `TypeError` (can't order int vs str). 5. False — a list and a tuple are
 
 ---
 
-## Session 3 — Conditionals
+## Session 3 — Control Flow: Conditionals & Loops
 1. Rewrite `if x >= 90 and x < 100:` using a chained comparison.
-2. What is `5 and 0`? What is `0 or "hi"`?
+2. What is `5 and 0`? What is `0 or "hi"`? Why aren't they `True`/`False`?
 3. Why is `if passed == True:` not ideal? Write the better version.
-4. (Practical) One-line ternary: `"pass"` if `score >= 60` else `"fail"`.
+4. What does `list(range(1, 5))` produce?
+5. Why can removing items from a list *while looping it* go wrong, and what's a clean fix?
 
-**Answers:** 1. `if 90 <= x < 100:`. 2. `0` and `"hi"` (they return an operand). 3. `passed`
-is already a bool; write `if passed:`. 4. `result = "pass" if score >= 60 else "fail"`.
-
----
-
-## Session 4 — Loops
-1. What does `list(range(1, 5))` produce?
-2. When should you use `enumerate` instead of `range(len(x))`?
-3. Why can removing items from a list *while looping it* go wrong?
-4. (Practical) Use `zip` to print each `name` with its `score`.
-
-**Answers:** 1. `[1, 2, 3, 4]` (5 excluded). 2. When you need both index and value.
-3. Removing shifts indices, so the loop skips elements; iterate a copy or build a new list.
-4. `for name, score in zip(names, scores): print(name, score)`.
+**Answers:** 1. `if 90 <= x < 100:`. 2. `0` and `"hi"` — `and`/`or` return an operand, not a
+bool. 3. `passed` is already a bool; write `if passed:`. 4. `[1, 2, 3, 4]` (5 excluded).
+5. Removing shifts indices so the loop skips elements; iterate a copy or build a new list
+(`[x for x in xs if keep(x)]`).
 
 ---
 
-## Session 5 — Data Structures
+## Session 4 — Data Structures
 1. Which are mutable: list, tuple, dict, set?
 2. What does `xs.sort()` return? How do you get a *new* sorted list?
 3. `a = [1,2]; b = a; a.append(3)` — what is `b`? Why?
@@ -64,7 +55,7 @@ is already a bool; write `if passed:`. 4. `result = "pass" if score >= 60 else "
 
 ---
 
-## Session 6 — Functions & Scope
+## Session 5 — Functions & Scope
 1. What's the difference between `return` and `print`?
 2. Why is `def f(x, items=[])` dangerous? What's the fix?
 3. What does a function return if it has no `return` statement?
@@ -76,7 +67,7 @@ list is created once and persists across calls; use `items=None` then create ins
 
 ---
 
-## Session 7 — Exceptions
+## Session 6 — Exceptions
 1. Which exception does `int("N/A")` raise?
 2. Why is a bare `except:` dangerous?
 3. When should you use `raise` vs `assert`?
@@ -88,7 +79,7 @@ checks (can be disabled). 4. `try: return int(value) except (ValueError, TypeErr
 
 ---
 
-## Session 8 — Files & Data
+## Session 7 — Files & Data
 1. What does opening a file in `"w"` mode do to existing contents?
 2. Why prefer `with open(...)` over `open()`/`close()`?
 3. After `csv.DictReader`, what type is each row?
@@ -99,7 +90,7 @@ code crashes. 3. A `dict` keyed by the header row. 4. Strings; convert with `int
 
 ---
 
-## Session 9 — Regular Expressions
+## Session 8 — Regular Expressions
 1. In regex, what does `.` match? How do you match a literal dot?
 2. Why write regex patterns as raw strings `r"..."`?
 3. Which function do you use to (a) check the *whole* string matches, and (b) replace matches?
@@ -111,7 +102,7 @@ aren't treated as Python string escapes. 3. (a) `re.fullmatch`, (b) `re.sub`. 4.
 
 ---
 
-## Session 10 — Modules, OOP & Pythonic
+## Session 9 — Modules, OOP & Pythonic
 1. In a class, what is `self`?
 2. What happens if you iterate a generator twice?
 3. Why doesn't a module's `if __name__ == "__main__":` block run when you `import` it?

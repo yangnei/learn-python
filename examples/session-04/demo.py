@@ -1,46 +1,56 @@
 """
-Session 4 — Loops & Iteration
+Session 4 — Data Structures: list, tuple, dict, set
 Run me:  python3 demo.py
 """
+import copy
 
-names = ["Ana", "Ben", "Cara", "Dev"]
-scores = [91, 58, 73, 64]
+# --- 1. A list of dicts is a tidy dataset -------------------------------
+roster = [
+    {"name": "Ana",  "score": 91},
+    {"name": "Ben",  "score": 58},
+    {"name": "Cara", "score": 73},
+    {"name": "Dev",  "score": 64},
+]
 
-# --- 1. for + range vs for over elements --------------------------------
-print("range(1,5) =", list(range(1, 5)))   # [1,2,3,4]  stop excluded!
+# --- 2. Slicing ----------------------------------------------------------
+xs = [10, 20, 30, 40]
+print("xs[1:3]:", xs[1:3], "| xs[-1]:", xs[-1], "| xs[::-1]:", xs[::-1])
 
-total = 0
-for s in scores:               # iterate elements directly (preferred)
-    total += s
-print("class total:", total, "| average:", total / len(scores))
+# --- 3. Sorting by a key ------------------------------------------------
+top = sorted(roster, key=lambda s: s["score"], reverse=True)
+print("\nRanked:", [s["name"] for s in top])
 
-# --- 2. enumerate: index + value ----------------------------------------
-for i, name in enumerate(names, start=1):
-    print(f"{i}. {name}")
+# --- 4. Comprehensions ---------------------------------------------------
+name_to_score = {s["name"]: s["score"] for s in roster}      # dict comp
+passers = [s["name"] for s in roster if s["score"] >= 60]    # filtered list
+print("map:", name_to_score)
+print("passers:", passers)
 
-# --- 3. zip: two lists in lockstep --------------------------------------
-for name, score in zip(names, scores):
-    print(f"{name}: {'PASS' if score >= 60 else 'FAIL'}")
+# --- 5. Grouping into buckets -------------------------------------------
+buckets = {"pass": [], "fail": []}
+for s in roster:
+    key = "pass" if s["score"] >= 60 else "fail"
+    buckets[key].append(s["name"])
+print("buckets:", buckets)
 
-# --- 4. break / continue -------------------------------------------------
-print("\nfirst failing student:")
-for name, score in zip(names, scores):
-    if score >= 60:
-        continue               # skip the passers
-    print(" ->", name)
-    break                      # stop at the first failure
+# --- 6. Sets: dedup survey answers --------------------------------------
+answers = ["yes", "no", "yes", "maybe", "no"]
+print("\ndistinct answers:", set(answers))
 
-# --- 5. TRAP: modifying a list while iterating --------------------------
-nums = [1, 2, 3, 4, 5, 6]
-# BAD: nums.remove(x) inside `for x in nums` skips elements.
-# GOOD: build a new list.
-evens_removed = [x for x in nums if x % 2 != 0]
-print("\nodds only:", evens_removed)        # [1, 3, 5]
+# --- 7. TRAP: aliasing ---------------------------------------------------
+a = [1, 2, 3]
+b = a                 # alias — SAME list
+a.append(4)
+print("\nalias b:", b)          # [1, 2, 3, 4]  (changed!)
 
-# --- 6. The validation loop (simulated input) ---------------------------
-def to_valid_score(raw):
-    """Return int 0..100 or None — the logic inside a while-True prompt."""
-    return int(raw) if raw.isdigit() and 0 <= int(raw) <= 100 else None
+c = a.copy()          # independent shallow copy
+a.append(5)
+print("copy c:", c)             # [1, 2, 3, 4]  (unaffected)
 
-for raw in ["150", "abc", "84"]:
-    print(raw, "->", to_valid_score(raw))   # None, None, 84
+# Nested data needs deepcopy:
+grid_bad = [[0] * 3] * 3        # 3 refs to ONE row
+grid_bad[0][0] = 9
+print("shared-row grid:", grid_bad)   # [[9,0,0],[9,0,0],[9,0,0]]  😱
+grid_ok = [[0] * 3 for _ in range(3)]
+grid_ok[0][0] = 9
+print("independent grid:", grid_ok)   # [[9,0,0],[0,0,0],[0,0,0]]

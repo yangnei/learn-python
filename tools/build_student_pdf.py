@@ -1,26 +1,31 @@
 #!/usr/bin/env python3
 """
-Build the Teacher Edition PDF from the markdown curriculum.
+Build the Student Edition PDF (offline companion to the website) into docs/.
 
 Pipeline:  markdown -> styled HTML (print CSS) -> chromium --print-to-pdf
+It bundles, in reading order: the student syllabus, every session's lesson
+(from slides/) + practice (from examples/), the cheat sheets, and the quizzes.
 
 Run with a Python that has the `markdown` package, e.g.:
-    /path/to/venv/bin/python tools/build_teacher_pdf.py
+    /path/to/venv/bin/python tools/build_student_pdf.py
 Requires `chromium` (or `chromium-browser`) on PATH for the final print step.
+Output:  docs/learn-python-student.pdf  (served by the GitHub Pages site).
 """
 from __future__ import annotations
+import re
 import shutil
 import subprocess
 import sys
 from datetime import date
 from pathlib import Path
 
-import re
-
 import markdown  # provided by the build venv
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "output"
+DOCS = ROOT / "docs"
+
+# Sessions that have a lesson deck + practice file (capstone is an appendix).
+N_SESSIONS = 9
 
 _LIST_RE = re.compile(r"^\s*(?:[-*+]\s|\d+\.\s)")
 
@@ -28,9 +33,7 @@ _LIST_RE = re.compile(r"^\s*(?:[-*+]\s|\d+\.\s)")
 def normalize_lists(md: str) -> str:
     """Insert a blank line before a list that directly follows a paragraph line.
 
-    python-markdown's `sane_lists` only starts a list when a blank line precedes it;
-    the teacher syllabus packs lists right under bold labels (e.g. the minute clocks),
-    so without this they render as run-together prose. This restores proper bullets.
+    python-markdown's `sane_lists` only starts a list when a blank line precedes it.
     """
     out: list[str] = []
     in_code = False
@@ -43,13 +46,16 @@ def normalize_lists(md: str) -> str:
         out.append(line)
     return "\n".join(out)
 
-# Main document + appendices a teacher needs in one place.
-PARTS = [
-    ("curriculum/syllabus-teacher.md", None),
-    ("curriculum/course-outline.md", "Appendix A — Master Course Outline"),
-    ("curriculum/connection-map.md", "Appendix B — Connection Map (education-research bridges)"),
-    ("assessments/quizzes.md", "Appendix C — Per-Session Quizzes & Answer Keys"),
-]
+
+def strip_frontmatter(md: str) -> str:
+    """Remove a leading YAML front-matter block (--- ... ---) from slide markdown."""
+    if md.startswith("---"):
+        end = md.find("\n---", 3)
+        if end != -1:
+            nl = md.find("\n", end + 1)
+            return md[nl + 1:].lstrip() if nl != -1 else ""
+    return md
+
 
 PRINT_CSS = """
 @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
@@ -57,26 +63,23 @@ PRINT_CSS = """
 html { font-size: 11pt; }
 body { font-family: -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
        color:#1c2330; line-height:1.5; margin:0; }
-.cover { text-align:center; padding-top:32%; page-break-after:always; }
-.cover h1 { font-size:30pt; margin:0 0 6pt; letter-spacing:-.5pt; }
-.cover .sub { font-size:14pt; color:#2f6df0; font-weight:600; }
+.cover { text-align:center; padding-top:30%; page-break-after:always; }
+.cover h1 { font-size:32pt; margin:0 0 6pt; letter-spacing:-.5pt; }
+.cover .sub { font-size:15pt; color:#2f6df0; font-weight:700; }
 .cover .meta { margin-top:20pt; color:#5b6675; font-size:11pt; }
 .cover .rule { width:60pt; height:4pt; background:#2f6df0; margin:14pt auto; border-radius:2pt; }
-h1 { font-size:19pt; border-bottom:2px solid #2f6df0; padding-bottom:3pt; }
-h2 { font-size:15pt; margin-top:16pt; color:#13203a; border-bottom:1px solid #d8deea; padding-bottom:2pt; }
-h3 { font-size:12.5pt; margin-top:12pt; color:#243; }
-/* page break before each major section heading (but not the first) */
-h2 { page-break-before: always; page-break-after: avoid; }
-h3 { page-break-after: avoid; }
-.appendix-title { page-break-before: always; }
+.pagebreak { page-break-before: always; }
+h1 { font-size:20pt; border-bottom:2px solid #2f6df0; padding-bottom:3pt; page-break-after:avoid; }
+h2 { font-size:14pt; margin-top:15pt; color:#13203a; border-bottom:1px solid #d8deea; padding-bottom:2pt; page-break-after:avoid; }
+h3 { font-size:12pt; margin-top:11pt; color:#243; page-break-after:avoid; }
 p, li { orphans:3; widows:3; }
 ul,ol { margin:.3em 0 .6em; padding-left:1.3em; }
 code { font-family:'SF Mono',Menlo,Consolas,monospace; font-size:9.5pt;
        background:#eef1f6; padding:.5pt 3pt; border-radius:3pt; }
 pre { background:#f4f6fa; border:1px solid #d8deea; border-left:3px solid #2f6df0;
-      border-radius:5pt; padding:7pt 9pt; font-size:8.6pt; line-height:1.42; overflow:visible;
+      border-radius:5pt; padding:7pt 9pt; font-size:8.8pt; line-height:1.42; overflow:visible;
       white-space:pre-wrap; word-break:break-word; page-break-inside:avoid; }
-pre code { background:none; padding:0; font-size:8.6pt; }
+pre code { background:none; padding:0; font-size:8.8pt; }
 blockquote { margin:.6em 0; padding:.3em .8em; border-left:3px solid #2f6df0;
              background:#eef3fd; color:#33415c; border-radius:0 4pt 4pt 0; }
 table { border-collapse:collapse; width:100%; margin:.6em 0; font-size:9.3pt; page-break-inside:avoid; }
@@ -85,18 +88,21 @@ th { background:#eef2fb; }
 hr { border:0; border-top:1px dashed #c9d2e2; margin:1em 0; }
 a { color:#1f4fc0; text-decoration:none; }
 strong { color:#13203a; }
+details { margin:.4em 0; }
+summary { font-weight:600; color:#2f6df0; }
 """
 
 COVER = f"""
 <div class="cover">
   <div class="sub">Learn Python</div>
-  <h1>Teacher Edition</h1>
+  <h1>Student Edition</h1>
   <div class="rule"></div>
-  <p style="font-size:12pt;color:#33415c">Minute-by-minute session playbooks · transition scripts ·
-     predicted misconceptions · Socratic prompts</p>
+  <p style="font-size:12pt;color:#33415c">9 one-hour sessions · runnable examples ·
+     trap cheat sheets · self-check quizzes</p>
   <div class="meta">
-     A 9-session (8–10 hour) accelerated Python course<br>
-     for a PhD-in-Education learner with no prior coding experience.<br><br>
+     An accelerated, self-study Python course<br>
+     for a researcher with no prior coding experience.<br><br>
+     Offline companion to the interactive website.<br>
      Generated {date.today().isoformat()} · Instructional content original
   </div>
 </div>
@@ -107,23 +113,42 @@ def render() -> str:
     md = markdown.Markdown(extensions=[
         "extra", "tables", "fenced_code", "sane_lists", "toc", "attr_list",
     ])
-    sections = [COVER]
-    for rel, appendix_title in PARTS:
-        text = (ROOT / rel).read_text()
-        if appendix_title:
-            sections.append(f'<h1 class="appendix-title">{appendix_title}</h1>')
+    slides_dir = ROOT / "slides"
+    examples_dir = ROOT / "examples"
+    cheats_dir = ROOT / "cheatsheets"
+
+    def convert(text: str) -> str:
         md.reset()
-        sections.append(md.convert(normalize_lists(text)))
+        return md.convert(normalize_lists(text))
+
+    sections = [COVER]
+
+    # Front matter: the student syllabus.
+    sections.append(convert((ROOT / "curriculum" / "syllabus-student.md").read_text()))
+
+    # Each session: lesson deck (frontmatter stripped) + its practice.
+    for n in range(1, N_SESSIONS + 1):
+        lesson = strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text())
+        sections.append(f'<div class="pagebreak"></div>{convert(lesson)}')
+        practice_path = examples_dir / f"session-{n:02d}" / "practice.md"
+        if practice_path.exists():
+            sections.append(f'<div class="pagebreak"></div>{convert(practice_path.read_text())}')
+
+    # Appendices: cheat sheets and quizzes.
+    for fname in ("traps-and-gotchas.md", "quick-reference.md", "glossary.md"):
+        sections.append(f'<div class="pagebreak"></div>{convert((cheats_dir / fname).read_text())}')
+    sections.append(f'<div class="pagebreak"></div>{convert((ROOT / "assessments" / "quizzes.md").read_text())}')
+
     body = "\n".join(sections)
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
-<title>Teacher Edition — Learn Python</title>
+<title>Student Edition — Learn Python</title>
 <style>{PRINT_CSS}</style></head><body>{body}</body></html>"""
 
 
 def main() -> None:
-    OUT.mkdir(exist_ok=True)
-    html_path = OUT / "teacher-edition.html"
-    pdf_path = OUT / "teacher-edition.pdf"
+    DOCS.mkdir(exist_ok=True)
+    html_path = DOCS / "learn-python-student.html"
+    pdf_path = DOCS / "learn-python-student.pdf"
     html_path.write_text(render())
     print(f"Wrote {html_path}")
 
@@ -137,6 +162,7 @@ def main() -> None:
     r = subprocess.run(cmd, capture_output=True, text=True)
     if pdf_path.exists():
         print(f"Wrote {pdf_path} ({pdf_path.stat().st_size:,} bytes)")
+        html_path.unlink(missing_ok=True)  # keep docs/ clean; the PDF is the artifact
     else:
         print("PDF generation failed:\n" + r.stderr, file=sys.stderr)
 

@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Session 3 — Conditionals &amp; Boolean Logic</title>
+<title>Session 3 — Control Flow: Conditionals &amp; Loops</title>
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
 </head>
 <body data-page="session-03">
-<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Python<span class="py">·</span>for Researchers</a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" class="active" data-page="session-03" title="Conditionals &amp; Boolean Logic">S3</a><a href="session-04.html" data-page="session-04" title="Loops &amp; Iteration">S4</a><a href="session-05.html" data-page="session-05" title="Data Structures">S5</a><a href="session-06.html" data-page="session-06" title="Functions, Scope &amp; Reusability">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a></nav></div></header>
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" class="active" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Exceptions &amp; Defensive Code">S6</a><a href="session-07.html" data-page="session-07" title="Files, Libraries &amp; Research Data">S7</a><a href="session-08.html" data-page="session-08" title="Regular Expressions &amp; Text Cleaning">S8</a><a href="session-09.html" data-page="session-09" title="Modules, OOP &amp; the Pythonic Toolkit">S9</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
 <main>
 
 <article>
@@ -24,50 +24,47 @@
       <a href="session-02.html">&larr; Prev</a>
       <a href="session-04.html">Next &rarr;</a>
     </div>
+    <p class="dl-line"><a class="dl-btn" href="learn-python-student.pdf" download>&#8595; Download the full course (PDF)</a></p>
   </div>
 </article>
 
 </main>
 <script type="text/markdown" id="lesson-md">
 # Session 3
-## Conditionals & Boolean Logic
+## Control Flow: Conditionals & Loops
 
-Make decisions; write them the Pythonic way.
+Make decisions, and repeat work — the two halves of control flow.
 
 ---
 
-## if / elif / else
+## Part 1 — Conditionals
 
 ```python
 if score >= 90:
     grade = "A"
 elif score >= 80:
     grade = "B"
-elif score >= 70:
-    grade = "C"
 else:
     grade = "F"
 ```
 
-Indentation defines the block. `elif` = "else if". Only the **first** true branch runs.
+Indentation defines the block. Only the **first** true branch runs.
 
 ---
 
-## Comparison operators
+## Comparison + chained comparisons
 
 `==`  `!=`  `<`  `<=`  `>`  `>=`
 
 ```python
-score == 100      # equal (VALUE — recall Session 2)
-score != 0
-0 <= score <= 100 # chained! reads like math
+0 <= score <= 100      # chained — reads like math
 ```
 
 🧠 No need for `score >= 0 and score <= 100` — chain it.
 
 ---
 
-## Logical operators
+## Logical operators (and the gotcha)
 
 ```python
 passed and submitted     # both
@@ -75,47 +72,71 @@ late or excused          # either
 not flagged              # negate
 ```
 
-**Short-circuit:** `a and b` skips `b` if `a` is falsy; `a or b` skips `b` if `a` is truthy.
-
----
-
-## `and`/`or` return a VALUE, not a bool
+**Short-circuit:** `a and b` skips `b` if `a` is falsy.
+And `and`/`or` return an **operand, not a bool**:
 
 ```python
-5 and 0        # 0      (and → first falsy / last)
-0 or "hi"      # "hi"   (or → first truthy / last)
-name = user_input or "Anonymous"   # default-value idiom
+5 and 0        # 0
+"" or "N/A"    # "N/A"   ← default-value idiom
 ```
 
-So don't write `if x == True` — just `if x:`.
+So write `if x:` — never `if x == True`.
 
 ---
 
-## The Likert classifier (live)
+## Part 2 — Loops
 
 ```python
-def likert_label(n):
-    if n == 5: return "Strongly agree"
-    if n == 4: return "Agree"
-    if n == 3: return "Neutral"
-    if n == 2: return "Disagree"
-    if n == 1: return "Strongly disagree"
-    return "Invalid"
+for s in scores:          # each element directly
+    print(s)
+
+for i in range(5):        # 0,1,2,3,4
+    print(i)
+
+while not done:           # repeat until a condition flips
+    ...
 ```
 
-Early `return` → no nesting needed.
+⚠️ `range(1, 5)` → `1,2,3,4` — **stop is excluded** (off-by-one!).
 
 ---
 
-## Ternary & match
+## break / continue
 
 ```python
-status = "pass" if score >= 60 else "fail"   # ternary
+for x in data:
+    if x is None:
+        continue          # skip this one
+    if x == "STOP":
+        break             # leave the loop entirely
+    process(x)
+```
 
-match command:                                # Python 3.10+
-    case "start":      run()
-    case "stop"|"halt": halt()    # multiple values
-    case _:            unknown()  # default (_ = wildcard)
+---
+
+## Stop juggling indices: enumerate & zip
+
+```python
+for i, name in enumerate(names):       # index + value
+    print(i, name)
+
+for name, score in zip(names, scores): # two lists together
+    print(name, score)
+```
+
+🧠 If you write `range(len(x))`, stop — use `enumerate`/`zip`.
+
+---
+
+## The validation loop (you'll reuse this everywhere)
+
+```python
+while True:
+    raw = input("Score 0–100: ")
+    if raw.isdigit() and 0 <= int(raw) <= 100:
+        score = int(raw)
+        break
+    print("Try again.")
 ```
 
 ---
@@ -124,44 +145,52 @@ match command:                                # Python 3.10+
 
 `examples/session-03/practice.md`:
 1. Grade-band classifier — test the boundaries (89.999 / 90 / 90.001).
-2. `is_valid_likert(n)` → only 1–5 integers are valid.
+2. Average a roster and label each student PASS/FAIL with `zip`.
+3. A robust "ask until valid" loop.
 
 ---
 
 ## Traps recap
 
-- `if x == True` → just `if x:`.
-- Use `x is None`, not `x == None`.
-- `=` (assign) vs `==` (compare) — a classic typo.
-- Test your **boundaries**; `>=` vs `>` decides a grade.
+- `if x == True` → just `if x:`; use `x is None` (not `== None`).
+- `=` (assign) vs `==` (compare) — classic typo.
+- `range(1, 5)` excludes 5; test your boundaries.
+- Don't modify a list while looping it; prefer `enumerate`/`zip` over `range(len(...))`.
+
+*(More in the cheat sheet: `match`/`case`, the ternary, `for/else`.)*
 
 ## Summary
-You can branch cleanly, chain comparisons, and use boolean values directly.
-**Next:** Loops — do something many times.
+You can branch and repeat cleanly.
+**Next:** the containers you loop over — lists, dicts, sets.
 
 </script>
 <script type="text/markdown" id="practice-md">
-# Session 3 — Practice (25 min)
+# Session 3 — Practice (25 min): Conditionals & Loops
 
 ## Task 1 — Grade-band classifier
-Write `letter_grade(score)` returning A/B/C/D/F (90/80/70/60 cutoffs).
-**Test the boundaries:** what does 90 return? 89.999? 0? 100? -5? 101?
+Write `letter_grade(score)` returning A/B/C/D/F (90/80/70/60 cutoffs), `"Invalid"` outside 0–100.
+**Test the boundaries:** 90, 89.999, 0, 100, -5, 101.
 
-## Task 2 — Likert validator
-Write `is_valid_likert(n)` that returns `True` only for the integers 1–5.
-Make sure `is_valid_likert(3.0)`, `is_valid_likert("3")`, and `is_valid_likert(True)`
-all behave sensibly. *(Recall Session 2: what is `True` here?)*
+## Task 2 — Boolean logic
+1. What is `5 and 0`? `"" or "N/A"`? Why aren't they `True`/`False`?
+2. Rewrite `if attended == True:` the Pythonic way.
 
-## Task 3 — Refactor
-This is ugly. Rewrite it in two lines using truthiness and a ternary:
+## Task 3 — Average + pass/fail (loops)
+Given `names = ["Ana","Ben","Cara","Dev"]` and `scores = [91, 58, 73, 64]`:
+1. Compute the mean with a loop and a running total.
+2. Use `zip` to print `"<name>: PASS"` (≥60) or `"<name>: FAIL"`.
+3. Count the passes with `sum(s >= 60 for s in scores)`.
+
+## Task 4 — Validation loop
+Write a real `while True:` prompt that keeps asking until the user types an integer 0–100.
+
+## Task 5 — Trap check
+Why does this skip elements, and what's the fix?
 ```python
-if attended == True:
-    if score >= 60:
-        result = "pass"
-    else:
-        result = "fail"
-else:
-    result = "absent"
+xs = [1, 2, 3, 4]
+for x in xs:
+    if x % 2 == 0:
+        xs.remove(x)
 ```
 
 ---
@@ -169,27 +198,35 @@ else:
 <details><summary>Show solutions</summary>
 
 ```python
-# Task 1
+# 1
 def letter_grade(score):
-    if not 0 <= score <= 100:
-        return "Invalid"
-    if score >= 90: return "A"
-    if score >= 80: return "B"
-    if score >= 70: return "C"
-    if score >= 60: return "D"
+    if not 0 <= score <= 100: return "Invalid"
+    for cutoff, g in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
+        if score >= cutoff: return g
     return "F"
 # 90->A, 89.999->B, 0->F, 100->A, -5->Invalid, 101->Invalid
 
-# Task 2
-def is_valid_likert(n):
-    # reject bools (True would pass as int 1) and non-ints
-    return isinstance(n, int) and not isinstance(n, bool) and 1 <= n <= 5
-# is_valid_likert(3.0) -> False (it's a float)
-# is_valid_likert("3") -> False (it's a str)
-# is_valid_likert(True) -> False (explicitly excluded)
+# 2
+# 5 and 0 -> 0 ; "" or "N/A" -> "N/A"  (and/or return an operand, not a bool)
+result = "pass" if attended else "absent"     # and just `if attended:`
 
-# Task 3
-result = ("pass" if score >= 60 else "fail") if attended else "absent"
+# 3
+total = 0
+for s in scores: total += s
+print(total / len(scores))                    # 71.5
+for name, score in zip(names, scores):
+    print(f"{name}: {'PASS' if score >= 60 else 'FAIL'}")
+print("passes:", sum(s >= 60 for s in scores))   # 3
+
+# 4
+while True:
+    raw = input("Score 0–100: ")
+    if raw.isdigit() and 0 <= int(raw) <= 100:
+        print("Got", int(raw)); break
+    print("Try again.")
+
+# 5  Removing while iterating shifts indices, so elements get skipped.
+xs = [x for x in xs if x % 2 != 0]            # build a new list instead -> [1, 3]
 ```
 
 
@@ -197,20 +234,23 @@ result = ("pass" if score >= 60 else "fail") if attended else "absent"
 
 </script>
 <script type="text/markdown" id="quiz-md">
-### Quiz — Conditionals
+### Quiz — Control Flow: Conditionals & Loops
 1. Rewrite `if x >= 90 and x < 100:` using a chained comparison.
-2. What is `5 and 0`? What is `0 or "hi"`?
+2. What is `5 and 0`? What is `0 or "hi"`? Why aren't they `True`/`False`?
 3. Why is `if passed == True:` not ideal? Write the better version.
-4. (Practical) One-line ternary: `"pass"` if `score >= 60` else `"fail"`.
+4. What does `list(range(1, 5))` produce?
+5. Why can removing items from a list *while looping it* go wrong, and what's a clean fix?
 
 <details><summary>Show answers</summary>
 
-**Answers:** 1. `if 90 <= x < 100:`. 2. `0` and `"hi"` (they return an operand). 3. `passed`
-is already a bool; write `if passed:`. 4. `result = "pass" if score >= 60 else "fail"`.
+**Answers:** 1. `if 90 <= x < 100:`. 2. `0` and `"hi"` — `and`/`or` return an operand, not a
+bool. 3. `passed` is already a bool; write `if passed:`. 4. `[1, 2, 3, 4]` (5 excluded).
+5. Removing shifts indices so the loop skips elements; iterate a copy or build a new list
+(`[x for x in xs if keep(x)]`).
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "grades_and_logic.py", "code": "def letter_grade(score):\n    if not 0 <= score <= 100:        # chained comparison\n        return \"Invalid\"\n    for cutoff, letter in [(90, \"A\"), (80, \"B\"), (70, \"C\"), (60, \"D\")]:\n        if score >= cutoff:\n            return letter\n    return \"F\"\n\nfor s in [95, 90, 89.999, 60, 59, 120]:\n    print(s, \"->\", letter_grade(s))\n\nprint(\"5 and 0     =\", 5 and 0)        # and/or return an operand\nprint(\"'' or 'N/A' =\", \"\" or \"N/A\")    # default-value idiom\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "grades_and_logic.py", "code": "def letter_grade(score):\n    if not 0 <= score <= 100:        # chained comparison\n        return \"Invalid\"\n    for cutoff, letter in [(90, \"A\"), (80, \"B\"), (70, \"C\"), (60, \"D\")]:\n        if score >= cutoff:\n            return letter\n    return \"F\"\n\nfor s in [95, 90, 89.999, 60, 59, 120]:\n    print(s, \"->\", letter_grade(s))\n\nprint(\"5 and 0     =\", 5 and 0)        # and/or return an operand\nprint(\"'' or 'N/A' =\", \"\" or \"N/A\")    # default-value idiom\n"}, {"title": "enumerate_zip.py", "code": "names  = [\"Ana\", \"Ben\", \"Cara\", \"Dev\"]\nscores = [91, 58, 73, 64]\n\nfor i, name in enumerate(names, start=1):     # index + value\n    print(i, name)\n\nprint(\"---\")\nfor name, score in zip(names, scores):        # two lists together\n    print(f\"{name}: {'PASS' if score >= 60 else 'FAIL'}\")\n\nprint(\"passes:\", sum(s >= 60 for s in scores))  # bools sum!\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

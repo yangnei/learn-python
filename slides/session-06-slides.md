@@ -1,144 +1,137 @@
 ---
 marp: true
-title: "Session 6 — Functions, Scope & Reusability"
+title: "Session 6 — Exceptions & Defensive Code"
 paginate: true
 ---
 
 # Session 6
-## Functions, Scope & Reusability
+## Exceptions & Defensive Code
 
-Define a rule once; apply it everywhere. (Reproducibility!)
+Real research data is dirty. Make code that survives it.
 
 ---
 
-## Defining & calling
+## try / except
 
 ```python
-def class_average(scores):
-    """Return the mean of a list of scores."""
-    return sum(scores) / len(scores)
-
-class_average([91, 58, 73])     # 74.0
+try:
+    n = int(value)
+except ValueError:
+    n = None        # handle the bad case
 ```
 
-🧠 A function is a formula/coding-scheme: same input → same output.
+When code might fail at runtime, wrap it. The `except` catches the named error.
 
 ---
 
-## return vs print
+## Common exception types
 
-```python
-def avg(xs): return sum(xs) / len(xs)   # hands value back
-def show(xs): print(sum(xs) / len(xs))  # just displays
-
-x = avg([1,2,3])     # x = 2.0
-y = show([1,2,3])    # prints 2.0, but y is None!
-```
-
-`print` shows; `return` gives the value to the next step.
-
----
-
-## Parameters: positional, keyword, default
-
-```python
-def grade(score, scale=100, passing=60):
-    ...
-grade(85)                 # uses defaults
-grade(85, passing=50)     # keyword arg
-```
-
-⚠️ Defaults must be **immutable** (numbers, strings, `None`) — never `[]` or `{}`.
+| Exception | Happens when |
+|---|---|
+| `ValueError` | right type, bad value: `int("N/A")` |
+| `TypeError` | wrong type: `5 > "5"` |
+| `KeyError` | missing dict key: `d["nope"]` |
+| `IndexError` | bad list index: `xs[99]` |
+| `ZeroDivisionError` | `x / 0` |
+| `FileNotFoundError` | `open("missing.csv")` |
 
 ---
 
-## *args / **kwargs
+## try / except / else / finally
 
 ```python
-def total(*args):        # any number of positionals -> tuple
-    return sum(args)
-total(1, 2, 3)           # 6
-
-def tag(**kwargs):       # any number of keywords -> dict
-    return kwargs
-tag(name="Ana", gpa=3.9) # {'name':'Ana','gpa':3.9}
-
-func(*my_list)           # unpack list into args
-func(**my_dict)          # unpack dict into kwargs
+try:
+    n = int(value)
+except ValueError:
+    print("not a number")
+else:
+    print("ok:", n)      # only if NO exception
+finally:
+    print("always runs")  # cleanup
 ```
 
 ---
 
-## TRAP: mutable default argument 😱
+## Raise your own
 
 ```python
-def add_student(name, roster=[]):    # ❌
-    roster.append(name)
-    return roster
-
-add_student("Ana")    # ['Ana']
-add_student("Ben")    # ['Ana', 'Ben']  — the list PERSISTS!
+def clean_likert(n):
+    if not 1 <= n <= 5:
+        raise ValueError(f"{n} not in 1–5")
+    return n
 ```
 
-The default `[]` is created **once**, at definition. Fix on next slide.
+`raise` throws an exception on purpose — caller decides how to handle it.
 
 ---
 
-## The fix: default to None
+## EAFP vs LBYL
 
 ```python
-def add_student(name, roster=None):   # ✅
-    if roster is None:
-        roster = []
-    roster.append(name)
-    return roster
+# LBYL — "look before you leap"
+if value.isdigit():
+    n = int(value)
+
+# EAFP — "easier to ask forgiveness" (Pythonic)
+try:
+    n = int(value)
+except ValueError:
+    n = None
 ```
 
-**Rule:** mutable default? Use `None` and create inside.
+Both valid. EAFP shines when "checking first" is hard or racy.
 
 ---
 
-## Scope (LEGB) & globals
-
-Python looks up names: **L**ocal → **E**nclosing → **G**lobal → **B**uilt-in.
+## assert (developer check, not validation)
 
 ```python
-count = 0
-def bump():
-    count = count + 1   # 💥 UnboundLocalError
+assert len(scores) > 0, "scores must not be empty"
 ```
-Assigning `count` makes it local. Avoid `global`; **return** a value and reassign instead.
+
+For *your* sanity checks while developing. Can be disabled (`python -O`),
+so **never** use `assert` to validate untrusted input — use `raise`.
 
 ---
 
-## Docstrings & type hints
+## A first test with pytest
 
 ```python
-def class_average(scores: list[float]) -> float:
-    """Return the arithmetic mean of `scores`."""
-    return sum(scores) / len(scores)
-```
+# clean.py
+def clean_likert(n):
+    if not 1 <= n <= 5:
+        raise ValueError("1–5 only")
+    return n
 
-Type hints document intent. **They are NOT enforced at runtime** (`mypy` checks them).
+# test_clean.py
+import pytest
+from clean import clean_likert
+
+def test_valid():    assert clean_likert(3) == 3
+def test_invalid():
+    with pytest.raises(ValueError):
+        clean_likert(9)
+```
+Run: `pytest`
 
 ---
 
 ## Your turn
 
 `examples/session-06/practice.md`:
-1. A small grade-functions module (with docstrings + hints).
-2. Reproduce the mutable-default bug, then fix it.
-3. `summary(*scores)` using `*args`.
+1. `safe_int(value)` returning int or None.
+2. Clean a dirty survey list, collecting good values + a rejection log.
+3. Write one `pytest` test.
 
 ---
 
 ## Traps recap
 
-- Mutable default arg → use `None`.
-- `print` ≠ `return` (forgot return → `None`).
-- Assigning a global inside a function → `UnboundLocalError`.
-- Type hints aren't enforced.
+- **Never** bare `except:` — name the exception.
+- Don't catch too broadly or swallow errors silently.
+- `assert` ≠ input validation (use `raise`).
+- Catch the *specific* error you expect.
 
 ## Summary
-You can write reusable, documented, reproducible functions.
-**Next:** make them survive messy real-world input — exceptions.
+You can validate messy input and fail loudly when you should.
+**Next:** read that messy data from real files.

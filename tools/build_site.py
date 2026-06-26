@@ -21,14 +21,13 @@ DOCS = ROOT / "docs"
 SESSIONS = [
     (1, "Running Python, Variables & Types", "Run code; the 5 core types; input/output & f-strings.", False),
     (2, "The Dynamic-Typing Traps", "== vs is, True==1, float precision, 5=='5'.", False),
-    (3, "Conditionals & Boolean Logic", "if/elif/else, chained comparisons, and/or, match.", False),
-    (4, "Loops & Iteration", "for/while, break/continue, range, enumerate, zip.", False),
-    (5, "Data Structures", "list/tuple/dict/set, comprehensions, sorting, aliasing.", False),
-    (6, "Functions, Scope & Reusability", "params, *args/**kwargs, scope, the mutable-default bug.", False),
-    (7, "Exceptions & Defensive Code", "try/except, raising, validating dirty research data.", False),
-    (8, "Files, Libraries & Research Data", "open/with, CSV, statistics, the pandas teaser.", False),
-    (9, "Regular Expressions & Text Cleaning", "patterns, groups, re.search/sub, raw strings; validate & extract research text.", False),
-    (10, "Modules, OOP & the Pythonic Toolkit", "import modules; a class with @property; generators/map/filter/walrus.", False),
+    (3, "Control Flow: Conditionals & Loops", "if/elif/else, chained comparisons, for/while, break, enumerate, zip.", False),
+    (4, "Data Structures", "list/tuple/dict/set, comprehensions, sorting, aliasing.", False),
+    (5, "Functions, Scope & Reusability", "params, *args/**kwargs, scope, the mutable-default bug.", False),
+    (6, "Exceptions & Defensive Code", "try/except, raising, validating dirty research data.", False),
+    (7, "Files, Libraries & Research Data", "open/with, CSV, statistics, the pandas teaser.", False),
+    (8, "Regular Expressions & Text Cleaning", "patterns, groups, re.search/sub, raw strings; validate & extract research text.", False),
+    (9, "Modules, OOP & the Pythonic Toolkit", "import modules; a class with @property; generators/map/filter/walrus.", False),
 ]
 
 # Editable, in-browser-runnable snippets per session (Pyodide-safe: no file I/O, no input()).
@@ -82,8 +81,8 @@ for s in [95, 90, 89.999, 60, 59, 120]:
 
 print("5 and 0     =", 5 and 0)        # and/or return an operand
 print("'' or 'N/A' =", "" or "N/A")    # default-value idiom
-'''}],
-    4: [{"title": "enumerate_zip.py", "code": '''\
+'''},
+       {"title": "enumerate_zip.py", "code": '''\
 names  = ["Ana", "Ben", "Cara", "Dev"]
 scores = [91, 58, 73, 64]
 
@@ -96,7 +95,7 @@ for name, score in zip(names, scores):        # two lists together
 
 print("passes:", sum(s >= 60 for s in scores))  # bools sum!
 '''}],
-    5: [{"title": "structures_and_aliasing.py", "code": '''\
+    4: [{"title": "structures_and_aliasing.py", "code": '''\
 roster = [{"name": "Ana", "score": 91},
           {"name": "Ben", "score": 58},
           {"name": "Cara", "score": 73}]
@@ -111,7 +110,7 @@ print("alias b:", b)        # [1, 2, 3, 4]
 c = a.copy(); a.append(5)
 print("copy  c:", c)        # unaffected
 '''}],
-    6: [{"title": "mutable_default_bug.py", "code": '''\
+    5: [{"title": "mutable_default_bug.py", "code": '''\
 def add_bad(name, roster=[]):     # BUG: default list is shared across calls
     roster.append(name)
     return roster
@@ -128,7 +127,7 @@ def add_ok(name, roster=None):    # FIX: default None, create inside
 print("FIXED:", add_ok("Ana"))    # ['Ana']
 print("FIXED:", add_ok("Ben"))    # ['Ben']
 '''}],
-    7: [{"title": "clean_dirty_survey.py", "code": '''\
+    6: [{"title": "clean_dirty_survey.py", "code": '''\
 def safe_int(v):
     try:
         return int(v)
@@ -152,7 +151,7 @@ for r in raw:
 print("clean:   ", clean)
 print("rejected:", rejected)
 '''}],
-    8: [{"title": "read_csv_in_memory.py", "code": '''\
+    7: [{"title": "read_csv_in_memory.py", "code": '''\
 import csv, statistics, io
 
 # A real CSV would be a file; here we read it from a string so it runs in-browser.
@@ -172,7 +171,7 @@ for r in rows:
     by_major.setdefault(r["major"], []).append(int(r["score"]))
 print("by major:  ", {m: round(statistics.mean(v), 1) for m, v in by_major.items()})
 '''}],
-    9: [{"title": "regex_basics.py", "code": '''\
+    8: [{"title": "regex_basics.py", "code": '''\
 import re
 
 # Validate a university email. Raw string r"..." keeps backslashes literal;
@@ -188,7 +187,7 @@ print("dept:", m.group(1), "| number:", m.group(2))
 print(re.sub(r"\\s+", " ", "too    much   space"))             # collapse whitespace
 print(re.findall(r"#(\\w+)", "loved #python and #stats!"))     # all hashtags
 '''}],
-    10: [{"title": "modules_oop_pythonic.py", "code": '''\
+    9: [{"title": "modules_oop_pythonic.py", "code": '''\
 # A small class with a validating @property
 class Student:
     def __init__(self, name, gpa):
@@ -230,6 +229,9 @@ CDN = {
     "hljs_js": "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js",
     "hljs_css": "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css",
 }
+
+# Offline PDF companion (built by tools/build_student_pdf.py, served from docs/).
+STUDENT_PDF = "learn-python-student.pdf"
 
 
 def strip_frontmatter(md: str) -> str:
@@ -284,8 +286,9 @@ def nav_html(active: str) -> str:
         cls_attr = ' class="active"' if active == page else ""
         links.append(f'<a href="{page}.html"{cls_attr} data-page="{page}" title="{html.escape(title)}">S{n}</a>')
     links.append(f'<a href="cheatsheets.html"{" class=\"active\"" if active=="cheats" else ""}>Cheat sheets</a>')
+    links.append(f'<a class="dl" href="{STUDENT_PDF}" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a>')
     return ('<header class="site"><div class="nav-inner">'
-            '<a class="brand" href="index.html">Python<span class="py">·</span>for Researchers</a>'
+            '<a class="brand" href="index.html">Learn <span class="py">Python</span></a>'
             f'<nav class="nav-links">{"".join(links)}</nav></div></header>')
 
 
@@ -325,7 +328,11 @@ def build_index() -> str:
             f'<div class="t">{html.escape(title)}</div>'
             f'<div class="d">{html.escape(desc)}</div></a>')
     body = f"""
-<h1 class="page-title">Python for Researchers</h1>
+<h1 class="page-title">Learn Python</h1>
+<p class="intro">A fast, hands-on path from "never coded" to writing real Python for your
+research data — run every example right in the browser, no install needed.</p>
+<p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download>&#8595; Download the full course (PDF)</a>
+<span class="dl-note">— all 9 sessions, practice, and cheat sheets for offline reading.</span></p>
 
 <h2>The sessions</h2>
 <div class="cards">{''.join(cards)}</div>
@@ -334,9 +341,10 @@ def build_index() -> str:
 <ul>
   <li><a href="cheatsheets.html">Traps &amp; Gotchas cheat sheet</a> — the quirks, wrong-vs-right (start here, Session&nbsp;2).</li>
   <li><a href="cheatsheets.html#quick-reference">Quick syntax reference</a> and <a href="cheatsheets.html#glossary">plain-language glossary</a>.</li>
+  <li><a href="{STUDENT_PDF}" download>The whole course as a PDF</a> — for reading offline or printing.</li>
 </ul>
 """
-    return page_shell("Python for Researchers — Home", "index", body, "")
+    return page_shell("Learn Python — Home", "index", body, "")
 
 
 def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quizzes_text: str) -> str:
@@ -361,6 +369,7 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
       {'<a href="session-%02d.html">&larr; Prev</a>' % (n-1) if n > 1 else '<a href="index.html">&larr; Home</a>'}
       {'<a href="session-%02d.html">Next &rarr;</a>' % (n+1) if n < len(SESSIONS) else '<a href="cheatsheets.html">Cheat sheets &rarr;</a>'}
     </div>
+    <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download>&#8595; Download the full course (PDF)</a></p>
   </div>
 </article>
 """
@@ -388,7 +397,7 @@ def build_cheats(cheats_dir: Path) -> str:
     )
     body = '<div id="cheats" class="md"></div>'
     scripts = md_script("cheats-md", combined)
-    return page_shell("Cheat Sheets — Python for Researchers", "cheats", body, scripts)
+    return page_shell("Cheat Sheets — Learn Python", "cheats", body, scripts)
 
 
 def main() -> None:

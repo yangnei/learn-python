@@ -39,25 +39,25 @@
 - **Where it breaks:** here the error isn't in the data — it's in how the *computer* stores
   decimals in binary. Same instinct (`math.isclose`, round for display), new cause.
 
-### 6. Lists / dicts / DataFrames  *(S5, S8)*
+### 6. Lists / dicts / DataFrames  *(S4, S7)*
 - **Maps onto:** a `list` of `dict`s is a **tidy dataset**: each dict is a *row/respondent*, each
   key is a *variable/column*. A `dict` alone is one record's variable→value map.
 - **Where it breaks:** a spreadsheet enforces rectangularity; a list of dicts does not — rows can
-  have missing or extra keys, which is the source of many bugs (and why we validate in S7).
+  have missing or extra keys, which is the source of many bugs (and why we validate in S6).
 
-### 7. Functions  *(S6)*
+### 7. Functions  *(S5)*
 - **Maps onto:** a **statistical formula or a coding scheme**: defined once, applied to many cases,
   same rule every time → reproducibility, the thing you care about most as a researcher.
 - **Where it breaks:** functions can carry *hidden state* (mutable defaults, globals) so the "same
-  input → same output" promise can silently fail. That trap (S6) is the whole reason to learn scope.
+  input → same output" promise can silently fail. That trap (S5) is the whole reason to learn scope.
 
-### 8. Exceptions & validation  *(S7)*
+### 8. Exceptions & validation  *(S6)*
 - **Maps onto:** **data cleaning** — out-of-range Likert values, blank cells, "N/A" typed into a
   numeric field. You already have a mental model of dirty data; exceptions are how code reacts to it.
 - **Where it breaks:** cleaning in SPSS is a one-time batch pass; in a program you decide *at runtime*,
   per value, whether to skip, fix, or stop — a more granular control than a recode syntax file.
 
-### 9. Regular expressions  *(S9)*
+### 9. Regular expressions  *(S8)*
 - **Maps onto:** **search-and-filter in a corpus / qualitative coding** — finding every response
   matching a pattern, extracting IDs, normalizing free-text.
 - **Where it breaks:** regex matches *surface form*, not meaning. It's powerful for structure

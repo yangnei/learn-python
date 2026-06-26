@@ -1,59 +1,59 @@
 """
-Session 6 — Functions, Scope & Reusability
+Session 6 — Exceptions & Defensive Code
 Run me:  python3 demo.py
 """
 
-# --- 1. return vs print --------------------------------------------------
-def avg(xs: list[float]) -> float:
-    """Return the mean of xs."""
-    return sum(xs) / len(xs)
+# --- 1. try / except: convert what you can ------------------------------
+def safe_int(value):
+    """Return int(value) or None if it can't be parsed."""
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return None
 
-def show(xs):
-    print("mean is", sum(xs) / len(xs))
+for v in ["42", "N/A", "", None, "7"]:
+    print(f"safe_int({v!r}) = {safe_int(v)}")
 
-x = avg([1, 2, 3])      # 2.0  (a value we can keep using)
-y = show([1, 2, 3])     # prints, but...
-print("x =", x, "| y =", y)     # y is None!
+# --- 2. raise your own validation error ---------------------------------
+def clean_likert(n):
+    """Return n if it's a valid 1–5 Likert int, else raise ValueError."""
+    if isinstance(n, bool) or not isinstance(n, int):
+        raise ValueError(f"{n!r} is not an integer")
+    if not 1 <= n <= 5:
+        raise ValueError(f"{n} is outside 1–5")
+    return n
 
-# --- 2. defaults, *args, **kwargs ---------------------------------------
-def grade(score, scale=100, passing=60):
-    pct = score / scale
-    return "PASS" if score >= passing else "FAIL", round(pct, 3)
+# --- 3. clean a dirty survey column, keeping a rejection log ------------
+raw_responses = ["5", "3", "N/A", "7", "", "1", "two", "4"]
+clean, rejected = [], []
+for r in raw_responses:
+    n = safe_int(r)
+    try:
+        clean.append(clean_likert(n))        # may raise
+    except ValueError as e:
+        rejected.append((r, str(e)))
 
-print(grade(85), grade(40, passing=35))
+print("\nclean:", clean)
+print("rejected:")
+for original, why in rejected:
+    print(f"  {original!r}: {why}")
 
-def total(*args):              # collect positionals into a tuple
-    return sum(args)
-print("total:", total(1, 2, 3, 4))
+# --- 4. else / finally ---------------------------------------------------
+def parse(value):
+    try:
+        n = int(value)
+    except ValueError:
+        return "bad"
+    else:
+        return f"ok:{n}"          # only when no exception
+    finally:
+        pass                       # cleanup would go here (e.g., close a file)
 
-def tag(**kwargs):             # collect keywords into a dict
-    return kwargs
-print("tag:", tag(name="Ana", gpa=3.9))
+print("\n", parse("10"), parse("x"))
 
-scores = [91, 58, 73]
-print("unpacked into total:", total(*scores))   # * unpacks the list
-
-# --- 3. TRAP: mutable default argument ----------------------------------
-def add_bad(name, roster=[]):       # ❌ shared default
-    roster.append(name)
-    return roster
-
-print("\nBUGGY:")
-print(add_bad("Ana"))               # ['Ana']
-print(add_bad("Ben"))               # ['Ana', 'Ben']  <- persists!
-
-def add_ok(name, roster=None):      # ✅
-    if roster is None:
-        roster = []
-    roster.append(name)
-    return roster
-
-print("FIXED:")
-print(add_ok("Ana"))                # ['Ana']
-print(add_ok("Ben"))                # ['Ben']  <- fresh each call
-
-# --- 4. Scope: UnboundLocalError demo (commented) -----------------------
-# count = 0
-# def bump():
-#     count = count + 1   # UnboundLocalError: assigning makes `count` local
-# Prefer returning a value and reassigning at the call site.
+# --- 5. TRAP: bare except hides real bugs (don't do this) ---------------
+# try:
+#     risky()
+# except:            # ❌ catches EVERYTHING, even Ctrl+C and typos
+#     pass           # ❌ and silently swallows the error
+# Always: except SpecificError as e: ...

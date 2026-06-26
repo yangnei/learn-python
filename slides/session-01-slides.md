@@ -7,7 +7,7 @@ paginate: true
 # Session 1
 ## Running Python, Variables & Types
 
-*Python for Researchers*
+*Learn Python*
 
 Goal: run code, use the 5 core types, do input/output.
 
