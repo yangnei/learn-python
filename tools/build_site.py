@@ -303,22 +303,7 @@ def build_index() -> str:
             f'<div class="t">{html.escape(title)}</div>'
             f'<div class="d">{html.escape(desc)}</div></a>')
     body = f"""
-<section class="hero">
-  <h1>Python for Researchers</h1>
-  <p>A fast, hands-on path from "never coded" to wrangling your own research data — adapted from
-     Harvard's CS50P and front-loaded with the language quirks that trip beginners up.</p>
-  <p style="margin-top:10px;font-size:14.5px;opacity:.92">Every session runs <strong>real Python in your browser</strong> — edit the code and press Run. Nothing to install.</p>
-  <div class="badges">
-    <span class="badge">9 one-hour sessions</span>
-    <span class="badge">Interactive code</span>
-    <span class="badge">Cheat sheets</span>
-    <span class="badge">Self-checking quizzes</span>
-  </div>
-</section>
-
-<div class="note">💡 <strong>How the live code works:</strong> the first time you press <em>Run</em>, your browser
-downloads a small Python engine (Pyodide, ~10 MB) and then runs everything locally — your code never leaves your machine.
-Your progress (✓ marks) is saved in this browser only.</div>
+<h1 class="page-title">Python for Researchers</h1>
 
 <h2>The sessions</h2>
 <div class="cards">{''.join(cards)}</div>

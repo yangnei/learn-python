@@ -54,6 +54,8 @@ main{max-width:820px;margin:0 auto;padding:28px 20px 90px}
 .md details summary{cursor:pointer;font-weight:600;color:var(--brand-dark);padding:6px 0}
 .md details[open] summary{border-bottom:1px solid var(--border);margin-bottom:8px}
 
+.page-title{font-size:30px;letter-spacing:-.5px;margin:.1em 0 .1em}
+
 /* hero (index) */
 .hero{background:linear-gradient(135deg,#2f6df0,#0a7d52);color:#fff;border-radius:16px;
   padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow)}
