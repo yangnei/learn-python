@@ -52,7 +52,7 @@ Each session has:
 
 ---
 
-## SESSION 2 — The Dynamic-Typing Traps ⭐ (KEYSTONE)
+## SESSION 2 — The Dynamic-Typing Traps
 **Pre-flight:** Open `cheatsheets/traps-and-gotchas.md` and `examples/session-02/traps_demo.py`. This is the most important hour — protect it. Tell him so.
 
 **The clock (60 min)** — this hour is *predict-then-run* almost end to end.
@@ -252,36 +252,65 @@ Each session has:
 
 ---
 
-## SESSION 9 — Regex, Modules, OOP & "Pythonic"
-**Pre-flight:** `examples/session-09/`; a list of messy free-text IDs/emails for the regex demo; the `Student` class file staged.
+## SESSION 9 — Regular Expressions & Text Cleaning
+**Pre-flight:** `examples/session-09/`; a list of messy free-text responses, emails, and "Last, First" names staged for live demos.
 
-**The clock (60 min)** — densest hour; keep it moving, depth over coverage where needed.
-- **0:00–0:04 — Warm-up.**
-- **0:04–0:16 — Regex.** `re.search`; raw strings `r"..."`; `\d \w \s . + * ? ^ $`; groups `(...)`; `re.sub`; validate an email / extract a student ID. Stress `.` matches *any* char.
-- **0:16–0:28 — Modules + OOP.** Move grade functions into `grades.py` and `import`; then a small `Student` class: `__init__`, `self`, a method, `__str__`, one `@property` with validation (Connection Map #10).
-- **0:28–0:40 — "Pythonic" recap.** Comprehensions, `enumerate`/`zip`, `map`/`filter`, generators/`yield` (memory for big data), walrus `:=` — as a fast tour of "the elegant way."
-- **0:40–0:56 — Practice.** Build the `Student` class + use it to load the roster; write one comprehension and one generator (`examples/session-09/practice.md`).
-- **0:56–1:00 — Summary + course wrap; point to capstone.**
+**The clock (60 min)**
+- **0:00–0:04 — Warm-up.** Re-surface an S8 trap from your misconceptions log.
+- **0:04–0:14 — Concept.** Why regex for a researcher (validate/extract/clean/qualitative-coding, Connection Map #9). **Raw strings** `r"..."`. The survival tokens (`. \d \w \s + * ? {m,n} ^ $ [] () |`). Stress `.` matches *any* char (use `\.`).
+- **0:14–0:24 — Live code.** The four functions: `re.search`/`fullmatch`/`findall`/`sub`. Validate an email (`fullmatch`), extract dept+number with capture groups, collapse whitespace with `sub`.
+- **0:24–0:50 — Practice.** `examples/session-09/practice.md`: email validator, extract codes, count `#hashtags` across responses, flip `"Last, First"`, and one case where `.split()` beats regex.
+- **0:50–0:56 — Traps recap.** `.` matches anything; forgot `r"..."`; `re.search` returns `None`; regex vs string methods.
+- **0:56–1:00 — Summary + quiz.**
 
 **Transitions**
-- Regex→OOP: *"Regex cleans the text coming in. Now let's give that data a proper home — a class."*
-- OOP→Pythonic: *"Last thing: the moves that make code read like the experts' — quick tour."*
+- Concept→Live: *"Four functions cover almost everything: search, fullmatch, findall, sub. Watch."*
+- Live→Practice: *"Your turn — and every pattern is a raw string, no exceptions."*
 
 **Predicted misconceptions**
-- Forgets raw strings → backslash chaos. Always `r"..."` for patterns.
-- `self` looks redundant/magical — explain it's just "this particular student."
-- Treats a generator like a list (can only iterate once) → show it exhausts.
-- Over-uses regex for things string methods do better (`.split`, `.strip`).
+- Forgets raw strings → backslash chaos. Always `r"..."`.
+- Assumes `.` matches only a dot → show it matches any char; `\.` for literal.
+- Calls `.group()` on a `None` result → teach the `if m:` guard.
+- Over-uses regex where `.split()`/`.strip()`/`.replace()` are clearer.
 
 **Socratic prompts**
-- "Your construct/operational definition of 'student' — what attributes and rules belong to it? That's your class."
-- "A million rows won't fit in memory. What does `yield` give you that a list doesn't?"
+- "You want every response mentioning a theme. Is that a *form* match (regex) or a *meaning* match (human coding)? What can regex actually catch?"
+- "`5 > "5"` crashed weeks ago. Why does `re.search(...).group()` crash when there's no match?"
 
-**Cut line:** compress the Pythonic tour to comprehensions + `enumerate`/`zip` only; defer `map`/`filter`/generators to the cheat sheet.
+**Cut line:** drop the `findall`/Counter hashtag-mining demo; keep validate + extract + `sub`.
 
 ---
 
-## SESSION 10 (Optional) — Capstone
+## SESSION 10 — Modules, OOP & the Pythonic Toolkit
+**Pre-flight:** `examples/session-10/` (`grades.py` staged for the import demo, `Student` class ready); the generator-exhaustion demo queued.
+
+**The clock (60 min)**
+- **0:00–0:04 — Warm-up.** Re-surface an S9 trap.
+- **0:04–0:12 — Modules.** Move grade functions into `grades.py`, `import` them; the `if __name__ == "__main__":` guard (file as both script and library).
+- **0:12–0:30 — OOP.** A small `Student` class: `__init__`, `self` ("this particular student"), a method, `__str__`, a validating `@property` setter (Connection Map #10), then brief inheritance with `super()`.
+- **0:30–0:42 — Pythonic toolkit.** Recap comprehensions (from S5), then `map`/`filter`, `enumerate`/`zip`, generators/`yield` (memory for big data, exhausts once), walrus `:=` — a fast tour of "the elegant way."
+- **0:42–0:56 — Practice.** Build the validating `Student`, add `GradStudent(super())`, then one comprehension + `map` + `filter` + a generator (`examples/session-10/practice.md`).
+- **0:56–1:00 — Summary + quiz; course wrap, point to capstone.**
+
+**Transitions**
+- Modules→OOP: *"Functions in a file is reuse. Now let's bundle data *and* behavior — a class."*
+- OOP→Pythonic: *"Last tour: the moves that make code read like the experts'."*
+
+**Predicted misconceptions**
+- `self` looks redundant/magical — it's just "this particular instance."
+- Treats a generator like a list (iterates once) → show the second pass is empty.
+- Thinks the `__main__` guard is boilerplate → show the demo block firing on run but not on import.
+- Reaches for a class when a function or dict would do — name when OOP earns its keep.
+
+**Socratic prompts**
+- "Your operational definition of 'student' — what attributes and rules belong to it? That's your class."
+- "A million rows won't fit in memory. What does `yield` give you that a list doesn't?"
+
+**Cut line:** compress the Pythonic tour to comprehensions + `enumerate`/`zip`; defer `map`/`filter`/walrus to the cheat sheet. Keep modules + the validating class.
+
+---
+
+## SESSION 11 (Optional) — Capstone
 **Role shift:** you stop teaching and start *coaching*. He drives; you ask questions and unblock.
 - **0:00–0:10 — Brief & plan.** He restates the goal and sketches the steps aloud (pseudocode). You only check the plan is sound.
 - **0:10–0:45 — Build.** He codes the Gradebook & Survey Analyzer (`assessments/capstone-project.md`). Intervene only when stuck >3 min; prefer a question over an answer.

@@ -1,13 +1,13 @@
 ---
 marp: true
-title: "Session 2 — The Dynamic-Typing Traps (KEYSTONE)"
+title: "Session 2 — The Dynamic-Typing Traps"
 paginate: true
 ---
 
-# Session 2 ⭐
+# Session 2
 ## The Dynamic-Typing Traps
 
-*The most important hour. Predict every line before you run it.*
+*Predict every line before you run it.*
 
 ---
 

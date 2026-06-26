@@ -1,5 +1,5 @@
 """
-Session 2 — The Dynamic-Typing Traps (KEYSTONE)
+Session 2 — The Dynamic-Typing Traps
 Run me:  python3 traps_demo.py
 Every line below was verified on CPython 3.11+. Cover the right side and PREDICT first.
 """

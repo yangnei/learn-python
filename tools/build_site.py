@@ -20,14 +20,15 @@ DOCS = ROOT / "docs"
 
 SESSIONS = [
     (1, "Running Python, Variables & Types", "Run code; the 5 core types; input/output & f-strings.", False),
-    (2, "The Dynamic-Typing Traps", "== vs is, True==1, float precision, 5=='5'. The keystone.", True),
+    (2, "The Dynamic-Typing Traps", "== vs is, True==1, float precision, 5=='5'.", False),
     (3, "Conditionals & Boolean Logic", "if/elif/else, chained comparisons, and/or, match.", False),
     (4, "Loops & Iteration", "for/while, break/continue, range, enumerate, zip.", False),
     (5, "Data Structures", "list/tuple/dict/set, comprehensions, sorting, aliasing.", False),
     (6, "Functions, Scope & Reusability", "params, *args/**kwargs, scope, the mutable-default bug.", False),
     (7, "Exceptions & Defensive Code", "try/except, raising, validating dirty research data.", False),
     (8, "Files, Libraries & Research Data", "open/with, CSV, statistics, the pandas teaser.", False),
-    (9, "Regex, Modules, OOP & Pythonic", "regex, modules, a small class, comprehensions/generators.", False),
+    (9, "Regular Expressions & Text Cleaning", "patterns, groups, re.search/sub, raw strings; validate & extract research text.", False),
+    (10, "Modules, OOP & the Pythonic Toolkit", "import modules; a class with @property; generators/map/filter/walrus.", False),
 ]
 
 # Editable, in-browser-runnable snippets per session (Pyodide-safe: no file I/O, no input()).
@@ -171,29 +172,56 @@ for r in rows:
     by_major.setdefault(r["major"], []).append(int(r["score"]))
 print("by major:  ", {m: round(statistics.mean(v), 1) for m, v in by_major.items()})
 '''}],
-    9: [{"title": "regex_class_generator.py", "code": '''\
+    9: [{"title": "regex_basics.py", "code": '''\
 import re
-print(re.fullmatch(r"\\w+@\\w+\\.edu", "ana@harvard.edu") is not None)   # True
+
+# Validate a university email. Raw string r"..." keeps backslashes literal;
+# \\. means a LITERAL dot (a bare . would match any character).
+for addr in ["ana@university.edu", "ana@gmail.com", "ana@@x.edu"]:
+    print(addr, "->", re.fullmatch(r"\\w+@\\w+\\.edu", addr) is not None)
+
+# Extract pieces with capture groups
 m = re.search(r"([A-Z]{2})(\\d{4})", "Course ED1234 meets Tue")
 print("dept:", m.group(1), "| number:", m.group(2))
 
+# Clean and mine free-text responses
+print(re.sub(r"\\s+", " ", "too    much   space"))             # collapse whitespace
+print(re.findall(r"#(\\w+)", "loved #python and #stats!"))     # all hashtags
+'''}],
+    10: [{"title": "modules_oop_pythonic.py", "code": '''\
+# A small class with a validating @property
 class Student:
     def __init__(self, name, gpa):
         self.name = name
-        self.gpa = gpa
+        self.gpa = gpa             # runs through the setter (validates!)
     def __str__(self):
         return f"{self.name} ({self.gpa})"
+    @property
+    def gpa(self):
+        return self._gpa
+    @gpa.setter
+    def gpa(self, value):
+        if not 0 <= value <= 4:
+            raise ValueError(f"gpa {value} out of 0-4")
+        self._gpa = value
 
 roster = [Student("Ana", 3.9), Student("Ben", 1.8)]
 print([str(s) for s in roster])
+try:
+    roster[0].gpa = 5.0            # rejected by the setter
+except ValueError as e:
+    print("rejected:", e)
 
-def gpas(students):           # a generator: yields one at a time
+# The Pythonic toolkit
+print("good standing:", [s.name for s in roster if s.gpa >= 2.0])   # comprehension
+print("upper:", list(map(lambda s: s.name.upper(), roster)))        # map
+
+def gpas(students):                # generator: yields one value at a time
     for s in students:
         yield s.gpa
-
 g = gpas(roster)
 print("first pass: ", list(g))
-print("second pass:", list(g))   # [] — a generator is exhausted after one pass
+print("second pass:", list(g))     # [] - a generator is exhausted after one pass
 '''}],
 }
 
@@ -251,14 +279,10 @@ def md_script(el_id: str, md: str) -> str:
 
 def nav_html(active: str) -> str:
     links = [f'<a href="index.html"{" class=\"active\"" if active=="index" else ""}>Home</a>']
-    for n, title, _desc, key in SESSIONS:
+    for n, title, _desc, _key in SESSIONS:
         page = f"session-{n:02d}"
-        cls = []
-        if active == page:
-            cls.append("active")
-        star = " ⭐" if key else ""
-        cls_attr = f' class="{" ".join(cls)}"' if cls else ""
-        links.append(f'<a href="{page}.html"{cls_attr} data-page="{page}" title="{html.escape(title)}">S{n}{star}</a>')
+        cls_attr = ' class="active"' if active == page else ""
+        links.append(f'<a href="{page}.html"{cls_attr} data-page="{page}" title="{html.escape(title)}">S{n}</a>')
     links.append(f'<a href="cheatsheets.html"{" class=\"active\"" if active=="cheats" else ""}>Cheat sheets</a>')
     return ('<header class="site"><div class="nav-inner">'
             '<a class="brand" href="index.html">Python<span class="py">·</span>for Researchers</a>'
@@ -292,14 +316,12 @@ def page_shell(title: str, active: str, body: str, scripts: str, page_id: str = 
 
 def build_index() -> str:
     cards = []
-    for n, title, desc, key in SESSIONS:
+    for n, title, desc, _key in SESSIONS:
         page = f"session-{n:02d}"
-        cls = "card key" if key else "card"
-        star = " ⭐" if key else ""
         cards.append(
-            f'<a class="{cls}" href="{page}.html" data-page="{page}">'
+            f'<a class="card" href="{page}.html" data-page="{page}">'
             f'<span class="done">✓</span>'
-            f'<div class="n">SESSION {n}{star}</div>'
+            f'<div class="n">SESSION {n}</div>'
             f'<div class="t">{html.escape(title)}</div>'
             f'<div class="d">{html.escape(desc)}</div></a>')
     body = f"""
@@ -313,7 +335,6 @@ def build_index() -> str:
   <li><a href="cheatsheets.html">Traps &amp; Gotchas cheat sheet</a> — the quirks, wrong-vs-right (start here, Session&nbsp;2).</li>
   <li><a href="cheatsheets.html#quick-reference">Quick syntax reference</a> and <a href="cheatsheets.html#glossary">plain-language glossary</a>.</li>
 </ul>
-<p style="color:#5b6675;font-size:13.5px">Course structure follows CS50P (Weeks 0–9); all lessons, examples, and cheat sheets here are original.</p>
 """
     return page_shell("Python for Researchers — Home", "index", body, "")
 
@@ -338,7 +359,7 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
     <button id="complete-btn" class="complete-btn" type="button">Mark this session complete</button>
     <div class="foot-nav">
       {'<a href="session-%02d.html">&larr; Prev</a>' % (n-1) if n > 1 else '<a href="index.html">&larr; Home</a>'}
-      {'<a href="session-%02d.html">Next &rarr;</a>' % (n+1) if n < 9 else '<a href="cheatsheets.html">Cheat sheets &rarr;</a>'}
+      {'<a href="session-%02d.html">Next &rarr;</a>' % (n+1) if n < len(SESSIONS) else '<a href="cheatsheets.html">Cheat sheets &rarr;</a>'}
     </div>
   </div>
 </article>

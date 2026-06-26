@@ -17,7 +17,7 @@ the surprise is the assessment. Answers are at the end of each session block.
 
 ---
 
-## Session 2 — Dynamic-Typing Traps ⭐
+## Session 2 — Dynamic-Typing Traps
 1. `a = [1,2]; b = [1,2]` — is `a == b`? is `a is b`? Why?
 2. What is `True + True`? Why?
 3. Is `0.1 + 0.2 == 0.3` True or False? How should you compare them?
@@ -99,15 +99,28 @@ code crashes. 3. A `dict` keyed by the header row. 4. Strings; convert with `int
 
 ---
 
-## Session 9 — Regex, Modules, OOP, Pythonic
+## Session 9 — Regular Expressions
 1. In regex, what does `.` match? How do you match a literal dot?
 2. Why write regex patterns as raw strings `r"..."`?
-3. In a class, what is `self`?
-4. What happens if you iterate a generator twice?
+3. Which function do you use to (a) check the *whole* string matches, and (b) replace matches?
+4. What does `re.search` return when there's no match, and what must you do before `.group()`?
 
-**Answers:** 1. Any character; use `\.` for a literal dot. 2. So backslashes aren't treated as
-Python string escapes. 3. The current instance ("this particular object"). 4. The second pass
-is empty — a generator is exhausted after one iteration.
+**Answers:** 1. Any character (except newline); use `\.` for a literal dot. 2. So backslashes
+aren't treated as Python string escapes. 3. (a) `re.fullmatch`, (b) `re.sub`. 4. It returns
+`None`; check `if m:` before calling `m.group()` or you'll hit an `AttributeError`.
+
+---
+
+## Session 10 — Modules, OOP & Pythonic
+1. In a class, what is `self`?
+2. What happens if you iterate a generator twice?
+3. Why doesn't a module's `if __name__ == "__main__":` block run when you `import` it?
+4. What does a `@property` setter let you do that a plain attribute can't?
+
+**Answers:** 1. The current instance ("this particular object"). 2. The second pass is empty —
+a generator is exhausted after one iteration. 3. On import, `__name__` is the module's name, not
+`"__main__"`, so the block is skipped. 4. Validate (or transform) the value on every assignment,
+so the object can reject bad data.
 
 ---
 

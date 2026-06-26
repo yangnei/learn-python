@@ -1,150 +1,146 @@
 ---
 marp: true
-title: "Session 9 — Regex, Modules, OOP & Pythonic"
+title: "Session 9 — Regular Expressions & Text Cleaning"
 paginate: true
 ---
 
 # Session 9
-## Regex · Modules · OOP · "Pythonic"
+## Regular Expressions & Text Cleaning
 
-Clean text, organize code, and write like the experts.
+Find, validate, extract, and clean messy text — the researcher's power tool.
 
 ---
 
-## Regular expressions — clean & validate text
+## Why a researcher cares
+
+- Validate IDs, emails, dates before they pollute your data.
+- Extract structured bits from free text (codes, names, numbers).
+- Clean and normalize open-ended survey responses.
+- A first pass at **qualitative coding** (find every response matching a pattern).
+
+🧠 Like search-and-filter over a corpus — but it matches *form*, not meaning.
+
+---
+
+## Always use raw strings
 
 ```python
 import re
-re.search(r"\d+", "id 42")      # finds "42"  (or None)
-re.fullmatch(r"\d{5}", zipcode) # whole string is 5 digits?
-re.sub(r"\s+", " ", messy)      # collapse whitespace
+re.search(r"\d+", "id 42")     # r"..." = raw string
 ```
 
-🧠 Like search-and-filter in a corpus / qualitative coding — but it matches *form*, not meaning.
+Without `r"..."`, Python eats the backslashes (`\d` → error/garbage).
+**Rule:** every regex pattern is a raw string.
 
 ---
 
-## Regex tokens (the survival set)
+## The survival tokens
 
-| Token | Means |
+| Token | Matches |
 |---|---|
-| `.` | **any** char (not just a dot!) |
+| `.` | **any** char (except newline) |
 | `\d \w \s` | digit / word-char / whitespace |
+| `\D \W \S` | the negations |
 | `+ * ?` | 1+, 0+, 0-or-1 |
-| `{m,n}` | between m and n |
-| `^ $` | start / end |
-| `[abc] [^abc]` | in set / not in set |
+| `{m}` `{m,n}` | exactly m / between m and n |
+| `^ $` | start / end of string |
+| `[abc]` `[^abc]` | any in set / none in set |
 | `(...)` | capture group |
-
-⚠️ Always use **raw strings** `r"..."`; escape a literal dot as `\.`.
+| `a\|b` | a or b |
 
 ---
 
-## Groups: extract pieces
+## The `.` trap
 
 ```python
-m = re.search(r"([A-Z]{2})(\d{4})", "ED1234")
-m.group(0)   # "ED1234" (whole match)
-m.group(1)   # "ED"     (dept)
-m.group(2)   # "1234"   (number)
+re.search(r".", "a.b").group()    # 'a'  — ANY char, not a dot!
+re.search(r"\.", "a.b").group()   # '.'  — escape it for a literal dot
+```
+
+Escape the specials when you mean them literally: `\. \^ \$ \* \+ \? \( \) \[ \] \{ \} \|`
+
+---
+
+## The four functions you need
+
+```python
+re.search(pattern, s)     # first match ANYWHERE -> match or None
+re.fullmatch(pattern, s)  # the WHOLE string must match -> validation
+re.findall(pattern, s)    # list of ALL matches
+re.sub(pattern, repl, s)  # replace matches -> cleaning
+```
+
+`re.IGNORECASE` flag for case-insensitive: `re.search(p, s, re.IGNORECASE)`.
+
+---
+
+## Validate (fullmatch anchors both ends)
+
+```python
+def valid_university_email(addr):
+    return re.fullmatch(r"\w+@\w+\.edu", addr) is not None
+
+valid_university_email("ana@university.edu")   # True
+valid_university_email("ana@gmail.com")        # False
+valid_university_email("ana@@x.edu")           # False
 ```
 
 ---
 
-## Modules — split your code
+## Extract with capture groups
 
 ```python
-# grades.py
-def letter_grade(score): ...
-
-# analysis.py
-from grades import letter_grade
-import statistics
+m = re.search(r"([A-Z]{2})(\d{4})", "Course ED1234 meets Tue")
+m.group(0)   # "ED1234"  whole match
+m.group(1)   # "ED"      dept
+m.group(2)   # "1234"    number
 ```
 
-A `.py` file is a module. The `if __name__ == "__main__":` block runs only when the
-file is executed directly, not when imported.
+`m` is `None` if nothing matched — check before `.group()`.
 
 ---
 
-## OOP — model a domain entity
+## Clean & mine free text
 
 ```python
-class Student:
-    def __init__(self, name, gpa):
-        self.name = name
-        self._gpa = gpa
-    def __str__(self):
-        return f"{self.name} ({self._gpa})"
+re.sub(r"\s+", " ", messy).strip()        # collapse whitespace
+re.findall(r"#(\w+)", "love #python #stats")   # ['python', 'stats']
+
+from collections import Counter
+Counter(re.findall(r"#(\w+)", corpus))    # theme frequencies
 ```
 
-🧠 A class is an *operational definition*: the attributes + behaviors that "count" as a Student.
-`self` = "this particular student."
+Reformat with groups: `re.sub(r"^(.+),\s*(.+)$", r"\2 \1", "Curie, Marie")` → `"Marie Curie"`.
 
 ---
 
-## @property — validate on set
+## When NOT to use regex
 
 ```python
-class Student:
-    ...
-    @property
-    def gpa(self):
-        return self._gpa
-    @gpa.setter
-    def gpa(self, value):
-        if not 0 <= value <= 4:
-            raise ValueError("gpa must be 0–4")
-        self._gpa = value
+"a,b,c".split(",")     # simple split — no regex needed
+"  hi  ".strip()       # trim — no regex needed
+text.replace("X", "Y") # fixed substring — no regex needed
 ```
 
-Looks like an attribute (`s.gpa = 3.9`), but defends its own integrity.
-
----
-
-## "Pythonic" power-tools (recap tour)
-
-```python
-[s.name for s in students]            # comprehension
-for i, s in enumerate(students): ...  # index + item
-for a, b in zip(xs, ys): ...          # parallel
-list(map(str.upper, words))           # apply fn to all
-list(filter(lambda s: s.gpa >= 3.5, students))
-```
-
----
-
-## Generators & walrus
-
-```python
-def big_scores(rows):
-    for r in rows:
-        yield int(r["score"])     # one at a time, low memory
-
-if (n := len(scores)) > 30:        # assign + test in one step
-    print(f"{n} students")
-```
-
-A generator is iterated **once**; great for data too big for memory.
+Regex shines for *variable* patterns. For fixed strings, plain methods read better.
 
 ---
 
 ## Your turn
 
 `examples/session-09/practice.md`:
-1. Validate a student email / extract an ID with regex.
-2. Build the `Student` class with a validating `@property`.
-3. Rewrite a loop as a comprehension; write one generator.
+1. Email validator. 2. Extract dept+number. 3. Collapse whitespace.
+4. Count hashtags across responses. 5. Flip `"Last, First"`. 6. One case to use `.split()` instead.
 
 ---
 
 ## Traps recap
 
-- Regex `.` matches anything; forget `r"..."` → backslash chaos.
-- `self` is just "this instance" — not magic.
-- A generator exhausts after one pass.
-- Don't use regex where `.split()`/`.strip()` is clearer.
+- `.` matches **any** char — use `\.` for a literal dot.
+- Forgetting `r"..."` breaks your backslashes.
+- `re.search` returns `None` on no match — guard before `.group()`.
+- Don't use regex where a string method is clearer.
 
 ## Summary
-You can clean text, organize code into modules/classes, and write idiomatic Python.
-**Next (optional):** the capstone — put it all together.
+You can validate, extract, and clean real-world text.
+**Next:** organize code into modules and classes.

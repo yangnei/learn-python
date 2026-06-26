@@ -1,15 +1,13 @@
 # Python for an Education Researcher — Course Package
 
-A complete, ready-to-teach Python course adapted from **Harvard's CS50's Introduction to
-Programming with Python (CS50P)**, re-sequenced and re-weighted for a **PhD-in-Education
-student with no prior coding experience** but strong self-learning skills. The pace is
-accelerated and the course is deliberately front-loaded with the **easily-missed language
-fundamentals** (the dynamic-typing "traps") that beginners skip and later get bitten by.
+A complete, ready-to-teach Python course for a **PhD-in-Education student with no prior coding
+experience** but strong self-learning skills. The pace is accelerated and the course is
+deliberately front-loaded with the **easily-missed language fundamentals** (the dynamic-typing
+"traps") that beginners skip and later get bitten by.
 
-- **Length:** 8–10 hours = **9 one-hour sessions** + an optional 10th capstone hour.
+- **Length:** **10 one-hour sessions** + an optional 11th capstone hour.
 - **Two editions:** a clean **student** track and a **teacher** track (timing, transitions, misconceptions).
-- **Everything original.** Topic *coverage* mirrors CS50P; all prose, slides, code, and cheat
-  sheets here were written for this learner. CS50's own slides/notes are not reproduced.
+- **Everything original.** All prose, slides, code, and cheat sheets here were written for this learner.
 
 > Built with three methods: **personalized-syllabus** (bridges to education-research background),
 > **e-learning-course-creator** (the brief→curriculum→lessons→assessments pipeline), and the
@@ -57,21 +55,21 @@ The site needs no build dependencies (it renders markdown client-side); only the
 
 ## What's in the box
 ```
-cs50p-education-course/
+python-for-researchers/
 ├── README.md                       ← you are here
 ├── brief/
 │   └── course-brief.md             ← audience, outcomes, scope (the "why")
 ├── curriculum/
-│   ├── course-outline.md           ← master plan; maps every CS50P week to a session
+│   ├── course-outline.md           ← master plan; the single source of truth for all sessions
 │   ├── syllabus-student.md         ← STUDENT edition
 │   ├── syllabus-teacher.md         ← TEACHER edition (timing, transitions, Socratic prompts)
 │   └── connection-map.md           ← Python ⇄ education-research bridges (personalization)
 ├── slides/
-│   └── session-01..09-slides.md    ← Marp-compatible slide decks (one per session)
+│   └── session-01..10-slides.md    ← Marp-compatible slide decks (one per session)
 ├── examples/
-│   └── session-01..09/             ← runnable demo.py + practice.md (+ sample CSVs in S8/S9)
+│   └── session-01..10/             ← runnable demo.py + practice.md (+ sample CSVs in S8)
 ├── cheatsheets/
-│   ├── traps-and-gotchas.md        ← ⭐ the quirks, wrong-vs-right, all verified
+│   ├── traps-and-gotchas.md        ← the quirks, wrong-vs-right, all verified
 │   ├── quick-reference.md          ← syntax you'll forget
 │   └── glossary.md                 ← plain-language definitions
 ├── assessments/
@@ -87,19 +85,20 @@ cs50p-education-course/
     └── build_teacher_pdf.py        ← regenerates the teacher PDF
 ```
 
-## The 9 sessions at a glance
-| # | Title | CS50P source |
-|---|---|---|
-| 1 | Running Python, Variables & Types | W0 |
-| 2 | **The Dynamic-Typing Traps** ⭐ (keystone) | W0/1/9 |
-| 3 | Conditionals & Boolean Logic | W1 |
-| 4 | Loops & Iteration | W2 |
-| 5 | Data Structures (list/tuple/dict/set) | W2/6/9 |
-| 6 | Functions, Scope & Reusability | W0/9 |
-| 7 | Exceptions & Defensive Code | W3/5 |
-| 8 | Files, Libraries & Research Data | W4/6 |
-| 9 | Regex, Modules, OOP & "Pythonic" | W5/7/8/9 |
-| 10 | Capstone (optional) | integrative |
+## The 10 sessions at a glance
+| # | Title |
+|---|---|
+| 1 | Running Python, Variables & Types |
+| 2 | The Dynamic-Typing Traps |
+| 3 | Conditionals & Boolean Logic |
+| 4 | Loops & Iteration |
+| 5 | Data Structures (list/tuple/dict/set) |
+| 6 | Functions, Scope & Reusability |
+| 7 | Exceptions & Defensive Code |
+| 8 | Files, Libraries & Research Data |
+| 9 | Regular Expressions & Text Cleaning |
+| 10 | Modules, OOP & the Pythonic Toolkit |
+| 11 | Capstone (optional) |
 
 ## How to render the slides (optional)
 The decks are plain Markdown with `---` slide breaks and Marp front-matter. To export to
@@ -116,10 +115,10 @@ Requires Python 3.11+. The only optional third-party packages are `pytest` (Sess
 and `pandas` (Session 8 teaser); everything else is the standard library.
 
 ## Scaling to the available time
-- **8 hours:** merge the lighter halves of S8/S9; drop the pandas teaser and regex depth.
-- **9 hours:** run S1–S9 as written (recommended).
-- **10 hours:** add the S10 capstone.
+- **~8 hours:** fold the Pythonic-toolkit half of S10 into S5/S6 and drop the pandas teaser.
+- **10 hours:** run S1–S10 as written (recommended).
+- **11 hours:** add the S11 capstone.
 
-## Source
-Harvard CS50P: https://cs50.harvard.edu/python/ — course structure (Weeks 0–9) only.
-All instructional content in this package is original.
+## Note
+All instructional content in this package — prose, slides, code, cheat sheets, and quizzes —
+is original.

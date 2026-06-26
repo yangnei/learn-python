@@ -7,7 +7,7 @@ paginate: true
 # Session 1
 ## Running Python, Variables & Types
 
-*Python for Researchers · CS50P-adapted*
+*Python for Researchers*
 
 Goal: run code, use the 5 core types, do input/output.
 
@@ -134,4 +134,4 @@ ValueError: invalid literal for int() with base 10: 'thirty'
 
 ## Summary
 You can run code, name values, convert types, format output, and read an error.
-**Next:** the dynamic-typing traps — the keystone hour.
+**Next:** the dynamic-typing traps.

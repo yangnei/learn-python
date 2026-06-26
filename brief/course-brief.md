@@ -1,8 +1,7 @@
 # Course Brief — Python for an Education Researcher
 
 ## Topic
-Introduction to Programming with Python, adapted from Harvard's **CS50's Introduction
-to Programming with Python (CS50P)**, re-sequenced for a fast-moving adult learner and
+Introduction to Programming with Python, sequenced for a fast-moving adult learner and
 deliberately weighted toward the **easily-missed language fundamentals** (type/identity/
 equality semantics, truthiness, mutability, scope) that beginners skip and later get bitten by.
 
@@ -10,8 +9,8 @@ equality semantics, truthiness, mutability, scope) that beginners skip and later
 - **Who:** A PhD candidate in **Education**.
 - **Coding background:** None. Has never written a line of code in any language.
 - **Learning profile:** Strong, disciplined self-learner; comfortable with abstraction,
-  research methods, and reading dense material. Can absorb concepts faster than the median
-  CS50 student, so the pace is **accelerated** and the hand-holding is reduced.
+  research methods, and reading dense material. Can absorb concepts faster than the typical
+  beginner, so the pace is **accelerated** and the hand-holding is reduced.
 - **Domain knowledge to leverage:** research design, descriptive & inferential statistics,
   survey/Likert data, qualitative coding of open responses, spreadsheets, citation/data
   management. Examples in this course are deliberately drawn from these areas.
@@ -32,7 +31,7 @@ By the end the student can:
 6. Build one small, education-relevant capstone (e.g., a gradebook/survey analyzer).
 
 ## Format & Duration
-- **8–10 hours total**, delivered as **9 one-hour sessions** (+ an optional 10th capstone hour).
+- **~10 hours total**, delivered as **10 one-hour sessions** (+ an optional 11th capstone hour).
 - Each session is self-contained: Concept → Live Example → Practice → Traps recap → Summary.
 - Two parallel tracks of materials:
   - **Student edition** — clean syllabus, slides, runnable examples, cheat sheets.
@@ -45,8 +44,9 @@ By the end the student can:
 - No exhaustive standard-library tour; we cover what a researcher actually reaches for.
 - Statistics *concepts* are assumed known — we only show how to compute them in Python.
 
-## Source & Attribution
-Topic coverage mirrors CS50P (Weeks 0–9: Functions/Variables, Conditionals, Loops,
-Exceptions, Libraries, Unit Tests, File I/O, Regular Expressions, OOP, Et Cetera). All
-lesson prose, slides, examples, and cheat sheets here are **original**, written for this
-learner; CS50's own lecture slides and notes are not reproduced.
+## Scope of topics
+The course spans the standard introductory-Python topic set: functions & variables,
+conditionals, loops, exceptions, libraries, unit tests, file I/O, regular expressions,
+object-oriented programming, and the "Pythonic" power-tools (comprehensions, generators,
+`*args`/`**kwargs`, type hints). All lesson prose, slides, examples, and cheat sheets are
+**original**, written for this learner.

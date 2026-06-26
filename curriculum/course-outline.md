@@ -1,17 +1,18 @@
 # Master Course Outline — Python for an Education Researcher
 
 > Single source of truth. The student and teacher syllabi both derive from this.
-> 9 core one-hour sessions + 1 optional capstone hour = **8–10 hours**.
+> **10 core one-hour sessions** + 1 optional capstone hour.
 
-## How this maps to CS50P
+## How the topics are sequenced
 
-CS50P teaches in this order: 0 Functions/Variables · 1 Conditionals · 2 Loops · 3 Exceptions
-· 4 Libraries · 5 Unit Tests · 6 File I/O · 7 Regular Expressions · 8 OOP · 9 Et Cetera.
+A typical intro-Python course teaches roughly: functions/variables → conditionals → loops →
+exceptions → libraries → unit tests → file I/O → regular expressions → OOP → assorted
+"power-tools."
 
-We **re-sequence** for an adult learner: we pull the dynamic-typing fundamentals forward into
-Session 2 (CS50 scatters them across weeks 0/1/8/9), and we fold the "Et Cetera" power-tools
+We **re-sequence** for a fast adult learner: we pull the dynamic-typing fundamentals forward
+into Session 2 (most courses scatter them across many weeks), and we fold the power-tools
 (comprehensions, generators, `*args`, type hints) into the sessions where they naturally belong
-instead of dumping them at the end. Each session below lists the CS50P week(s) it draws from.
+instead of leaving them to the end.
 
 ## Design rules (from the e-learning pipeline)
 - Every session = one hour, structured **Concept → Live Example → Practice → Traps → Summary**.
@@ -21,7 +22,7 @@ instead of dumping them at the end. Each session below lists the CS50P week(s) i
 
 ---
 
-## Session 1 — Running Python, Variables & Types *(CS50P W0)*
+## Session 1 — Running Python, Variables & Types
 **Objectives**
 1. Run Python both interactively (REPL) and as a `.py` script; read a traceback without panic.
 2. Use variables and the core built-in types: `int`, `float`, `str`, `bool`, `None`.
@@ -31,7 +32,7 @@ instead of dumping them at the end. Each session below lists the CS50P week(s) i
 
 ---
 
-## Session 2 — The Dynamic-Typing Traps (THE CORE SESSION) *(CS50P W0/W1/W9)*
+## Session 2 — The Dynamic-Typing Traps (THE CORE SESSION)
 **Objectives**
 1. Distinguish **value equality (`==`)** from **identity (`is`)** and know when each is correct.
 2. Predict results when mixing numeric types: `bool` ⊂ `int`, `int`/`float`, and **float precision**.
@@ -43,7 +44,7 @@ sequence comparison, `isinstance`). Everything later assumes this fluency.
 
 ---
 
-## Session 3 — Conditionals & Boolean Logic *(CS50P W1)*
+## Session 3 — Conditionals & Boolean Logic
 **Objectives**
 1. Write `if`/`elif`/`else`; use comparison and logical operators and **chained comparisons**.
 2. Use `and`/`or`/`not` correctly, including **short-circuit** behavior and operand-return semantics.
@@ -53,7 +54,7 @@ sequence comparison, `isinstance`). Everything later assumes this fluency.
 
 ---
 
-## Session 4 — Loops & Iteration *(CS50P W2)*
+## Session 4 — Loops & Iteration
 **Objectives**
 1. Write `for` and `while` loops; control them with `break`, `continue`, and the loop-`else`.
 2. Iterate the Pythonic way with `range`, `enumerate`, and `zip` instead of index juggling.
@@ -63,7 +64,7 @@ sequence comparison, `isinstance`). Everything later assumes this fluency.
 
 ---
 
-## Session 5 — Data Structures: list, tuple, dict, set *(CS50P W2/W6/W9)*
+## Session 5 — Data Structures: list, tuple, dict, set
 **Objectives**
 1. Choose between `list`, `tuple`, `dict`, and `set`; index, slice, and nest them.
 2. Sort with `sorted(..., key=...)` and lambdas; build **list/dict comprehensions**.
@@ -74,7 +75,7 @@ element-by-element sequence comparison, set deduplication of survey data.
 
 ---
 
-## Session 6 — Functions, Scope & Reusability *(CS50P W0/W9)*
+## Session 6 — Functions, Scope & Reusability
 **Objectives**
 1. Define functions with positional, keyword, default, `*args`, and `**kwargs` parameters.
 2. Explain scope (LEGB), `return` vs `print`, and avoid the `UnboundLocalError`/`global` trap.
@@ -84,7 +85,7 @@ element-by-element sequence comparison, set deduplication of survey data.
 
 ---
 
-## Session 7 — Exceptions & Defensive Code *(CS50P W3/W5)*
+## Session 7 — Exceptions & Defensive Code
 **Objectives**
 1. Handle errors with `try`/`except`/`else`/`finally`; raise `ValueError` etc. deliberately.
 2. Validate real, messy human/research input robustly (EAFP "ask forgiveness" style).
@@ -94,7 +95,7 @@ element-by-element sequence comparison, set deduplication of survey data.
 
 ---
 
-## Session 8 — Files, Libraries & Research Data *(CS50P W4/W6)*
+## Session 8 — Files, Libraries & Research Data
 **Objectives**
 1. Read/write text with `open`/`with`; understand file modes and why `with` matters.
 2. Load and write **CSV** survey/gradebook data with `csv.DictReader`/`DictWriter`; touch `json`.
@@ -105,18 +106,28 @@ element-by-element sequence comparison, set deduplication of survey data.
 
 ---
 
-## Session 9 — Organizing Code: Regex, Modules, OOP & "Pythonic" *(CS50P W5/W7/W8/W9)*
+## Session 9 — Regular Expressions & Text Cleaning
 **Objectives**
-1. Clean and validate strings with regular expressions (`re.search`, groups, raw strings).
-2. Split code into modules; model a domain entity with a small **class** (`__init__`, `__str__`, `@property`).
-3. Recognize and apply the "Pythonic" power-tools recap: comprehensions, `enumerate`/`zip`,
-   generators/`yield`, `map`/`filter`, the walrus `:=`.
+1. Write patterns with raw strings and the core tokens (`. \d \w \s + * ? {m,n} ^ $ [] () |`).
+2. Use `re.search`/`fullmatch`/`findall`/`sub` to validate, extract (capture groups), and clean text.
+3. Apply regex to real research text: validate IDs/emails, extract codes, normalize and mine free responses.
 
-**Trap focus:** `.` matches any char in regex, forgetting raw strings, `self` confusion.
+**Trap focus:** `.` matches *any* char (use `\.`), forgetting raw strings, `re.search` returns `None`,
+reaching for regex where a string method is clearer.
 
 ---
 
-## Session 10 (Optional) — Capstone Project *(integrative)*
+## Session 10 — Modules, OOP & the Pythonic Toolkit
+**Objectives**
+1. Split code into modules and `import` them; understand the `if __name__ == "__main__":` guard.
+2. Model a domain entity with a small **class** (`__init__`, `self`, `__str__`, a validating `@property`, brief inheritance with `super()`).
+3. Apply the "Pythonic" toolkit: comprehensions, `map`/`filter`, `enumerate`/`zip`, generators/`yield`, the walrus `:=`.
+
+**Trap focus:** `self` confusion, a generator exhausts after one pass, over-using a class where a function/dict fits.
+
+---
+
+## Session 11 (Optional) — Capstone Project *(integrative)*
 **Objective:** Independently build one small, end-to-end program on a real-ish education dataset.
 Default brief: **"Gradebook & Survey Analyzer"** — read a CSV of students + Likert responses,
 clean and validate it, compute summary statistics, flag at-risk students, and write a report CSV.
@@ -124,21 +135,21 @@ Alternative briefs are listed in `assessments/capstone-project.md`.
 
 ---
 
-## Coverage check (every CS50P topic lands somewhere)
-| CS50P Week | Where it lives here |
+## Coverage check (every core topic lands somewhere)
+| Topic | Where it lives here |
 |---|---|
-| 0 Functions, Variables | S1, S6 |
-| 1 Conditionals | S3 (+ traps in S2) |
-| 2 Loops | S4, S5 |
-| 3 Exceptions | S7 |
-| 4 Libraries | S8 |
-| 5 Unit Tests | S7 (+ S9 modules) |
-| 6 File I/O | S8 (+ data structures S5) |
-| 7 Regular Expressions | S9 |
-| 8 OOP | S9 |
-| 9 Et Cetera (sets, comprehensions, `*args`, type hints, generators, `map`/`filter`) | S5, S6, S9 |
+| Functions & variables | S1, S6 |
+| Conditionals | S3 (+ traps in S2) |
+| Loops | S4, S5 |
+| Exceptions | S7 |
+| Libraries | S8 |
+| Unit tests | S7 (+ modules in S10) |
+| File I/O | S8 (+ data structures S5) |
+| Regular expressions | S9 |
+| Modules & OOP | S10 |
+| Power-tools (sets, comprehensions, `*args`, type hints, generators, `map`/`filter`) | S5, S6, S10 |
 
 ## Scaling to the time budget
-- **Exactly 8 hours:** merge S8+S9's lighter halves, drop the `pandas` teaser and regex depth.
-- **9 hours:** run S1–S9 as written (recommended).
-- **10 hours:** add S10 capstone.
+- **~8 hours:** fold the Pythonic-toolkit half of S10 into S5/S6 and trim the `pandas` teaser; run S1–S9 + a slim OOP session.
+- **10 hours:** run S1–S10 as written (recommended).
+- **11 hours:** add the S11 capstone.

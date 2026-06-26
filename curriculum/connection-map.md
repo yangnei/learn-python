@@ -77,4 +77,4 @@ These recur across sessions; the teacher should keep returning to them.
 2. *What type is this right now, and who decided that?* (dynamic typing discipline)
 3. *Could this input be dirty? What happens if it is?* (defensive mindset)
 4. *Is the same rule guaranteed to run the same way every time?* (reproducibility / pure functions)
-5. *Is there a more Pythonic, more readable way to say this?* (the CS50 "readability wins" mantra)
+5. *Is there a more Pythonic, more readable way to say this?* (the Zen of Python's "readability counts")

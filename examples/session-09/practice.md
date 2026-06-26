@@ -1,43 +1,43 @@
-# Session 9 — Practice (25 min)
+# Session 9 — Practice (25 min): Regular Expressions
 
-## Task 1 — Regex
-1. Write `valid_university_email(addr)` → `True` only for `something@something.edu`.
-2. Given `"Course ED1234 meets Tue"`, extract the department (`ED`) and number (`1234`)
-   with one regex and capture groups.
-3. Collapse runs of whitespace in `"too    much   space"` to single spaces.
+Always use raw strings `r"..."`. Predict each result before running.
 
-## Task 2 — A Student class
-Build `Student(name, gpa)` with:
-- a `__str__` that prints `"Ana: 3.9 (Good)"`,
-- a `standing()` method (`"Good"` if gpa ≥ 2.0 else `"Probation"`),
-- a `@property` setter for `gpa` that raises `ValueError` outside 0–4.
-Prove the setter rejects `5.0`.
+## Task 1 — Validate
+Write `valid_university_email(addr)` returning `True` only for `something@something.edu`.
+Test: `"ana@university.edu"`, `"ana@gmail.com"`, `"a@b.edu.evil.com"`.
 
-## Task 3 — Pythonic
-Given a roster of `Student`s:
-1. List the names in good standing (comprehension).
-2. Compute the mean gpa with a **generator** that yields each gpa.
-3. Show that the generator is empty on a second pass.
+## Task 2 — Extract with groups
+From `"Course ED1234 meets Tue"`, pull the department (`ED`) and number (`1234`) using one
+regex with two capture groups.
+
+## Task 3 — Clean
+Collapse all runs of whitespace in `"  too    much\t space "` to single spaces and trim.
+
+## Task 4 — Mine free text
+From a list of open-ended responses, count how often each `#hashtag` appears
+(use `re.findall(r"#(\w+)", text)` and `collections.Counter`).
+
+## Task 5 — Reformat
+Turn `"Curie, Marie"` into `"Marie Curie"` with a single regex + groups.
+
+## Task 6 — Judgment
+Give one task where a plain string method (`.split()`, `.strip()`, `.replace()`) is the better,
+clearer choice than a regex.
 
 ---
 ## Solutions
-See `demo.py` in this folder — it implements all three tasks. Key bits:
+See `demo.py` in this folder — it implements all six. Key lines:
 
 ```python
-re.fullmatch(r"\w+@\w+\.edu", addr) is not None
-m = re.search(r"([A-Z]{2})(\d{4})", text); m.group(1), m.group(2)
-re.sub(r"\s+", " ", messy)
-
-@property
-def gpa(self): return self._gpa
-@gpa.setter
-def gpa(self, v):
-    if not 0 <= v <= 4: raise ValueError(...)
-    self._gpa = v
-
-good = [s.name for s in roster if s.gpa >= 2.0]
-def gpas(students):
-    for s in students: yield s.gpa
+re.fullmatch(r"\w+@\w+\.edu", addr) is not None      # 1 (fullmatch anchors both ends)
+m = re.search(r"([A-Z]{2})(\d{4})", s); m.group(1), m.group(2)   # 2
+re.sub(r"\s+", " ", messy).strip()                   # 3
+from collections import Counter; Counter(re.findall(r"#(\w+)", text))   # 4
+m = re.search(r"^(.+),\s*(.+)$", s); f"{m.group(2)} {m.group(1)}"      # 5
 ```
-Remember: a generator yields lazily and **exhausts after one pass** — `list(g)` twice
-gives the data then `[]`.
+Task 6: splitting `"a,b,c"` on commas is just `"a,b,c".split(",")` — no regex needed.
+Reach for regex only when the pattern is genuinely variable (digits, optional parts, anchors).
+```
+```
+Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and never forget the
+`r"..."` prefix or your backslashes become Python escape sequences.

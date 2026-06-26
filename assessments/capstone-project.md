@@ -1,6 +1,6 @@
 # Capstone Project — Gradebook & Survey Analyzer
 
-**Time:** ~1 hour (Session 10). **Role:** the student drives; the teacher coaches with questions.
+**Time:** ~1 hour (Session 11). **Role:** the student drives; the teacher coaches with questions.
 **Goal:** independently build one end-to-end program on realistic education data, exercising
 every fundamental from the course.
 
@@ -28,7 +28,7 @@ Write a program `analyzer.py` that:
 - [ ] functions with docstrings + type hints; **no mutable default args** (S6)
 - [ ] `try/except` to survive dirty values; no bare `except:` (S7)
 - [ ] `csv.DictReader`/`DictWriter`, `statistics`, `with open(...)` (S8)
-- [ ] a module or a small class; optionally a regex validation (S9)
+- [ ] a module or a small class (S10); optionally a regex validation (S9)
 
 ## Stretch goals (pick any)
 - Validate student emails/IDs with a regex.

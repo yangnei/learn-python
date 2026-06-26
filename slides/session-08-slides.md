@@ -127,4 +127,4 @@ We learned the fundamentals *underneath* it first.
 
 ## Summary
 You can load, summarize, and write real research data.
-**Next:** clean text with regex, organize with modules & classes, and finish "Pythonic."
+**Next:** clean and validate text with regular expressions.

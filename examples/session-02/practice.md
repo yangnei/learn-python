@@ -1,4 +1,4 @@
-# Session 2 — Practice (25 min) ⭐
+# Session 2 — Practice (25 min)
 
 ## Part A — Explain the gauntlet (10 min)
 For each line, write *why* (one sentence). Predict, then run to check.
