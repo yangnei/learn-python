@@ -12,12 +12,24 @@ function setDone(id, done){ const p=getProgress(); if(done)p[id]=true; else dele
 function isDone(id){ return !!getProgress()[id]; }
 
 /* ---------- markdown rendering ---------- */
+function slugify(text){
+  return text.toLowerCase().trim()
+    .replace(/[^\w\s-]/g, "")   // drop punctuation
+    .replace(/\s+/g, "-")       // spaces -> hyphens
+    .replace(/-+/g, "-");       // collapse repeats
+}
 function renderMarkdownInto(scriptId, targetId){
   const src = document.getElementById(scriptId);
   const target = document.getElementById(targetId);
   if(!src || !target) return;
-  marked.setOptions({ headerIds:true, mangle:false });
   target.innerHTML = marked.parse(src.textContent);
+  // give headings stable IDs (marked v12 doesn't add them) so #anchors work
+  const seen = {};
+  target.querySelectorAll("h1,h2,h3,h4").forEach(h=>{
+    if(!h.id){ let id = slugify(h.textContent) || "section";
+      if(seen[id]){ id += "-" + (++seen[id]); } else { seen[id] = 1; }
+      h.id = id; }
+  });
   // syntax-highlight read-only python blocks
   target.querySelectorAll("pre code").forEach(block=>{
     if(window.hljs){ try{ hljs.highlightElement(block); }catch{} }

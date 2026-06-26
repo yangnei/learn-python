@@ -373,12 +373,12 @@ def build_cheats(cheats_dir: Path) -> str:
     gloss = (cheats_dir / "glossary.md").read_text()
     combined = (
         "# Cheat Sheets\n\n"
-        "Jump to: [Traps &amp; Gotchas](#python-traps--gotchas--the-master-cheat-sheet) · "
-        "[Quick Reference](#python-quick-reference--syntax-youll-forget) · "
-        "[Glossary](#glossary--plain-language-definitions)\n\n"
-        '<a id="traps"></a>\n\n' + traps +
-        '\n\n---\n\n<a id="quick-reference"></a>\n\n' + quick +
-        '\n\n---\n\n<a id="glossary"></a>\n\n' + gloss
+        "Jump to: [Traps &amp; Gotchas](#traps) · "
+        "[Quick Reference](#quick-reference) · "
+        "[Glossary](#glossary)\n\n"
+        '<div id="traps"></div>\n\n' + traps +
+        '\n\n---\n\n<div id="quick-reference"></div>\n\n' + quick +
+        '\n\n---\n\n<div id="glossary"></div>\n\n' + gloss
     )
     body = '<div id="cheats" class="md"></div>'
     scripts = md_script("cheats-md", combined)
