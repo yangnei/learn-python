@@ -1,53 +1,43 @@
-# Session 9 — Practice (25 min): Modules, OOP & Pythonic
+# Session 9 — Practice (25 min): Regular Expressions
 
-Files in this folder: `grades.py` (a module you import), `demo.py` (worked example).
+Always use raw strings `r"..."`. Predict each result before running.
 
-## Task 1 — Use a module
-From a new file, `from grades import letter_grade, class_average` and call both. Why does the
-`if __name__ == "__main__":` block in `grades.py` NOT run when you import it?
+## Task 1 — Validate
+Write `valid_university_email(addr)` returning `True` only for `something@something.edu`.
+Test: `"ana@university.edu"`, `"ana@gmail.com"`, `"a@b.edu.evil.com"`.
 
-## Task 2 — A class with a validating property
-Build `Student(name, gpa)` with:
-- `__str__` → `"Ana: 3.9 (Good)"`,
-- `standing()` → `"Good"` if gpa ≥ 2.0 else `"Probation"`,
-- a `@property` setter for `gpa` that raises `ValueError` outside 0–4.
-Prove the setter rejects `5.0`.
+## Task 2 — Extract with groups
+From `"Course ED1234 meets Tue"`, pull the department (`ED`) and number (`1234`) using one
+regex with two capture groups.
 
-## Task 3 — Inheritance
-Add `GradStudent(Student)` that also stores an `advisor` and uses `super().__init__(...)`.
-Override `__str__` to append the advisor.
+## Task 3 — Clean
+Collapse all runs of whitespace in `"  too    much\t space "` to single spaces and trim.
 
-## Task 4 — The Pythonic toolkit
-Given a roster of `Student`s:
-1. names in good standing (list comprehension),
-2. uppercase names (`map`),
-3. at-risk students (`filter`),
-4. mean gpa via a **generator** that `yield`s each gpa — then show the generator is empty on a
-   second pass.
+## Task 4 — Mine free text
+From a list of open-ended responses, count how often each `#hashtag` appears
+(use `re.findall(r"#(\w+)", text)` and `collections.Counter`).
+
+## Task 5 — Reformat
+Turn `"Curie, Marie"` into `"Marie Curie"` with a single regex + groups.
+
+## Task 6 — Judgment
+Give one task where a plain string method (`.split()`, `.strip()`, `.replace()`) is the better,
+clearer choice than a regex.
 
 ---
 ## Solutions
-See `demo.py` — it implements Tasks 2–4. Key points:
+See `demo.py` in this folder — it implements all six. Key lines:
 
 ```python
-@property
-def gpa(self): return self._gpa
-@gpa.setter
-def gpa(self, v):
-    if not 0 <= v <= 4: raise ValueError(...)
-    self._gpa = v
-
-class GradStudent(Student):
-    def __init__(self, name, gpa, advisor):
-        super().__init__(name, gpa)
-        self.advisor = advisor
-
-[s.name for s in roster if s.gpa >= 2.0]          # comprehension
-list(map(lambda s: s.name.upper(), roster))        # map
-[s.name for s in filter(lambda s: s.gpa < 2.0, roster)]   # filter
-def gpas(rs):
-    for s in rs: yield s.gpa                        # generator (exhausts after one pass)
+re.fullmatch(r"\w+@\w+\.edu", addr) is not None      # 1 (fullmatch anchors both ends)
+m = re.search(r"([A-Z]{2})(\d{4})", s); m.group(1), m.group(2)   # 2
+re.sub(r"\s+", " ", messy).strip()                   # 3
+from collections import Counter; Counter(re.findall(r"#(\w+)", text))   # 4
+m = re.search(r"^(.+),\s*(.+)$", s); f"{m.group(2)} {m.group(1)}"      # 5
 ```
-Task 1: the `__name__` guard is only `"__main__"` when the file is **run directly**; on `import`
-its `__name__` is `"grades"`, so the demo block is skipped — that's how a file can be both a
-runnable script and an importable module.
+Task 6: splitting `"a,b,c"` on commas is just `"a,b,c".split(",")` — no regex needed.
+Reach for regex only when the pattern is genuinely variable (digits, optional parts, anchors).
+```
+```
+Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and never forget the
+`r"..."` prefix or your backslashes become Python escape sequences.

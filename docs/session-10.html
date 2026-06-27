@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Session 10 — Recursion &amp; Recursive Thinking</title>
+<title>Session 10 — Modules, OOP &amp; the Pythonic Toolkit</title>
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
 </head>
 <body data-page="session-10">
-<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Exceptions &amp; Defensive Code">S6</a><a href="session-07.html" data-page="session-07" title="Files, Libraries &amp; Research Data">S7</a><a href="session-08.html" data-page="session-08" title="Regular Expressions &amp; Text Cleaning">S8</a><a href="session-09.html" data-page="session-09" title="Modules, OOP &amp; the Pythonic Toolkit">S9</a><a href="session-10.html" class="active" data-page="session-10" title="Recursion &amp; Recursive Thinking">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Recursion &amp; Recursive Thinking">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" class="active" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
 <main>
 
 <article>
@@ -31,233 +31,220 @@
 </main>
 <script type="text/markdown" id="lesson-md">
 # Session 10
-## Recursion & Recursive Thinking
+## Modules, OOP & the Pythonic Toolkit
 
-A function that solves a problem by calling **itself** on a smaller piece.
-
----
-
-## The shape of every recursion
-
-```python
-def countdown(n):
-    if n <= 0:          # BASE CASE — when to stop
-        print("liftoff!")
-        return
-    print(n)
-    countdown(n - 1)    # RECURSIVE CASE — same problem, smaller input
-```
-
-Two parts, always:
-- a **base case** that stops, and
-- a **recursive case** that moves *toward* the base case.
+Organize code into reusable pieces — and finish with the moves experts use.
 
 ---
 
-## Trace the call stack
+## Modules: split your code into files
 
 ```python
-factorial(3)
-= 3 * factorial(2)
-=     3 * (2 * factorial(1))
-=         3 * (2 * 1)        # base case returns 1
-= 6
+# grades.py
+def letter_grade(score): ...
+def class_average(scores): ...
+
+# analysis.py
+from grades import letter_grade, class_average
 ```
 
-Each call waits on the one inside it. The calls stack up, then unwind.
-
-🧠 Each pending call is a **stack frame** — that matters in a moment.
+A `.py` file is a **module**. `import` reuses its functions elsewhere → no copy-paste.
 
 ---
 
-## Recursion vs iteration
+## The `__main__` guard
 
 ```python
-def factorial(n):
-    if n <= 1:
-        return 1
-    return n * factorial(n - 1)   # ← must RETURN the call
-
-def factorial_loop(n):
-    total = 1
-    for k in range(2, n + 1):
-        total *= k
-    return total
+# grades.py
+if __name__ == "__main__":
+    print(letter_grade(85))   # runs ONLY when you execute grades.py directly
 ```
 
-Same answer. For flat counting, the **loop** is usually clearer.
+On `import grades`, `__name__` is `"grades"`, so the block is skipped.
+One file can be both a runnable script *and* an importable library.
 
 ---
 
-## Where recursion shines: nested data
+## OOP: model a domain entity
 
 ```python
-def deep_sum(obj):
-    if isinstance(obj, (int, float)):
-        return obj
-    if isinstance(obj, dict):
-        return sum(deep_sum(v) for v in obj.values())
-    if isinstance(obj, (list, tuple)):
-        return sum(deep_sum(x) for x in obj)
-    return 0
+class Student:
+    def __init__(self, name, gpa):   # constructor
+        self.name = name
+        self.gpa = gpa
+    def __str__(self):               # how it prints
+        return f"{self.name} ({self.gpa})"
 
-deep_sum([1, [2, [3, 4]], {"a": 6}])   # 16
+ana = Student("Ana", 3.9)
+print(ana)        # Ana (3.9)
 ```
 
-Nested JSON, folder trees, threaded replies — a single loop can't reach all the way down. Recursion can.
+🧠 A class is an *operational definition*: the attributes + behaviors that "count" as a Student.
+`self` = "this particular student."
 
 ---
 
-## The trap: no base case
+## @property: validate on assignment
 
 ```python
-def runaway(n):
-    return runaway(n + 1)     # never stops
+class Student:
+    ...
+    @property
+    def gpa(self):
+        return self._gpa
+    @gpa.setter
+    def gpa(self, value):
+        if not 0 <= value <= 4:
+            raise ValueError("gpa must be 0–4")
+        self._gpa = value
 ```
 
-```
-RecursionError: maximum recursion depth exceeded
+`ana.gpa = 5.0` now raises — the object defends its own integrity.
+
+---
+
+## Inheritance
+
+```python
+class GradStudent(Student):
+    def __init__(self, name, gpa, advisor):
+        super().__init__(name, gpa)    # reuse parent setup
+        self.advisor = advisor
+    def __str__(self):
+        return super().__str__() + f" — {self.advisor}"
 ```
 
-Python has **no tail-call optimization** — every call keeps its frame
-(default limit ≈ 1000). Deep recursion *will* hit the ceiling.
+`GradStudent` *is a* `Student` plus extra. `super()` calls the parent.
+
+---
+
+## The Pythonic toolkit (recap tour)
+
+```python
+[s.name for s in roster if s.gpa >= 2.0]   # comprehension (from S4)
+list(map(lambda s: s.name.upper(), roster))# map: apply to all
+list(filter(lambda s: s.gpa < 2.0, roster))# filter: keep matches
+for i, s in enumerate(roster): ...          # index + item
+for a, b in zip(names, scores): ...         # parallel
+```
+
+---
+
+## Generators & walrus
+
+```python
+def gpas(students):
+    for s in students:
+        yield s.gpa          # one value at a time — low memory on big data
+
+g = gpas(roster)
+list(g)   # [3.9, 1.8, ...]
+list(g)   # []  ← a generator is exhausted after one pass
+
+if (n := len(roster)) > 30:   # walrus := : assign + test in one step
+    print(f"{n} students")
+```
 
 ---
 
 ## Your turn
 
 `examples/session-10/practice.md`:
-1. Recursive `rsum(n)` — name the base case first.
-2. `flatten([1, [2, [3, 4]], 5])` → one flat list.
-3. `depth(...)` — how deeply is a list nested?
+1. Import from `grades.py`. 2. Build the validating `Student` class.
+3. Add `GradStudent` with `super()`. 4. Comprehension + `map` + `filter` + a generator.
 
 ---
 
 ## Traps recap
 
-- Every recursion needs a **reachable base case**, or it overflows the stack.
-- **Return** the recursive call — forgetting to gives you a silent `None`.
-- Recursion isn't free: each call costs a stack frame (no tail-call optimization).
-- A plain **loop** is better for flat sequences and for very deep work.
+- `self` is just "this instance" — not magic.
+- A generator iterates **once**, then it's empty.
+- The `__main__` guard keeps imported modules from running their demo code.
+- Don't reach for a class when a function or dict will do.
 
 ## Summary
-You can solve problems that are defined in terms of themselves — especially nested data.
-**Next (optional):** the capstone — put all ten sessions together.
+You can structure code into modules and classes and write idiomatic Python.
+**Next (optional):** the capstone — put it all together.
 
 </script>
 <script type="text/markdown" id="practice-md">
-# Session 10 — Practice (30 min): Recursion & Recursive Thinking
+# Session 10 — Practice (25 min): Modules, OOP & Pythonic
 
-## Task 1 — Recursive sum
-Write `rsum(n)` that adds `1 + 2 + ... + n` **with recursion** (no loop).
-Name the base case out loud before you write it. Test `rsum(5)` and `rsum(0)`.
+Files in this folder: `grades.py` (a module you import), `demo.py` (worked example).
 
-## Task 2 — Recursion vs iteration
-Write `reverse(s)` that reverses a string recursively. Then write the loop version.
-Which reads more clearly to you? Test `reverse("data")`.
+## Task 1 — Use a module
+From a new file, `from grades import letter_grade, class_average` and call both. Why does the
+`if __name__ == "__main__":` block in `grades.py` NOT run when you import it?
 
-## Task 3 — Flatten nested data
-Write `flatten(xs)` that turns a list-of-lists (nested to any depth) into one flat list:
-`flatten([1, [2, [3, 4]], 5])` → `[1, 2, 3, 4, 5]`. This is the move for nested JSON/exports.
+## Task 2 — A class with a validating property
+Build `Student(name, gpa)` with:
+- `__str__` → `"Ana: 3.9 (Good)"`,
+- `standing()` → `"Good"` if gpa ≥ 2.0 else `"Probation"`,
+- a `@property` setter for `gpa` that raises `ValueError` outside 0–4.
+Prove the setter rejects `5.0`.
 
-## Task 4 — How deep does it go?
-Write `depth(xs)` returning how deeply a list is nested:
-`depth([1, [2, [3, [4]]]])` → `4`, `depth([1, 2, 3])` → `1`, `depth(5)` → `0`.
+## Task 3 — Inheritance
+Add `GradStudent(Student)` that also stores an `advisor` and uses `super().__init__(...)`.
+Override `__str__` to append the advisor.
 
-## Task 5 — Trap check
-1. Why does this raise `RecursionError`, and what's the fix?
-   ```python
-   def f(n):
-       return n + f(n - 1)
-   ```
-2. This returns `None` instead of a number — why?
-   ```python
-   def fact(n):
-       if n <= 1:
-           return 1
-       n * fact(n - 1)
-   ```
-3. Name one case where a plain loop is the better choice over recursion.
+## Task 4 — The Pythonic toolkit
+Given a roster of `Student`s:
+1. names in good standing (list comprehension),
+2. uppercase names (`map`),
+3. at-risk students (`filter`),
+4. mean gpa via a **generator** that `yield`s each gpa — then show the generator is empty on a
+   second pass.
 
 ---
 
 <details><summary>Show solutions</summary>
 
+See `demo.py` — it implements Tasks 2–4. Key points:
+
 ```python
-# 1
-def rsum(n):
-    if n == 0:                      # base case
-        return 0
-    return n + rsum(n - 1)
-print(rsum(5), rsum(0))             # 15 0
+@property
+def gpa(self): return self._gpa
+@gpa.setter
+def gpa(self, v):
+    if not 0 <= v <= 4: raise ValueError(...)
+    self._gpa = v
 
-# 2
-def reverse(s):
-    if s == "":                     # base case: empty string
-        return ""
-    return reverse(s[1:]) + s[0]    # all-but-first, reversed, then first
-print(reverse("data"))             # "atad"
-# loop version: "".join(reversed(s))  — usually clearer for flat strings
+class GradStudent(Student):
+    def __init__(self, name, gpa, advisor):
+        super().__init__(name, gpa)
+        self.advisor = advisor
 
-# 3
-def flatten(xs):
-    out = []
-    for x in xs:
-        if isinstance(x, list):
-            out.extend(flatten(x))  # recurse into the sub-list
-        else:
-            out.append(x)
-    return out
-print(flatten([1, [2, [3, 4]], 5]))   # [1, 2, 3, 4, 5]
-
-# 4
-def depth(xs):
-    if not isinstance(xs, list):
-        return 0                              # a non-list has no nesting
-    return 1 + max((depth(x) for x in xs), default=0)
-print(depth([1, [2, [3, [4]]]]), depth([1, 2, 3]), depth(5))   # 4 1 0
-
-# 5
-# 1) No reachable base case -> the calls never stop -> stack overflows.
-#    Fix: add `if n == 0: return 0` (or n <= 0) at the top.
-# 2) The recursive case computes n*fact(n-1) but never RETURNs it,
-#    so the function falls off the end and returns None. Add `return`.
-# 3) A loop is better when the work is a simple flat sequence, or when the
-#    depth could exceed ~1000 (Python has no tail-call optimization, so deep
-#    recursion hits RecursionError where a loop would be fine).
+[s.name for s in roster if s.gpa >= 2.0]          # comprehension
+list(map(lambda s: s.name.upper(), roster))        # map
+[s.name for s in filter(lambda s: s.gpa < 2.0, roster)]   # filter
+def gpas(rs):
+    for s in rs: yield s.gpa                        # generator (exhausts after one pass)
 ```
+Task 1: the `__name__` guard is only `"__main__"` when the file is **run directly**; on `import`
+its `__name__` is `"grades"`, so the demo block is skipped — that's how a file can be both a
+runnable script and an importable module.
 
 
 </details>
 
 </script>
 <script type="text/markdown" id="quiz-md">
-### Quiz — Recursion & Recursive Thinking
-1. What two parts must every recursive function have?
-2. What error comes from a base case that's never reached, and why doesn't Python just keep going?
-3. What does this `fact` return for `fact(4)`, and why?
-   ```python
-   def fact(n):
-       if n <= 1:
-           return 1
-       n * fact(n - 1)
-   ```
-4. Name one situation where a plain loop is the better choice than recursion.
-5. Why is recursion a natural fit for nested data (a list of lists, or nested JSON)?
+### Quiz — Modules, OOP & Pythonic
+1. In a class, what is `self`?
+2. What happens if you iterate a generator twice?
+3. Why doesn't a module's `if __name__ == "__main__":` block run when you `import` it?
+4. What does a `@property` setter let you do that a plain attribute can't?
 
 <details><summary>Show answers</summary>
 
-**Answers:** 1. A **base case** (stops) and a **recursive case** (calls itself on a smaller
-input, moving toward the base case). 2. `RecursionError: maximum recursion depth exceeded` —
-Python has no tail-call optimization, so each pending call keeps a stack frame until it hits the
-limit (~1000). 3. `None` — the recursive case computes `n * fact(n-1)` but never `return`s it, so
-the function falls off the end. 4. A flat sequence, or work deep enough to exceed the recursion
-limit (a loop has no frame cost). 5. The data is *defined in terms of itself* (a list may contain
-lists), so a function defined in terms of itself mirrors its shape and can reach every level.
+**Answers:** 1. The current instance ("this particular object"). 2. The second pass is empty —
+a generator is exhausted after one iteration. 3. On import, `__name__` is the module's name, not
+`"__main__"`, so the block is skipped. 4. Validate (or transform) the value on every assignment,
+so the object can reject bad data.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "recursion.py", "code": "# Recursion = base case (stop) + recursive case (smaller problem). Predict, then Run.\ndef factorial(n):\n    if n <= 1:                 # BASE CASE\n        return 1\n    return n * factorial(n - 1)   # RECURSIVE CASE (remember to return!)\n\nprint(\"factorial(5):\", factorial(5))\n\n# Recursion shines on NESTED data, where a single loop can't reach all the way down.\ndef deep_sum(obj):\n    if isinstance(obj, bool):              # bool is an int subclass (Session 2!)\n        return 0\n    if isinstance(obj, (int, float)):\n        return obj\n    if isinstance(obj, (list, tuple)):\n        return sum(deep_sum(x) for x in obj)\n    if isinstance(obj, dict):\n        return sum(deep_sum(v) for v in obj.values())\n    return 0\n\nnested = [1, [2, 3, [4, 5]], {\"a\": 6, \"b\": [7, 8]}]\nprint(\"deep_sum:\", deep_sum(nested))   # 1+2+3+4+5+6+7+8 = 36\n\n# Missing base case -> infinite recursion -> RecursionError. Uncomment to see it:\n# def oops(n): return oops(n + 1)\n# oops(0)\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "modules_oop_pythonic.py", "code": "# A small class with a validating @property\nclass Student:\n    def __init__(self, name, gpa):\n        self.name = name\n        self.gpa = gpa             # runs through the setter (validates!)\n    def __str__(self):\n        return f\"{self.name} ({self.gpa})\"\n    @property\n    def gpa(self):\n        return self._gpa\n    @gpa.setter\n    def gpa(self, value):\n        if not 0 <= value <= 4:\n            raise ValueError(f\"gpa {value} out of 0-4\")\n        self._gpa = value\n\nroster = [Student(\"Ana\", 3.9), Student(\"Ben\", 1.8)]\nprint([str(s) for s in roster])\ntry:\n    roster[0].gpa = 5.0            # rejected by the setter\nexcept ValueError as e:\n    print(\"rejected:\", e)\n\n# The Pythonic toolkit\nprint(\"good standing:\", [s.name for s in roster if s.gpa >= 2.0])   # comprehension\nprint(\"upper:\", list(map(lambda s: s.name.upper(), roster)))        # map\n\ndef gpas(students):                # generator: yields one value at a time\n    for s in students:\n        yield s.gpa\ng = gpas(roster)\nprint(\"first pass: \", list(g))\nprint(\"second pass:\", list(g))     # [] - a generator is exhausted after one pass\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

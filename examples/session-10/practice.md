@@ -1,79 +1,53 @@
-# Session 10 — Practice (30 min): Recursion & Recursive Thinking
+# Session 10 — Practice (25 min): Modules, OOP & Pythonic
 
-## Task 1 — Recursive sum
-Write `rsum(n)` that adds `1 + 2 + ... + n` **with recursion** (no loop).
-Name the base case out loud before you write it. Test `rsum(5)` and `rsum(0)`.
+Files in this folder: `grades.py` (a module you import), `demo.py` (worked example).
 
-## Task 2 — Recursion vs iteration
-Write `reverse(s)` that reverses a string recursively. Then write the loop version.
-Which reads more clearly to you? Test `reverse("data")`.
+## Task 1 — Use a module
+From a new file, `from grades import letter_grade, class_average` and call both. Why does the
+`if __name__ == "__main__":` block in `grades.py` NOT run when you import it?
 
-## Task 3 — Flatten nested data
-Write `flatten(xs)` that turns a list-of-lists (nested to any depth) into one flat list:
-`flatten([1, [2, [3, 4]], 5])` → `[1, 2, 3, 4, 5]`. This is the move for nested JSON/exports.
+## Task 2 — A class with a validating property
+Build `Student(name, gpa)` with:
+- `__str__` → `"Ana: 3.9 (Good)"`,
+- `standing()` → `"Good"` if gpa ≥ 2.0 else `"Probation"`,
+- a `@property` setter for `gpa` that raises `ValueError` outside 0–4.
+Prove the setter rejects `5.0`.
 
-## Task 4 — How deep does it go?
-Write `depth(xs)` returning how deeply a list is nested:
-`depth([1, [2, [3, [4]]]])` → `4`, `depth([1, 2, 3])` → `1`, `depth(5)` → `0`.
+## Task 3 — Inheritance
+Add `GradStudent(Student)` that also stores an `advisor` and uses `super().__init__(...)`.
+Override `__str__` to append the advisor.
 
-## Task 5 — Trap check
-1. Why does this raise `RecursionError`, and what's the fix?
-   ```python
-   def f(n):
-       return n + f(n - 1)
-   ```
-2. This returns `None` instead of a number — why?
-   ```python
-   def fact(n):
-       if n <= 1:
-           return 1
-       n * fact(n - 1)
-   ```
-3. Name one case where a plain loop is the better choice over recursion.
+## Task 4 — The Pythonic toolkit
+Given a roster of `Student`s:
+1. names in good standing (list comprehension),
+2. uppercase names (`map`),
+3. at-risk students (`filter`),
+4. mean gpa via a **generator** that `yield`s each gpa — then show the generator is empty on a
+   second pass.
 
 ---
 ## Solutions
+See `demo.py` — it implements Tasks 2–4. Key points:
 
 ```python
-# 1
-def rsum(n):
-    if n == 0:                      # base case
-        return 0
-    return n + rsum(n - 1)
-print(rsum(5), rsum(0))             # 15 0
+@property
+def gpa(self): return self._gpa
+@gpa.setter
+def gpa(self, v):
+    if not 0 <= v <= 4: raise ValueError(...)
+    self._gpa = v
 
-# 2
-def reverse(s):
-    if s == "":                     # base case: empty string
-        return ""
-    return reverse(s[1:]) + s[0]    # all-but-first, reversed, then first
-print(reverse("data"))             # "atad"
-# loop version: "".join(reversed(s))  — usually clearer for flat strings
+class GradStudent(Student):
+    def __init__(self, name, gpa, advisor):
+        super().__init__(name, gpa)
+        self.advisor = advisor
 
-# 3
-def flatten(xs):
-    out = []
-    for x in xs:
-        if isinstance(x, list):
-            out.extend(flatten(x))  # recurse into the sub-list
-        else:
-            out.append(x)
-    return out
-print(flatten([1, [2, [3, 4]], 5]))   # [1, 2, 3, 4, 5]
-
-# 4
-def depth(xs):
-    if not isinstance(xs, list):
-        return 0                              # a non-list has no nesting
-    return 1 + max((depth(x) for x in xs), default=0)
-print(depth([1, [2, [3, [4]]]]), depth([1, 2, 3]), depth(5))   # 4 1 0
-
-# 5
-# 1) No reachable base case -> the calls never stop -> stack overflows.
-#    Fix: add `if n == 0: return 0` (or n <= 0) at the top.
-# 2) The recursive case computes n*fact(n-1) but never RETURNs it,
-#    so the function falls off the end and returns None. Add `return`.
-# 3) A loop is better when the work is a simple flat sequence, or when the
-#    depth could exceed ~1000 (Python has no tail-call optimization, so deep
-#    recursion hits RecursionError where a loop would be fine).
+[s.name for s in roster if s.gpa >= 2.0]          # comprehension
+list(map(lambda s: s.name.upper(), roster))        # map
+[s.name for s in filter(lambda s: s.gpa < 2.0, roster)]   # filter
+def gpas(rs):
+    for s in rs: yield s.gpa                        # generator (exhausts after one pass)
 ```
+Task 1: the `__name__` guard is only `"__main__"` when the file is **run directly**; on `import`
+its `__name__` is `"grades"`, so the demo block is skipped — that's how a file can be both a
+runnable script and an importable module.

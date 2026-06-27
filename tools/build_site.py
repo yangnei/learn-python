@@ -24,11 +24,11 @@ SESSIONS = [
     (3, "Control Flow: Conditionals & Loops", "if/elif/else, chained comparisons, for/while, break, enumerate, zip.", False),
     (4, "Data Structures", "list/tuple/dict/set, comprehensions, sorting, aliasing.", False),
     (5, "Functions, Scope & Reusability", "params, *args/**kwargs, scope, the mutable-default bug.", False),
-    (6, "Exceptions & Defensive Code", "try/except, raising, validating dirty research data.", False),
-    (7, "Files, Libraries & Research Data", "open/with, CSV, statistics, the pandas teaser.", False),
-    (8, "Regular Expressions & Text Cleaning", "patterns, groups, re.search/sub, raw strings; validate & extract research text.", False),
-    (9, "Modules, OOP & the Pythonic Toolkit", "import modules; a class with @property; generators/map/filter/walrus.", False),
-    (10, "Recursion & Recursive Thinking", "base case + recursive case, the call stack, recursion vs iteration, recursing nested data.", False),
+    (6, "Recursion & Recursive Thinking", "base case + recursive case, the call stack, recursion vs iteration, recursing nested data.", False),
+    (7, "Exceptions & Defensive Code", "try/except, raising, validating dirty research data.", False),
+    (8, "Files, Libraries & Research Data", "open/with, CSV, statistics, the pandas teaser.", False),
+    (9, "Regular Expressions & Text Cleaning", "patterns, groups, re.search/sub, raw strings; validate & extract research text.", False),
+    (10, "Modules, OOP & the Pythonic Toolkit", "import modules; a class with @property; generators/map/filter/walrus.", False),
 ]
 
 # Editable, in-browser-runnable snippets per session (Pyodide-safe: no file I/O, no input()).
@@ -128,7 +128,7 @@ def add_ok(name, roster=None):    # FIX: default None, create inside
 print("FIXED:", add_ok("Ana"))    # ['Ana']
 print("FIXED:", add_ok("Ben"))    # ['Ben']
 '''}],
-    6: [{"title": "clean_dirty_survey.py", "code": '''\
+    7: [{"title": "clean_dirty_survey.py", "code": '''\
 def safe_int(v):
     try:
         return int(v)
@@ -152,7 +152,7 @@ for r in raw:
 print("clean:   ", clean)
 print("rejected:", rejected)
 '''}],
-    7: [{"title": "read_csv_in_memory.py", "code": '''\
+    8: [{"title": "read_csv_in_memory.py", "code": '''\
 import csv, statistics, io
 
 # A real CSV would be a file; here we read it from a string so it runs in-browser.
@@ -172,7 +172,7 @@ for r in rows:
     by_major.setdefault(r["major"], []).append(int(r["score"]))
 print("by major:  ", {m: round(statistics.mean(v), 1) for m, v in by_major.items()})
 '''}],
-    8: [{"title": "regex_basics.py", "code": '''\
+    9: [{"title": "regex_basics.py", "code": '''\
 import re
 
 # Validate a university email. Raw string r"..." keeps backslashes literal;
@@ -188,7 +188,7 @@ print("dept:", m.group(1), "| number:", m.group(2))
 print(re.sub(r"\\s+", " ", "too    much   space"))             # collapse whitespace
 print(re.findall(r"#(\\w+)", "loved #python and #stats!"))     # all hashtags
 '''}],
-    9: [{"title": "modules_oop_pythonic.py", "code": '''\
+    10: [{"title": "modules_oop_pythonic.py", "code": '''\
 # A small class with a validating @property
 class Student:
     def __init__(self, name, gpa):
@@ -223,7 +223,7 @@ g = gpas(roster)
 print("first pass: ", list(g))
 print("second pass:", list(g))     # [] - a generator is exhausted after one pass
 '''}],
-    10: [{"title": "recursion.py", "code": '''\
+    6: [{"title": "recursion.py", "code": '''\
 # Recursion = base case (stop) + recursive case (smaller problem). Predict, then Run.
 def factorial(n):
     if n <= 1:                 # BASE CASE

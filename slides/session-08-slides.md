@@ -1,146 +1,130 @@
 ---
 marp: true
-title: "Session 8 — Regular Expressions & Text Cleaning"
+title: "Session 8 — Files, Libraries & Research Data"
 paginate: true
 ---
 
 # Session 8
-## Regular Expressions & Text Cleaning
+## Files, Libraries & Research Data
 
-Find, validate, extract, and clean messy text — the researcher's power tool.
-
----
-
-## Why a researcher cares
-
-- Validate IDs, emails, dates before they pollute your data.
-- Extract structured bits from free text (codes, names, numbers).
-- Clean and normalize open-ended survey responses.
-- A first pass at **qualitative coding** (find every response matching a pattern).
-
-🧠 Like search-and-filter over a corpus — but it matches *form*, not meaning.
+The hour your actual data shows up.
 
 ---
 
-## Always use raw strings
+## Opening files with `with`
 
 ```python
-import re
-re.search(r"\d+", "id 42")     # r"..." = raw string
+with open("notes.txt") as f:
+    text = f.read()
+# file auto-closes here, even if the code crashes
 ```
 
-Without `r"..."`, Python eats the backslashes (`\d` → error/garbage).
-**Rule:** every regex pattern is a raw string.
+`with` = a context manager: sets up and tears down the resource for you.
+Always prefer it to a bare `open()`/`close()`.
 
 ---
 
-## The survival tokens
+## File modes (mind the trap)
 
-| Token | Matches |
+| Mode | Meaning |
 |---|---|
-| `.` | **any** char (except newline) |
-| `\d \w \s` | digit / word-char / whitespace |
-| `\D \W \S` | the negations |
-| `+ * ?` | 1+, 0+, 0-or-1 |
-| `{m}` `{m,n}` | exactly m / between m and n |
-| `^ $` | start / end of string |
-| `[abc]` `[^abc]` | any in set / none in set |
-| `(...)` | capture group |
-| `a\|b` | a or b |
+| `"r"` | read (default) |
+| `"w"` | write — **truncates the file to empty first!** |
+| `"a"` | append |
+| `"r+"` | read + write |
+
+⚠️ Open the wrong file with `"w"` → its contents are gone.
 
 ---
 
-## The `.` trap
+## Reading text
 
 ```python
-re.search(r".", "a.b").group()    # 'a'  — ANY char, not a dot!
-re.search(r"\.", "a.b").group()   # '.'  — escape it for a literal dot
+with open("notes.txt") as f:
+    whole = f.read()           # one big string
+    # or
+    for line in f:             # line by line (memory-friendly)
+        print(line.rstrip())
 ```
 
-Escape the specials when you mean them literally: `\. \^ \$ \* \+ \? \( \) \[ \] \{ \} \|`
+⚠️ A file object is exhausted after one pass — re-open to read again.
 
 ---
 
-## The four functions you need
+## CSV in, as dicts 🧠
 
 ```python
-re.search(pattern, s)     # first match ANYWHERE -> match or None
-re.fullmatch(pattern, s)  # the WHOLE string must match -> validation
-re.findall(pattern, s)    # list of ALL matches
-re.sub(pattern, repl, s)  # replace matches -> cleaning
+import csv
+with open("students.csv", newline="") as f:
+    for row in csv.DictReader(f):
+        print(row["name"], row["score"])   # row is a dict keyed by header
 ```
 
-`re.IGNORECASE` flag for case-insensitive: `re.search(p, s, re.IGNORECASE)`.
+`csv.DictReader` turns each row into a dict — your "list of dicts" dataset from Session 4.
+(`newline=""` avoids blank rows on Windows.)
 
 ---
 
-## Validate (fullmatch anchors both ends)
+## CSV out
 
 ```python
-def valid_university_email(addr):
-    return re.fullmatch(r"\w+@\w+\.edu", addr) is not None
-
-valid_university_email("ana@university.edu")   # True
-valid_university_email("ana@gmail.com")        # False
-valid_university_email("ana@@x.edu")           # False
+with open("summary.csv", "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=["name", "score"])
+    w.writeheader()
+    w.writerow({"name": "Ana", "score": 91})
 ```
 
 ---
 
-## Extract with capture groups
+## Libraries a researcher reaches for
 
 ```python
-m = re.search(r"([A-Z]{2})(\d{4})", "Course ED1234 meets Tue")
-m.group(0)   # "ED1234"  whole match
-m.group(1)   # "ED"      dept
-m.group(2)   # "1234"    number
+import statistics
+statistics.mean(xs); statistics.median(xs); statistics.stdev(xs)
+
+import random
+random.choice(xs); random.randint(1, 6); random.shuffle(xs)
+
+from datetime import date
+date.today()
+
+from pathlib import Path
+Path("students.csv").exists()
 ```
 
-`m` is `None` if nothing matched — check before `.group()`.
+`pip install <package>` for third-party libs.
 
 ---
 
-## Clean & mine free text
+## The pandas teaser (your next course)
 
 ```python
-re.sub(r"\s+", " ", messy).strip()        # collapse whitespace
-re.findall(r"#(\w+)", "love #python #stats")   # ['python', 'stats']
-
-from collections import Counter
-Counter(re.findall(r"#(\w+)", corpus))    # theme frequencies
+import pandas as pd
+df = pd.read_csv("students.csv")
+df["score"].describe()      # count, mean, std, min, quartiles, max
+df.groupby("major")["score"].mean()
 ```
 
-Reformat with groups: `re.sub(r"^(.+),\s*(.+)$", r"\2 \1", "Curie, Marie")` → `"Marie Curie"`.
-
----
-
-## When NOT to use regex
-
-```python
-"a,b,c".split(",")     # simple split — no regex needed
-"  hi  ".strip()       # trim — no regex needed
-text.replace("X", "Y") # fixed substring — no regex needed
-```
-
-Regex shines for *variable* patterns. For fixed strings, plain methods read better.
+Everything you did by hand today — in three lines.
+We learned the fundamentals *underneath* it first.
 
 ---
 
 ## Your turn
 
-`examples/session-08/practice.md`:
-1. Email validator. 2. Extract dept+number. 3. Collapse whitespace.
-4. Count hashtags across responses. 5. Flip `"Last, First"`. 6. One case to use `.split()` instead.
+`examples/session-08/practice.md` (uses `survey.csv`):
+1. Read `students.csv`; print class mean with `statistics.mean`.
+2. Compute per-item survey means; write `survey_summary.csv`.
 
 ---
 
 ## Traps recap
 
-- `.` matches **any** char — use `\.` for a literal dot.
-- Forgetting `r"..."` breaks your backslashes.
-- `re.search` returns `None` on no match — guard before `.group()`.
-- Don't use regex where a string method is clearer.
+- `"w"` silently overwrites — be sure of the filename.
+- `csv` module → open with `newline=""`.
+- Files exhaust after one read; re-open to re-read.
+- Specify `encoding="utf-8"` for non-ASCII text.
 
 ## Summary
-You can validate, extract, and clean real-world text.
-**Next:** organize code into modules and classes.
+You can load, summarize, and write real research data.
+**Next:** clean and validate text with regular expressions.

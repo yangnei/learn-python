@@ -173,14 +173,54 @@ Each session has:
 
 ---
 
-## SESSION 6 — Exceptions & Defensive Code
-**Pre-flight:** `examples/session-06/`; a CSV-ish list with dirty values ("N/A", "", "7" on a 1–5 scale).
+## SESSION 6 — Recursion & Recursive Thinking
+**Pre-flight:** `examples/session-06/`; a nested-JSON-shaped dict staged for the `deep_sum` demo;
+have `sys.getrecursionlimit()` ready and the `runaway` overflow demo queued.
+
+**The clock (60 min)**
+- **0:00–0:04 — Warm-up.** Re-surface an S5 trap from your misconceptions log.
+- **0:04–0:16 — Concept.** The two parts: a **base case** and a **recursive case** that moves
+  toward it. Trace `factorial(3)` on the board as a stack that builds, then unwinds. Recursion vs
+  iteration (factorial both ways). Name the cost: each pending call is a stack frame; Python has
+  **no tail-call optimization** (`sys.getrecursionlimit()` ≈ 1000).
+- **0:16–0:24 — Live code.** `countdown`/`factorial`; then `deep_sum` over a nested dict — the
+  payoff, since a single loop can't reach the bottom of arbitrarily nested data; then trigger a
+  `RecursionError` with `runaway` and read it together.
+- **0:24–0:54 — Practice (packed).** `examples/session-06/practice.md`: recursive sum, string
+  reverse (recursion vs loop), `flatten`, `depth`, and the two trap-fixes. Hand out the next task
+  as each lands.
+- **0:54–0:58 — Traps recap.** Unreachable base case → stack overflow; forgetting to `return` the
+  recursive call → silent `None`; recursion isn't free; when a loop simply reads clearer.
+- **0:58–1:00 — Summary + quiz; point ahead to exceptions (S7).**
+
+**Transitions**
+- Concept→Live: *"Watch the stack build up and then collapse — that's the whole trick."*
+- Live→Practice: *"Your turn. Say the base case out loud before you write the function — that's where the bugs hide."*
+
+**Predicted misconceptions (this learner)**
+- Will write the recursive case but forget to `return` it → silent `None`. Show it once.
+- Will fear infinite recursion everywhere; reassure — a *reachable* base case is the guarantee.
+- From a vectorized stats background, may not see when recursion beats a loop → the nested-data demo is the "aha."
+- May assume recursion is a free, elegant swap for a loop → show the `RecursionError` and the ~1000 limit.
+
+**Socratic prompts**
+- "What's the smallest input where the answer is obvious without recursing? That's your base case."
+- "Your data is a list that can contain lists. What kind of function matches a thing defined in terms of itself?"
+- "`factorial(2000)` by recursion vs by loop — which one risks crashing, and why?"
+
+**Cut line:** drop the `depth`/string-reverse practice tasks; keep base/recursive case, `deep_sum`
+on nested data, and the `RecursionError` demo.
+
+---
+
+## SESSION 7 — Exceptions & Defensive Code
+**Pre-flight:** `examples/session-07/`; a CSV-ish list with dirty values ("N/A", "", "7" on a 1–5 scale).
 
 **The clock (60 min)**
 - **0:00–0:04 — Warm-up.**
 - **0:04–0:16 — Concept.** Errors vs exceptions; `try/except/else/finally`; common types (`ValueError`, `KeyError`, `ZeroDivisionError`, `FileNotFoundError`); `raise ValueError(...)`; **EAFP** ("easier to ask forgiveness") vs LBYL; `assert`.
 - **0:16–0:24 — Live code.** Harden `get_int()`/`clean_likert()` to survive blanks, "N/A", out-of-range; show a first `pytest` test (`test_clean.py`) including `pytest.raises`.
-- **0:24–0:54 — Practice (packed).** Validate a list of raw survey responses, collecting good values and a report of bad ones; add a `raise` for impossible input and one `pytest.raises` test (`examples/session-06/practice.md`).
+- **0:24–0:54 — Practice (packed).** Validate a list of raw survey responses, collecting good values and a report of bad ones; add a `raise` for impossible input and one `pytest.raises` test (`examples/session-07/practice.md`).
 - **0:54–0:58 — Traps recap.** **Bare `except:`** (catches everything, even `Ctrl+C`); catching too broad; silently swallowing errors; using exceptions for normal control flow excessively.
 - **0:58–1:00 — Summary + quiz.**
 
@@ -201,14 +241,14 @@ Each session has:
 
 ---
 
-## SESSION 7 — Files, Libraries & Research Data
-**Pre-flight:** ship a sample `students.csv` and `survey.csv` in `examples/session-07/`; confirm `pip` works; have `pandas` install ready (or pre-installed) for the teaser.
+## SESSION 8 — Files, Libraries & Research Data
+**Pre-flight:** ship a sample `students.csv` and `survey.csv` in `examples/session-08/`; confirm `pip` works; have `pandas` install ready (or pre-installed) for the teaser.
 
 **The clock (60 min)**
 - **0:00–0:04 — Warm-up.**
 - **0:04–0:16 — Concept.** `open`/`with` (context manager: auto-close); file modes (`r/w/a`; **`w` overwrites!**); reading lines; **CSV** via `csv.DictReader`/`DictWriter` (rows as dicts → ties to S4); `json` briefly; `import`; `pip install`; researcher stdlib: `statistics`, `random`, `datetime`, `pathlib`.
 - **0:16–0:24 — Live code.** Read `students.csv` into a list of dicts, compute the class mean with `statistics.mean`, write a summary CSV. Then a short **`pandas` teaser**: same task in 3 lines (`read_csv`, `.describe()`), framed as "here's your next course."
-- **0:24–0:54 — Practice (packed).** Read `survey.csv`, compute per-item means, write `survey_summary.csv`; add a `datetime`-stamped filename and a `pathlib` existence check (`examples/session-07/practice.md`).
+- **0:24–0:54 — Practice (packed).** Read `survey.csv`, compute per-item means, write `survey_summary.csv`; add a `datetime`-stamped filename and a `pathlib` existence check (`examples/session-08/practice.md`).
 - **0:54–0:58 — Traps recap.** `"w"` silently destroys data; forgetting `newline=""` with `csv` (blank rows on Windows); forgetting `\n`; encoding (`utf-8`); reading a file twice (cursor at end).
 - **0:58–1:00 — Summary + quiz.**
 
@@ -229,14 +269,14 @@ Each session has:
 
 ---
 
-## SESSION 8 — Regular Expressions & Text Cleaning
-**Pre-flight:** `examples/session-08/`; a list of messy free-text responses, emails, and "Last, First" names staged for live demos.
+## SESSION 9 — Regular Expressions & Text Cleaning
+**Pre-flight:** `examples/session-09/`; a list of messy free-text responses, emails, and "Last, First" names staged for live demos.
 
 **The clock (60 min)**
-- **0:00–0:04 — Warm-up.** Re-surface an S7 trap from your misconceptions log.
+- **0:00–0:04 — Warm-up.** Re-surface an S8 trap from your misconceptions log.
 - **0:04–0:16 — Concept.** Why regex for a researcher (validate/extract/clean/qualitative-coding, Connection Map #9). **Raw strings** `r"..."`. The survival tokens (`. \d \w \s + * ? {m,n} ^ $ [] () |`). Stress `.` matches *any* char (use `\.`).
 - **0:16–0:24 — Live code.** The four functions: `re.search`/`fullmatch`/`findall`/`sub`. Validate an email (`fullmatch`), extract dept+number with capture groups, collapse whitespace with `sub`.
-- **0:24–0:54 — Practice (packed).** `examples/session-08/practice.md`: email validator, extract codes, count `#hashtags` across responses, flip `"Last, First"`, and one case where `.split()` beats regex.
+- **0:24–0:54 — Practice (packed).** `examples/session-09/practice.md`: email validator, extract codes, count `#hashtags` across responses, flip `"Last, First"`, and one case where `.split()` beats regex.
 - **0:54–0:58 — Traps recap.** `.` matches anything; forgot `r"..."`; `re.search` returns `None`; regex vs string methods.
 - **0:58–1:00 — Summary + quiz.**
 
@@ -258,16 +298,16 @@ Each session has:
 
 ---
 
-## SESSION 9 — Modules, OOP & the Pythonic Toolkit
-**Pre-flight:** `examples/session-09/` (`grades.py` staged for the import demo, `Student` class ready); the generator-exhaustion demo queued.
+## SESSION 10 — Modules, OOP & the Pythonic Toolkit
+**Pre-flight:** `examples/session-10/` (`grades.py` staged for the import demo, `Student` class ready); the generator-exhaustion demo queued.
 
 **The clock (60 min)**
-- **0:00–0:04 — Warm-up.** Re-surface an S8 trap.
+- **0:00–0:04 — Warm-up.** Re-surface an S9 trap.
 - **0:04–0:12 — Modules.** Move grade functions into `grades.py`, `import` them; the `if __name__ == "__main__":` guard (file as both script and library).
 - **0:12–0:24 — OOP.** A small `Student` class: `__init__`, `self` ("this particular student"), a method, `__str__`, a validating `@property` setter (Connection Map #10), then brief inheritance with `super()`.
-- **0:24–0:54 — Practice (packed).** Build the validating `Student`, add `GradStudent(super())`, then one comprehension + `map` + `filter` + a generator (`examples/session-09/practice.md`). Mix in the Pythonic-toolkit recap (comprehensions, `map`/`filter`, `enumerate`/`zip`, generators/`yield`, walrus `:=`) as you hand out tasks rather than lecturing it.
+- **0:24–0:54 — Practice (packed).** Build the validating `Student`, add `GradStudent(super())`, then one comprehension + `map` + `filter` + a generator (`examples/session-10/practice.md`). Mix in the Pythonic-toolkit recap (comprehensions, `map`/`filter`, `enumerate`/`zip`, generators/`yield`, walrus `:=`) as you hand out tasks rather than lecturing it.
 - **0:54–0:58 — Traps recap.** `self` confusion; a generator exhausts after one pass; over-using a class where a function/dict fits; forgetting the `__main__` guard.
-- **0:58–1:00 — Summary + quiz; point ahead to recursion (S10).**
+- **0:58–1:00 — Summary + quiz; course wrap, point to the capstone.**
 
 **Transitions**
 - Modules→OOP: *"Functions in a file is reuse. Now let's bundle data *and* behavior — a class."*
@@ -284,46 +324,6 @@ Each session has:
 - "A million rows won't fit in memory. What does `yield` give you that a list doesn't?"
 
 **Cut line:** compress the Pythonic tour to comprehensions + `enumerate`/`zip`; defer `map`/`filter`/walrus to the cheat sheet. Keep modules + the validating class.
-
----
-
-## SESSION 10 — Recursion & Recursive Thinking
-**Pre-flight:** `examples/session-10/`; a nested-JSON-shaped dict staged for the `deep_sum` demo;
-have `sys.getrecursionlimit()` ready and the `runaway` overflow demo queued.
-
-**The clock (60 min)**
-- **0:00–0:04 — Warm-up.** Re-surface an S9 trap from your misconceptions log.
-- **0:04–0:16 — Concept.** The two parts: a **base case** and a **recursive case** that moves
-  toward it. Trace `factorial(3)` on the board as a stack that builds, then unwinds. Recursion vs
-  iteration (factorial both ways). Name the cost: each pending call is a stack frame; Python has
-  **no tail-call optimization** (`sys.getrecursionlimit()` ≈ 1000).
-- **0:16–0:24 — Live code.** `countdown`/`factorial`; then `deep_sum` over a nested dict — the
-  payoff, since a single loop can't reach the bottom of arbitrarily nested data; then trigger a
-  `RecursionError` with `runaway` and read it together.
-- **0:24–0:54 — Practice (packed).** `examples/session-10/practice.md`: recursive sum, string
-  reverse (recursion vs loop), `flatten`, `depth`, and the two trap-fixes. Hand out the next task
-  as each lands.
-- **0:54–0:58 — Traps recap.** Unreachable base case → stack overflow; forgetting to `return` the
-  recursive call → silent `None`; recursion isn't free; when a loop simply reads clearer.
-- **0:58–1:00 — Summary + quiz; course wrap, point to the capstone.**
-
-**Transitions**
-- Concept→Live: *"Watch the stack build up and then collapse — that's the whole trick."*
-- Live→Practice: *"Your turn. Say the base case out loud before you write the function — that's where the bugs hide."*
-
-**Predicted misconceptions (this learner)**
-- Will write the recursive case but forget to `return` it → silent `None`. Show it once.
-- Will fear infinite recursion everywhere; reassure — a *reachable* base case is the guarantee.
-- From a vectorized stats background, may not see when recursion beats a loop → the nested-data demo is the "aha."
-- May assume recursion is a free, elegant swap for a loop → show the `RecursionError` and the ~1000 limit.
-
-**Socratic prompts**
-- "What's the smallest input where the answer is obvious without recursing? That's your base case."
-- "Your data is a list that can contain lists. What kind of function matches a thing defined in terms of itself?"
-- "`factorial(2000)` by recursion vs by loop — which one risks crashing, and why?"
-
-**Cut line:** drop the `depth`/string-reverse practice tasks; keep base/recursive case, `deep_sum`
-on nested data, and the `RecursionError` demo.
 
 ---
 

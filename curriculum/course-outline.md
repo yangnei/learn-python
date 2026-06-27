@@ -13,8 +13,9 @@ We **re-sequence** for a fast adult learner: dynamic-typing fundamentals come fo
 Session 2; conditionals and loops are taught together as one "control flow" hour (they're the
 two halves of the same idea, and a fast learner clears them quickly); and the power-tools
 (comprehensions, generators, `*args`, type hints) are folded into the sessions where they
-naturally belong instead of left to the end. **Recursion** gets its own late session (S10): it
-builds on functions, data structures, and nested data, so it lands best once those are solid.
+naturally belong instead of left to the end. **Recursion** gets its own session right after
+Functions (S6): it's a function that calls itself, so it lands best while function mechanics are
+fresh — and Data Structures (S4) is already in hand for the nested-data payoff.
 
 ## Design rules (from the e-learning pipeline)
 - Every session = one hour, structured **Concept → Live Example → Practice → Traps → Summary**.
@@ -81,49 +82,7 @@ element-by-element sequence comparison, set deduplication of survey data.
 
 ---
 
-## Session 6 — Exceptions & Defensive Code
-**Objectives**
-1. Handle errors with `try`/`except`/`else`/`finally`; raise `ValueError` etc. deliberately.
-2. Validate real, messy human/research input robustly (EAFP "ask forgiveness" style).
-3. Use `assert` and write a first `pytest` test for a function.
-
-**Trap focus:** bare `except:`, catching too broadly, swallowing errors silently.
-
----
-
-## Session 7 — Files, Libraries & Research Data
-**Objectives**
-1. Read/write text with `open`/`with`; understand file modes and why `with` matters.
-2. Load and write **CSV** survey/gradebook data with `csv.DictReader`/`DictWriter`; touch `json`.
-3. `import` standard-library tools a researcher reaches for (`statistics`, `random`, `datetime`,
-   `pathlib`) and install a third-party package with `pip` (guided `pandas` teaser).
-
-**Trap focus:** `"w"` silently overwrites, forgotten `newline=""`/`\n`, file encoding.
-
----
-
-## Session 8 — Regular Expressions & Text Cleaning
-**Objectives**
-1. Write patterns with raw strings and the core tokens (`. \d \w \s + * ? {m,n} ^ $ [] () |`).
-2. Use `re.search`/`fullmatch`/`findall`/`sub` to validate, extract (capture groups), and clean text.
-3. Apply regex to real research text: validate IDs/emails, extract codes, normalize and mine free responses.
-
-**Trap focus:** `.` matches *any* char (use `\.`), forgetting raw strings, `re.search` returns `None`,
-reaching for regex where a string method is clearer.
-
----
-
-## Session 9 — Modules, OOP & the Pythonic Toolkit
-**Objectives**
-1. Split code into modules and `import` them; understand the `if __name__ == "__main__":` guard.
-2. Model a domain entity with a small **class** (`__init__`, `self`, `__str__`, a validating `@property`, brief inheritance with `super()`).
-3. Apply the "Pythonic" toolkit: comprehensions, `map`/`filter`, `enumerate`/`zip`, generators/`yield`, the walrus `:=`.
-
-**Trap focus:** `self` confusion, a generator exhausts after one pass, over-using a class where a function/dict fits.
-
----
-
-## Session 10 — Recursion & Recursive Thinking
+## Session 6 — Recursion & Recursive Thinking
 **Objectives**
 1. Write a recursive function with a correct **base case** and a **recursive case**; trace the
    **call stack** and convert between recursion and iteration.
@@ -134,6 +93,48 @@ reaching for regex where a string method is clearer.
 **Trap focus:** missing/unreachable base case (infinite recursion → stack overflow), forgetting to
 `return` the recursive call (silent `None`), assuming recursion is free, reaching for recursion where
 a plain loop reads more clearly.
+
+---
+
+## Session 7 — Exceptions & Defensive Code
+**Objectives**
+1. Handle errors with `try`/`except`/`else`/`finally`; raise `ValueError` etc. deliberately.
+2. Validate real, messy human/research input robustly (EAFP "ask forgiveness" style).
+3. Use `assert` and write a first `pytest` test for a function.
+
+**Trap focus:** bare `except:`, catching too broadly, swallowing errors silently.
+
+---
+
+## Session 8 — Files, Libraries & Research Data
+**Objectives**
+1. Read/write text with `open`/`with`; understand file modes and why `with` matters.
+2. Load and write **CSV** survey/gradebook data with `csv.DictReader`/`DictWriter`; touch `json`.
+3. `import` standard-library tools a researcher reaches for (`statistics`, `random`, `datetime`,
+   `pathlib`) and install a third-party package with `pip` (guided `pandas` teaser).
+
+**Trap focus:** `"w"` silently overwrites, forgotten `newline=""`/`\n`, file encoding.
+
+---
+
+## Session 9 — Regular Expressions & Text Cleaning
+**Objectives**
+1. Write patterns with raw strings and the core tokens (`. \d \w \s + * ? {m,n} ^ $ [] () |`).
+2. Use `re.search`/`fullmatch`/`findall`/`sub` to validate, extract (capture groups), and clean text.
+3. Apply regex to real research text: validate IDs/emails, extract codes, normalize and mine free responses.
+
+**Trap focus:** `.` matches *any* char (use `\.`), forgetting raw strings, `re.search` returns `None`,
+reaching for regex where a string method is clearer.
+
+---
+
+## Session 10 — Modules, OOP & the Pythonic Toolkit
+**Objectives**
+1. Split code into modules and `import` them; understand the `if __name__ == "__main__":` guard.
+2. Model a domain entity with a small **class** (`__init__`, `self`, `__str__`, a validating `@property`, brief inheritance with `super()`).
+3. Apply the "Pythonic" toolkit: comprehensions, `map`/`filter`, `enumerate`/`zip`, generators/`yield`, the walrus `:=`.
+
+**Trap focus:** `self` confusion, a generator exhausts after one pass, over-using a class where a function/dict fits.
 
 ---
 
@@ -151,17 +152,17 @@ Alternative briefs are listed in `assessments/capstone-project.md`.
 | Functions & variables | S1, S5 |
 | Conditionals | S3 (+ traps in S2) |
 | Loops | S3 (+ iterating data in S4) |
-| Exceptions | S6 |
-| Libraries | S7 |
-| Unit tests | S6 (+ modules in S9) |
-| File I/O | S7 (+ data structures S4) |
-| Regular expressions | S8 |
-| Modules & OOP | S9 |
-| Recursion | S10 (nested data ties to S4) |
-| Power-tools (sets, comprehensions, `*args`, type hints, generators, `map`/`filter`) | S4, S5, S9 |
+| Recursion | S6 (nested data ties to S4) |
+| Exceptions | S7 |
+| Libraries | S8 |
+| Unit tests | S7 (+ modules in S10) |
+| File I/O | S8 (+ data structures S4) |
+| Regular expressions | S9 |
+| Modules & OOP | S10 |
+| Power-tools (sets, comprehensions, `*args`, type hints, generators, `map`/`filter`) | S4, S5, S10 |
 
 ## Scaling to the time budget
-- **~8 hours:** fold the Pythonic-toolkit half of S9 into S4/S5, trim the `pandas` teaser, and
-  treat recursion (S10) as optional self-study.
+- **~8 hours:** fold the Pythonic-toolkit half of S10 into S4/S5 and trim the `pandas` teaser
+  (recursion, S6, stays — it's a core skill, not an add-on).
 - **10 hours:** run S1–S10 as written (recommended).
 - **11 hours:** add the S11 capstone.

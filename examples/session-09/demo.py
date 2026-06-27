@@ -1,77 +1,47 @@
 """
-Session 9 — Modules, OOP & the Pythonic Toolkit
-Run me from this folder:  python3 demo.py
+Session 9 — Regular Expressions & Text Cleaning
+Run me:  python3 demo.py
+Always write patterns as RAW strings: r"..."
 """
-from grades import letter_grade, class_average   # import from our own module (grades.py)
+import re
 
+# --- 1. Validate: does the whole string match the pattern? ---------------
+def valid_university_email(addr: str) -> bool:
+    # \w+ chars, @, domain, literal dot (\.), then "edu"
+    return re.fullmatch(r"\w+@\w+\.edu", addr) is not None
 
-# --- 1. Modules: reuse code from another file ---------------------------
-print("letter for 85:", letter_grade(85))
-print("average:", class_average([91, 58, 73]))
+for addr in ["ana@university.edu", "ana@gmail.com", "ana@@x.edu"]:
+    print(f"{addr:22} -> {valid_university_email(addr)}")
 
+# --- 2. Search anywhere; extract pieces with capture groups -------------
+m = re.search(r"([A-Z]{2})(\d{4})", "Course ED1234 meets on Tue")
+print("\ndept:", m.group(1), "| number:", m.group(2), "| whole:", m.group(0))
 
-# --- 2. OOP: model a domain entity --------------------------------------
-class Student:
-    def __init__(self, name: str, gpa: float):
-        self.name = name
-        self.gpa = gpa             # runs through the setter below (validates!)
+# --- 3. The "." trap -----------------------------------------------------
+print('\n"." matches ANY char:', re.search(r".", "a.b").group())   # 'a', not '.'
+print('literal dot with \\.:   ', re.search(r"\.", "a.b").group())  # '.'
 
-    def __str__(self) -> str:      # how the object prints
-        return f"{self.name}: {self.gpa} ({self.standing()})"
+# --- 4. Substitute / clean text -----------------------------------------
+messy = "  too    much\t  space  "
+print("\ncleaned:", repr(re.sub(r"\s+", " ", messy).strip()))
 
-    def standing(self) -> str:
-        return "Good" if self.gpa >= 2.0 else "Probation"
+# --- 5. Mine free-text survey responses ---------------------------------
+responses = ["loved #python and #stats", "more #python please", "no tags here"]
+tags = []
+for r in responses:
+    tags += re.findall(r"#(\w+)", r)      # findall returns all matches
+print("\nall tags:", tags)
+from collections import Counter
+print("tag counts:", Counter(tags))
 
-    @property                       # makes .gpa look like an attribute...
-    def gpa(self) -> float:
-        return self._gpa
+# --- 6. Reformat "Last, First" -> "First Last" ---------------------------
+def flip_name(s: str) -> str:
+    m = re.search(r"^(.+),\s*(.+)$", s.strip())
+    return f"{m.group(2)} {m.group(1)}" if m else s
 
-    @gpa.setter                     # ...but validates on every assignment
-    def gpa(self, value: float):
-        if not 0 <= value <= 4:
-            raise ValueError(f"gpa {value} not in 0-4")
-        self._gpa = value
+print("\n", flip_name("Curie, Marie"))      # Marie Curie
 
-
-ana = Student("Ana", 3.9)
-print("\n", ana)                    # uses __str__
-try:
-    ana.gpa = 5.0                   # rejected by the setter
-except ValueError as e:
-    print("rejected:", e)
-
-
-# --- 3. Inheritance ------------------------------------------------------
-class GradStudent(Student):
-    def __init__(self, name, gpa, advisor):
-        super().__init__(name, gpa)     # reuse the parent's setup
-        self.advisor = advisor
-    def __str__(self):
-        return super().__str__() + f" — advised by {self.advisor}"
-
-print("\n", GradStudent("Ben", 3.4, "Dr. Lee"))
-
-
-# --- 4. The Pythonic toolkit --------------------------------------------
-roster = [Student("Ana", 3.9), Student("Ben", 1.8), Student("Cara", 3.2)]
-
-print("\ngood standing:", [s.name for s in roster if s.gpa >= 2.0])   # comprehension
-print("upper:", list(map(lambda s: s.name.upper(), roster)))         # map
-at_risk = filter(lambda s: s.gpa < 2.0, roster)                      # filter the objects
-print("at risk:", [s.name for s in at_risk])
-
-for i, s in enumerate(roster, start=1):                              # enumerate
-    print(i, s.name)
-
-# generator: produce values lazily; great for huge data
-def gpas(students):
-    for s in students:
-        yield s.gpa
-
-g = gpas(roster)
-print("\nmean gpa:", round(class_average(list(g)), 2))
-print("second pass:", list(g))     # [] — a generator is exhausted after one pass
-
-# walrus := : assign and test in one step
-if (n := len(roster)) > 2:
-    print(f"\n{n} students enrolled")
+# --- 7. When NOT to use regex -------------------------------------------
+# For simple splits/trims, string methods are clearer than regex:
+print("\nuse .split():", "a,b,c".split(","))
+print("use .strip():", "  hi  ".strip())

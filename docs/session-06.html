@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Session 6 — Exceptions &amp; Defensive Code</title>
+<title>Session 6 — Recursion &amp; Recursive Thinking</title>
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
 </head>
 <body data-page="session-06">
-<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" class="active" data-page="session-06" title="Exceptions &amp; Defensive Code">S6</a><a href="session-07.html" data-page="session-07" title="Files, Libraries &amp; Research Data">S7</a><a href="session-08.html" data-page="session-08" title="Regular Expressions &amp; Text Cleaning">S8</a><a href="session-09.html" data-page="session-09" title="Modules, OOP &amp; the Pythonic Toolkit">S9</a><a href="session-10.html" data-page="session-10" title="Recursion &amp; Recursive Thinking">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" class="active" data-page="session-06" title="Recursion &amp; Recursive Thinking">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
 <main>
 
 <article>
@@ -31,221 +31,233 @@
 </main>
 <script type="text/markdown" id="lesson-md">
 # Session 6
-## Exceptions & Defensive Code
+## Recursion & Recursive Thinking
 
-Real research data is dirty. Make code that survives it.
+A function that solves a problem by calling **itself** on a smaller piece.
 
 ---
 
-## try / except
+## The shape of every recursion
 
 ```python
-try:
-    n = int(value)
-except ValueError:
-    n = None        # handle the bad case
+def countdown(n):
+    if n <= 0:          # BASE CASE — when to stop
+        print("liftoff!")
+        return
+    print(n)
+    countdown(n - 1)    # RECURSIVE CASE — same problem, smaller input
 ```
 
-When code might fail at runtime, wrap it. The `except` catches the named error.
+Two parts, always:
+- a **base case** that stops, and
+- a **recursive case** that moves *toward* the base case.
 
 ---
 
-## Common exception types
-
-| Exception | Happens when |
-|---|---|
-| `ValueError` | right type, bad value: `int("N/A")` |
-| `TypeError` | wrong type: `5 > "5"` |
-| `KeyError` | missing dict key: `d["nope"]` |
-| `IndexError` | bad list index: `xs[99]` |
-| `ZeroDivisionError` | `x / 0` |
-| `FileNotFoundError` | `open("missing.csv")` |
-
----
-
-## try / except / else / finally
+## Trace the call stack
 
 ```python
-try:
-    n = int(value)
-except ValueError:
-    print("not a number")
-else:
-    print("ok:", n)      # only if NO exception
-finally:
-    print("always runs")  # cleanup
+factorial(3)
+= 3 * factorial(2)
+=     3 * (2 * factorial(1))
+=         3 * (2 * 1)        # base case returns 1
+= 6
 ```
+
+Each call waits on the one inside it. The calls stack up, then unwind.
+
+🧠 Each pending call is a **stack frame** — that matters in a moment.
 
 ---
 
-## Raise your own
+## Recursion vs iteration
 
 ```python
-def clean_likert(n):
-    if not 1 <= n <= 5:
-        raise ValueError(f"{n} not in 1–5")
-    return n
+def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)   # ← must RETURN the call
+
+def factorial_loop(n):
+    total = 1
+    for k in range(2, n + 1):
+        total *= k
+    return total
 ```
 
-`raise` throws an exception on purpose — caller decides how to handle it.
+Same answer. For flat counting, the **loop** is usually clearer.
 
 ---
 
-## EAFP vs LBYL
+## Where recursion shines: nested data
 
 ```python
-# LBYL — "look before you leap"
-if value.isdigit():
-    n = int(value)
+def deep_sum(obj):
+    if isinstance(obj, (int, float)):
+        return obj
+    if isinstance(obj, dict):
+        return sum(deep_sum(v) for v in obj.values())
+    if isinstance(obj, (list, tuple)):
+        return sum(deep_sum(x) for x in obj)
+    return 0
 
-# EAFP — "easier to ask forgiveness" (Pythonic)
-try:
-    n = int(value)
-except ValueError:
-    n = None
+deep_sum([1, [2, [3, 4]], {"a": 6}])   # 16
 ```
 
-Both valid. EAFP shines when "checking first" is hard or racy.
+Nested JSON, folder trees, threaded replies — a single loop can't reach all the way down. Recursion can.
 
 ---
 
-## assert (developer check, not validation)
+## The trap: no base case
 
 ```python
-assert len(scores) > 0, "scores must not be empty"
+def runaway(n):
+    return runaway(n + 1)     # never stops
 ```
 
-For *your* sanity checks while developing. Can be disabled (`python -O`),
-so **never** use `assert` to validate untrusted input — use `raise`.
-
----
-
-## A first test with pytest
-
-```python
-# clean.py
-def clean_likert(n):
-    if not 1 <= n <= 5:
-        raise ValueError("1–5 only")
-    return n
-
-# test_clean.py
-import pytest
-from clean import clean_likert
-
-def test_valid():    assert clean_likert(3) == 3
-def test_invalid():
-    with pytest.raises(ValueError):
-        clean_likert(9)
 ```
-Run: `pytest`
+RecursionError: maximum recursion depth exceeded
+```
+
+Python has **no tail-call optimization** — every call keeps its frame
+(default limit ≈ 1000). Deep recursion *will* hit the ceiling.
 
 ---
 
 ## Your turn
 
 `examples/session-06/practice.md`:
-1. `safe_int(value)` returning int or None.
-2. Clean a dirty survey list, collecting good values + a rejection log.
-3. Write one `pytest` test.
+1. Recursive `rsum(n)` — name the base case first.
+2. `flatten([1, [2, [3, 4]], 5])` → one flat list.
+3. `depth(...)` — how deeply is a list nested?
 
 ---
 
 ## Traps recap
 
-- **Never** bare `except:` — name the exception.
-- Don't catch too broadly or swallow errors silently.
-- `assert` ≠ input validation (use `raise`).
-- Catch the *specific* error you expect.
+- Every recursion needs a **reachable base case**, or it overflows the stack.
+- **Return** the recursive call — forgetting to gives you a silent `None`.
+- Recursion isn't free: each call costs a stack frame (no tail-call optimization).
+- A plain **loop** is better for flat sequences and for very deep work.
 
 ## Summary
-You can validate messy input and fail loudly when you should.
-**Next:** read that messy data from real files.
+You can solve problems that are defined in terms of themselves — especially nested data.
+**Next:** make your code survive messy real-world input — exceptions.
 
 </script>
 <script type="text/markdown" id="practice-md">
-# Session 6 — Practice (25 min)
+# Session 6 — Practice (30 min): Recursion & Recursive Thinking
 
-## Task 1 — `safe_int`
-Write `safe_int(value)` returning `int(value)` or `None` on failure. Test on
-`"42"`, `"N/A"`, `""`, `None`, `3.0`.
+## Task 1 — Recursive sum
+Write `rsum(n)` that adds `1 + 2 + ... + n` **with recursion** (no loop).
+Name the base case out loud before you write it. Test `rsum(5)` and `rsum(0)`.
 
-## Task 2 — Clean a survey column
-Given `raw = ["5","3","N/A","7","","1","two","4"]`, produce:
-- `clean` — list of valid Likert ints (1–5), and
-- `rejected` — list of `(value, reason)` pairs.
-Use a `clean_likert(n)` that **raises** `ValueError` for out-of-range or non-ints.
+## Task 2 — Recursion vs iteration
+Write `reverse(s)` that reverses a string recursively. Then write the loop version.
+Which reads more clearly to you? Test `reverse("data")`.
 
-## Task 3 — Write a test
-Put `clean_likert` in `clean.py` and write `test_clean.py` with pytest:
-one passing case and one `pytest.raises(ValueError)` case. Run `pytest`.
+## Task 3 — Flatten nested data
+Write `flatten(xs)` that turns a list-of-lists (nested to any depth) into one flat list:
+`flatten([1, [2, [3, 4]], 5])` → `[1, 2, 3, 4, 5]`. This is the move for nested JSON/exports.
 
-## Task 4 — Discuss
-Why is `except:` (bare) dangerous? Give one error it would hide that you'd rather see.
+## Task 4 — How deep does it go?
+Write `depth(xs)` returning how deeply a list is nested:
+`depth([1, [2, [3, [4]]]])` → `4`, `depth([1, 2, 3])` → `1`, `depth(5)` → `0`.
+
+## Task 5 — Trap check
+1. Why does this raise `RecursionError`, and what's the fix?
+   ```python
+   def f(n):
+       return n + f(n - 1)
+   ```
+2. This returns `None` instead of a number — why?
+   ```python
+   def fact(n):
+       if n <= 1:
+           return 1
+       n * fact(n - 1)
+   ```
+3. Name one case where a plain loop is the better choice over recursion.
 
 ---
 
 <details><summary>Show solutions</summary>
 
 ```python
-def safe_int(value):
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return None
+# 1
+def rsum(n):
+    if n == 0:                      # base case
+        return 0
+    return n + rsum(n - 1)
+print(rsum(5), rsum(0))             # 15 0
 
-def clean_likert(n):
-    if isinstance(n, bool) or not isinstance(n, int):
-        raise ValueError(f"{n!r} not an int")
-    if not 1 <= n <= 5:
-        raise ValueError(f"{n} outside 1–5")
-    return n
+# 2
+def reverse(s):
+    if s == "":                     # base case: empty string
+        return ""
+    return reverse(s[1:]) + s[0]    # all-but-first, reversed, then first
+print(reverse("data"))             # "atad"
+# loop version: "".join(reversed(s))  — usually clearer for flat strings
 
-raw = ["5","3","N/A","7","","1","two","4"]
-clean, rejected = [], []
-for r in raw:
-    try:
-        clean.append(clean_likert(safe_int(r)))
-    except ValueError as e:
-        rejected.append((r, str(e)))
-print(clean)      # [5, 3, 1, 4]
-print(rejected)   # [('N/A', ...), ('7', ...), ('', ...), ('two', ...)]
+# 3
+def flatten(xs):
+    out = []
+    for x in xs:
+        if isinstance(x, list):
+            out.extend(flatten(x))  # recurse into the sub-list
+        else:
+            out.append(x)
+    return out
+print(flatten([1, [2, [3, 4]], 5]))   # [1, 2, 3, 4, 5]
+
+# 4
+def depth(xs):
+    if not isinstance(xs, list):
+        return 0                              # a non-list has no nesting
+    return 1 + max((depth(x) for x in xs), default=0)
+print(depth([1, [2, [3, [4]]]]), depth([1, 2, 3]), depth(5))   # 4 1 0
+
+# 5
+# 1) No reachable base case -> the calls never stop -> stack overflows.
+#    Fix: add `if n == 0: return 0` (or n <= 0) at the top.
+# 2) The recursive case computes n*fact(n-1) but never RETURNs it,
+#    so the function falls off the end and returns None. Add `return`.
+# 3) A loop is better when the work is a simple flat sequence, or when the
+#    depth could exceed ~1000 (Python has no tail-call optimization, so deep
+#    recursion hits RecursionError where a loop would be fine).
 ```
-
-```python
-# test_clean.py
-import pytest
-from clean import clean_likert
-def test_ok():   assert clean_likert(3) == 3
-def test_bad():
-    with pytest.raises(ValueError):
-        clean_likert(9)
-```
-
-Task 4: a bare `except:` also catches `KeyboardInterrupt` (Ctrl+C) and `NameError`
-from your own typos — so a misspelled variable would be silently swallowed instead of
-showing you the bug. Always catch the specific exception you expect.
 
 
 </details>
 
 </script>
 <script type="text/markdown" id="quiz-md">
-### Quiz — Exceptions
-1. Which exception does `int("N/A")` raise?
-2. Why is a bare `except:` dangerous?
-3. When should you use `raise` vs `assert`?
-4. (Practical) Wrap `int(value)` so it returns `None` on failure.
+### Quiz — Recursion & Recursive Thinking
+1. What two parts must every recursive function have?
+2. What error comes from a base case that's never reached, and why doesn't Python just keep going?
+3. What does this `fact` return for `fact(4)`, and why?
+   ```python
+   def fact(n):
+       if n <= 1:
+           return 1
+       n * fact(n - 1)
+   ```
+4. Name one situation where a plain loop is the better choice than recursion.
+5. Why is recursion a natural fit for nested data (a list of lists, or nested JSON)?
 
 <details><summary>Show answers</summary>
 
-**Answers:** 1. `ValueError`. 2. It catches everything (even Ctrl+C and your own typos) and
-can hide bugs. 3. `raise` to validate real/untrusted input; `assert` for developer sanity
-checks (can be disabled). 4. `try: return int(value) except (ValueError, TypeError): return None`.
+**Answers:** 1. A **base case** (stops) and a **recursive case** (calls itself on a smaller
+input, moving toward the base case). 2. `RecursionError: maximum recursion depth exceeded` —
+Python has no tail-call optimization, so each pending call keeps a stack frame until it hits the
+limit (~1000). 3. `None` — the recursive case computes `n * fact(n-1)` but never `return`s it, so
+the function falls off the end. 4. A flat sequence, or work deep enough to exceed the recursion
+limit (a loop has no frame cost). 5. The data is *defined in terms of itself* (a list may contain
+lists), so a function defined in terms of itself mirrors its shape and can reach every level.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "clean_dirty_survey.py", "code": "def safe_int(v):\n    try:\n        return int(v)\n    except (ValueError, TypeError):\n        return None\n\ndef clean_likert(n):\n    if isinstance(n, bool) or not isinstance(n, int):\n        raise ValueError(f\"{n!r} not an int\")\n    if not 1 <= n <= 5:\n        raise ValueError(f\"{n} outside 1-5\")\n    return n\n\nraw = [\"5\", \"3\", \"N/A\", \"7\", \"\", \"1\", \"two\", \"4\"]\nclean, rejected = [], []\nfor r in raw:\n    try:\n        clean.append(clean_likert(safe_int(r)))\n    except ValueError as e:\n        rejected.append((r, str(e)))\nprint(\"clean:   \", clean)\nprint(\"rejected:\", rejected)\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "recursion.py", "code": "# Recursion = base case (stop) + recursive case (smaller problem). Predict, then Run.\ndef factorial(n):\n    if n <= 1:                 # BASE CASE\n        return 1\n    return n * factorial(n - 1)   # RECURSIVE CASE (remember to return!)\n\nprint(\"factorial(5):\", factorial(5))\n\n# Recursion shines on NESTED data, where a single loop can't reach all the way down.\ndef deep_sum(obj):\n    if isinstance(obj, bool):              # bool is an int subclass (Session 2!)\n        return 0\n    if isinstance(obj, (int, float)):\n        return obj\n    if isinstance(obj, (list, tuple)):\n        return sum(deep_sum(x) for x in obj)\n    if isinstance(obj, dict):\n        return sum(deep_sum(v) for v in obj.values())\n    return 0\n\nnested = [1, [2, 3, [4, 5]], {\"a\": 6, \"b\": [7, 8]}]\nprint(\"deep_sum:\", deep_sum(nested))   # 1+2+3+4+5+6+7+8 = 36\n\n# Missing base case -> infinite recursion -> RecursionError. Uncomment to see it:\n# def oops(n): return oops(n + 1)\n# oops(0)\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

@@ -1,59 +1,68 @@
-"""
-Session 6 — Exceptions & Defensive Code
-Run me:  python3 demo.py
-"""
+"""Session 6 — Recursion & Recursive Thinking  (run me: python3 demo.py)."""
 
-# --- 1. try / except: convert what you can ------------------------------
-def safe_int(value):
-    """Return int(value) or None if it can't be parsed."""
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return None
+import sys
 
-for v in ["42", "N/A", "", None, "7"]:
-    print(f"safe_int({v!r}) = {safe_int(v)}")
 
-# --- 2. raise your own validation error ---------------------------------
-def clean_likert(n):
-    """Return n if it's a valid 1–5 Likert int, else raise ValueError."""
-    if isinstance(n, bool) or not isinstance(n, int):
-        raise ValueError(f"{n!r} is not an integer")
-    if not 1 <= n <= 5:
-        raise ValueError(f"{n} is outside 1–5")
-    return n
+# 1) The shape of EVERY recursive function: a base case + a recursive case.
+def countdown(n):
+    if n <= 0:                 # BASE CASE — the stop condition
+        print("liftoff!")
+        return
+    print(n)
+    countdown(n - 1)           # RECURSIVE CASE — same problem, smaller input
 
-# --- 3. clean a dirty survey column, keeping a rejection log ------------
-raw_responses = ["5", "3", "N/A", "7", "", "1", "two", "4"]
-clean, rejected = [], []
-for r in raw_responses:
-    n = safe_int(r)
-    try:
-        clean.append(clean_likert(n))        # may raise
-    except ValueError as e:
-        rejected.append((r, str(e)))
+print("countdown:")
+countdown(3)
 
-print("\nclean:", clean)
-print("rejected:")
-for original, why in rejected:
-    print(f"  {original!r}: {why}")
 
-# --- 4. else / finally ---------------------------------------------------
-def parse(value):
-    try:
-        n = int(value)
-    except ValueError:
-        return "bad"
-    else:
-        return f"ok:{n}"          # only when no exception
-    finally:
-        pass                       # cleanup would go here (e.g., close a file)
+# 2) Recursion vs iteration: same answer, two styles. Each call adds a stack frame.
+def factorial(n):
+    if n <= 1:
+        return 1               # base case
+    return n * factorial(n - 1)   # remember to RETURN the recursive call
 
-print("\n", parse("10"), parse("x"))
+def factorial_loop(n):
+    total = 1
+    for k in range(2, n + 1):
+        total *= k
+    return total
 
-# --- 5. TRAP: bare except hides real bugs (don't do this) ---------------
-# try:
-#     risky()
-# except:            # ❌ catches EVERYTHING, even Ctrl+C and typos
-#     pass           # ❌ and silently swallows the error
-# Always: except SpecificError as e: ...
+print("\nfactorial(5):", factorial(5), "==", factorial_loop(5))
+
+
+# 3) Where recursion SHINES: naturally NESTED data, where one loop can't reach
+#    all the way down. This is shaped like a real nested-JSON export.
+export = {
+    "cohort": "2026",
+    "students": [
+        {"name": "Ana", "scores": [91, 88]},
+        {"name": "Ben", "scores": [58, [60, 64]]},   # arbitrarily nested
+    ],
+}
+
+def deep_sum(obj):
+    """Add up every number found anywhere inside nested lists/dicts."""
+    if isinstance(obj, bool):                 # bool is an int subclass (Session 2!)
+        return 0
+    if isinstance(obj, (int, float)):
+        return obj
+    if isinstance(obj, dict):
+        return sum(deep_sum(v) for v in obj.values())
+    if isinstance(obj, (list, tuple)):
+        return sum(deep_sum(x) for x in obj)
+    return 0                                  # strings, None, etc. contribute nothing
+
+print("\ndeep_sum of nested export:", deep_sum(export))   # 91+88+58+60+64 = 361
+
+
+# 4) The trap: with no reachable base case, recursion never stops. Python has no
+#    tail-call optimization, so it just piles up stack frames until it gives up.
+print("\nPython's recursion limit:", sys.getrecursionlimit())
+
+def runaway(n):
+    return runaway(n + 1)        # BUG: never reaches a base case
+
+try:
+    runaway(0)
+except RecursionError:
+    print("RecursionError: maximum recursion depth exceeded (as expected)")

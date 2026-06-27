@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Session 9 — Modules, OOP &amp; the Pythonic Toolkit</title>
+<title>Session 9 — Regular Expressions &amp; Text Cleaning</title>
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
 </head>
 <body data-page="session-09">
-<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Exceptions &amp; Defensive Code">S6</a><a href="session-07.html" data-page="session-07" title="Files, Libraries &amp; Research Data">S7</a><a href="session-08.html" data-page="session-08" title="Regular Expressions &amp; Text Cleaning">S8</a><a href="session-09.html" class="active" data-page="session-09" title="Modules, OOP &amp; the Pythonic Toolkit">S9</a><a href="session-10.html" data-page="session-10" title="Recursion &amp; Recursive Thinking">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Recursion &amp; Recursive Thinking">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" class="active" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
 <main>
 
 <article>
@@ -31,220 +31,214 @@
 </main>
 <script type="text/markdown" id="lesson-md">
 # Session 9
-## Modules, OOP & the Pythonic Toolkit
+## Regular Expressions & Text Cleaning
 
-Organize code into reusable pieces — and finish with the moves experts use.
+Find, validate, extract, and clean messy text — the researcher's power tool.
 
 ---
 
-## Modules: split your code into files
+## Why a researcher cares
+
+- Validate IDs, emails, dates before they pollute your data.
+- Extract structured bits from free text (codes, names, numbers).
+- Clean and normalize open-ended survey responses.
+- A first pass at **qualitative coding** (find every response matching a pattern).
+
+🧠 Like search-and-filter over a corpus — but it matches *form*, not meaning.
+
+---
+
+## Always use raw strings
 
 ```python
-# grades.py
-def letter_grade(score): ...
-def class_average(scores): ...
-
-# analysis.py
-from grades import letter_grade, class_average
+import re
+re.search(r"\d+", "id 42")     # r"..." = raw string
 ```
 
-A `.py` file is a **module**. `import` reuses its functions elsewhere → no copy-paste.
+Without `r"..."`, Python eats the backslashes (`\d` → error/garbage).
+**Rule:** every regex pattern is a raw string.
 
 ---
 
-## The `__main__` guard
+## The survival tokens
+
+| Token | Matches |
+|---|---|
+| `.` | **any** char (except newline) |
+| `\d \w \s` | digit / word-char / whitespace |
+| `\D \W \S` | the negations |
+| `+ * ?` | 1+, 0+, 0-or-1 |
+| `{m}` `{m,n}` | exactly m / between m and n |
+| `^ $` | start / end of string |
+| `[abc]` `[^abc]` | any in set / none in set |
+| `(...)` | capture group |
+| `a\|b` | a or b |
+
+---
+
+## The `.` trap
 
 ```python
-# grades.py
-if __name__ == "__main__":
-    print(letter_grade(85))   # runs ONLY when you execute grades.py directly
+re.search(r".", "a.b").group()    # 'a'  — ANY char, not a dot!
+re.search(r"\.", "a.b").group()   # '.'  — escape it for a literal dot
 ```
 
-On `import grades`, `__name__` is `"grades"`, so the block is skipped.
-One file can be both a runnable script *and* an importable library.
+Escape the specials when you mean them literally: `\. \^ \$ \* \+ \? \( \) \[ \] \{ \} \|`
 
 ---
 
-## OOP: model a domain entity
+## The four functions you need
 
 ```python
-class Student:
-    def __init__(self, name, gpa):   # constructor
-        self.name = name
-        self.gpa = gpa
-    def __str__(self):               # how it prints
-        return f"{self.name} ({self.gpa})"
-
-ana = Student("Ana", 3.9)
-print(ana)        # Ana (3.9)
+re.search(pattern, s)     # first match ANYWHERE -> match or None
+re.fullmatch(pattern, s)  # the WHOLE string must match -> validation
+re.findall(pattern, s)    # list of ALL matches
+re.sub(pattern, repl, s)  # replace matches -> cleaning
 ```
 
-🧠 A class is an *operational definition*: the attributes + behaviors that "count" as a Student.
-`self` = "this particular student."
+`re.IGNORECASE` flag for case-insensitive: `re.search(p, s, re.IGNORECASE)`.
 
 ---
 
-## @property: validate on assignment
+## Validate (fullmatch anchors both ends)
 
 ```python
-class Student:
-    ...
-    @property
-    def gpa(self):
-        return self._gpa
-    @gpa.setter
-    def gpa(self, value):
-        if not 0 <= value <= 4:
-            raise ValueError("gpa must be 0–4")
-        self._gpa = value
-```
+def valid_university_email(addr):
+    return re.fullmatch(r"\w+@\w+\.edu", addr) is not None
 
-`ana.gpa = 5.0` now raises — the object defends its own integrity.
-
----
-
-## Inheritance
-
-```python
-class GradStudent(Student):
-    def __init__(self, name, gpa, advisor):
-        super().__init__(name, gpa)    # reuse parent setup
-        self.advisor = advisor
-    def __str__(self):
-        return super().__str__() + f" — {self.advisor}"
-```
-
-`GradStudent` *is a* `Student` plus extra. `super()` calls the parent.
-
----
-
-## The Pythonic toolkit (recap tour)
-
-```python
-[s.name for s in roster if s.gpa >= 2.0]   # comprehension (from S4)
-list(map(lambda s: s.name.upper(), roster))# map: apply to all
-list(filter(lambda s: s.gpa < 2.0, roster))# filter: keep matches
-for i, s in enumerate(roster): ...          # index + item
-for a, b in zip(names, scores): ...         # parallel
+valid_university_email("ana@university.edu")   # True
+valid_university_email("ana@gmail.com")        # False
+valid_university_email("ana@@x.edu")           # False
 ```
 
 ---
 
-## Generators & walrus
+## Extract with capture groups
 
 ```python
-def gpas(students):
-    for s in students:
-        yield s.gpa          # one value at a time — low memory on big data
-
-g = gpas(roster)
-list(g)   # [3.9, 1.8, ...]
-list(g)   # []  ← a generator is exhausted after one pass
-
-if (n := len(roster)) > 30:   # walrus := : assign + test in one step
-    print(f"{n} students")
+m = re.search(r"([A-Z]{2})(\d{4})", "Course ED1234 meets Tue")
+m.group(0)   # "ED1234"  whole match
+m.group(1)   # "ED"      dept
+m.group(2)   # "1234"    number
 ```
+
+`m` is `None` if nothing matched — check before `.group()`.
+
+---
+
+## Clean & mine free text
+
+```python
+re.sub(r"\s+", " ", messy).strip()        # collapse whitespace
+re.findall(r"#(\w+)", "love #python #stats")   # ['python', 'stats']
+
+from collections import Counter
+Counter(re.findall(r"#(\w+)", corpus))    # theme frequencies
+```
+
+Reformat with groups: `re.sub(r"^(.+),\s*(.+)$", r"\2 \1", "Curie, Marie")` → `"Marie Curie"`.
+
+---
+
+## When NOT to use regex
+
+```python
+"a,b,c".split(",")     # simple split — no regex needed
+"  hi  ".strip()       # trim — no regex needed
+text.replace("X", "Y") # fixed substring — no regex needed
+```
+
+Regex shines for *variable* patterns. For fixed strings, plain methods read better.
 
 ---
 
 ## Your turn
 
 `examples/session-09/practice.md`:
-1. Import from `grades.py`. 2. Build the validating `Student` class.
-3. Add `GradStudent` with `super()`. 4. Comprehension + `map` + `filter` + a generator.
+1. Email validator. 2. Extract dept+number. 3. Collapse whitespace.
+4. Count hashtags across responses. 5. Flip `"Last, First"`. 6. One case to use `.split()` instead.
 
 ---
 
 ## Traps recap
 
-- `self` is just "this instance" — not magic.
-- A generator iterates **once**, then it's empty.
-- The `__main__` guard keeps imported modules from running their demo code.
-- Don't reach for a class when a function or dict will do.
+- `.` matches **any** char — use `\.` for a literal dot.
+- Forgetting `r"..."` breaks your backslashes.
+- `re.search` returns `None` on no match — guard before `.group()`.
+- Don't use regex where a string method is clearer.
 
 ## Summary
-You can structure code into modules and classes and write idiomatic Python.
-**Next (optional):** the capstone — put it all together.
+You can validate, extract, and clean real-world text.
+**Next:** organize code into modules and classes.
 
 </script>
 <script type="text/markdown" id="practice-md">
-# Session 9 — Practice (25 min): Modules, OOP & Pythonic
+# Session 9 — Practice (25 min): Regular Expressions
 
-Files in this folder: `grades.py` (a module you import), `demo.py` (worked example).
+Always use raw strings `r"..."`. Predict each result before running.
 
-## Task 1 — Use a module
-From a new file, `from grades import letter_grade, class_average` and call both. Why does the
-`if __name__ == "__main__":` block in `grades.py` NOT run when you import it?
+## Task 1 — Validate
+Write `valid_university_email(addr)` returning `True` only for `something@something.edu`.
+Test: `"ana@university.edu"`, `"ana@gmail.com"`, `"a@b.edu.evil.com"`.
 
-## Task 2 — A class with a validating property
-Build `Student(name, gpa)` with:
-- `__str__` → `"Ana: 3.9 (Good)"`,
-- `standing()` → `"Good"` if gpa ≥ 2.0 else `"Probation"`,
-- a `@property` setter for `gpa` that raises `ValueError` outside 0–4.
-Prove the setter rejects `5.0`.
+## Task 2 — Extract with groups
+From `"Course ED1234 meets Tue"`, pull the department (`ED`) and number (`1234`) using one
+regex with two capture groups.
 
-## Task 3 — Inheritance
-Add `GradStudent(Student)` that also stores an `advisor` and uses `super().__init__(...)`.
-Override `__str__` to append the advisor.
+## Task 3 — Clean
+Collapse all runs of whitespace in `"  too    much\t space "` to single spaces and trim.
 
-## Task 4 — The Pythonic toolkit
-Given a roster of `Student`s:
-1. names in good standing (list comprehension),
-2. uppercase names (`map`),
-3. at-risk students (`filter`),
-4. mean gpa via a **generator** that `yield`s each gpa — then show the generator is empty on a
-   second pass.
+## Task 4 — Mine free text
+From a list of open-ended responses, count how often each `#hashtag` appears
+(use `re.findall(r"#(\w+)", text)` and `collections.Counter`).
+
+## Task 5 — Reformat
+Turn `"Curie, Marie"` into `"Marie Curie"` with a single regex + groups.
+
+## Task 6 — Judgment
+Give one task where a plain string method (`.split()`, `.strip()`, `.replace()`) is the better,
+clearer choice than a regex.
 
 ---
 
 <details><summary>Show solutions</summary>
 
-See `demo.py` — it implements Tasks 2–4. Key points:
+See `demo.py` in this folder — it implements all six. Key lines:
 
 ```python
-@property
-def gpa(self): return self._gpa
-@gpa.setter
-def gpa(self, v):
-    if not 0 <= v <= 4: raise ValueError(...)
-    self._gpa = v
-
-class GradStudent(Student):
-    def __init__(self, name, gpa, advisor):
-        super().__init__(name, gpa)
-        self.advisor = advisor
-
-[s.name for s in roster if s.gpa >= 2.0]          # comprehension
-list(map(lambda s: s.name.upper(), roster))        # map
-[s.name for s in filter(lambda s: s.gpa < 2.0, roster)]   # filter
-def gpas(rs):
-    for s in rs: yield s.gpa                        # generator (exhausts after one pass)
+re.fullmatch(r"\w+@\w+\.edu", addr) is not None      # 1 (fullmatch anchors both ends)
+m = re.search(r"([A-Z]{2})(\d{4})", s); m.group(1), m.group(2)   # 2
+re.sub(r"\s+", " ", messy).strip()                   # 3
+from collections import Counter; Counter(re.findall(r"#(\w+)", text))   # 4
+m = re.search(r"^(.+),\s*(.+)$", s); f"{m.group(2)} {m.group(1)}"      # 5
 ```
-Task 1: the `__name__` guard is only `"__main__"` when the file is **run directly**; on `import`
-its `__name__` is `"grades"`, so the demo block is skipped — that's how a file can be both a
-runnable script and an importable module.
+Task 6: splitting `"a,b,c"` on commas is just `"a,b,c".split(",")` — no regex needed.
+Reach for regex only when the pattern is genuinely variable (digits, optional parts, anchors).
+```
+```
+Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and never forget the
+`r"..."` prefix or your backslashes become Python escape sequences.
 
 
 </details>
 
 </script>
 <script type="text/markdown" id="quiz-md">
-### Quiz — Modules, OOP & Pythonic
-1. In a class, what is `self`?
-2. What happens if you iterate a generator twice?
-3. Why doesn't a module's `if __name__ == "__main__":` block run when you `import` it?
-4. What does a `@property` setter let you do that a plain attribute can't?
+### Quiz — Regular Expressions
+1. In regex, what does `.` match? How do you match a literal dot?
+2. Why write regex patterns as raw strings `r"..."`?
+3. Which function do you use to (a) check the *whole* string matches, and (b) replace matches?
+4. What does `re.search` return when there's no match, and what must you do before `.group()`?
 
 <details><summary>Show answers</summary>
 
-**Answers:** 1. The current instance ("this particular object"). 2. The second pass is empty —
-a generator is exhausted after one iteration. 3. On import, `__name__` is the module's name, not
-`"__main__"`, so the block is skipped. 4. Validate (or transform) the value on every assignment,
-so the object can reject bad data.
+**Answers:** 1. Any character (except newline); use `\.` for a literal dot. 2. So backslashes
+aren't treated as Python string escapes. 3. (a) `re.fullmatch`, (b) `re.sub`. 4. It returns
+`None`; check `if m:` before calling `m.group()` or you'll hit an `AttributeError`.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "modules_oop_pythonic.py", "code": "# A small class with a validating @property\nclass Student:\n    def __init__(self, name, gpa):\n        self.name = name\n        self.gpa = gpa             # runs through the setter (validates!)\n    def __str__(self):\n        return f\"{self.name} ({self.gpa})\"\n    @property\n    def gpa(self):\n        return self._gpa\n    @gpa.setter\n    def gpa(self, value):\n        if not 0 <= value <= 4:\n            raise ValueError(f\"gpa {value} out of 0-4\")\n        self._gpa = value\n\nroster = [Student(\"Ana\", 3.9), Student(\"Ben\", 1.8)]\nprint([str(s) for s in roster])\ntry:\n    roster[0].gpa = 5.0            # rejected by the setter\nexcept ValueError as e:\n    print(\"rejected:\", e)\n\n# The Pythonic toolkit\nprint(\"good standing:\", [s.name for s in roster if s.gpa >= 2.0])   # comprehension\nprint(\"upper:\", list(map(lambda s: s.name.upper(), roster)))        # map\n\ndef gpas(students):                # generator: yields one value at a time\n    for s in students:\n        yield s.gpa\ng = gpas(roster)\nprint(\"first pass: \", list(g))\nprint(\"second pass:\", list(g))     # [] - a generator is exhausted after one pass\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "regex_basics.py", "code": "import re\n\n# Validate a university email. Raw string r\"...\" keeps backslashes literal;\n# \\. means a LITERAL dot (a bare . would match any character).\nfor addr in [\"ana@university.edu\", \"ana@gmail.com\", \"ana@@x.edu\"]:\n    print(addr, \"->\", re.fullmatch(r\"\\w+@\\w+\\.edu\", addr) is not None)\n\n# Extract pieces with capture groups\nm = re.search(r\"([A-Z]{2})(\\d{4})\", \"Course ED1234 meets Tue\")\nprint(\"dept:\", m.group(1), \"| number:\", m.group(2))\n\n# Clean and mine free-text responses\nprint(re.sub(r\"\\s+\", \" \", \"too    much   space\"))             # collapse whitespace\nprint(re.findall(r\"#(\\w+)\", \"loved #python and #stats!\"))     # all hashtags\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

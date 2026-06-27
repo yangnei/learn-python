@@ -1,60 +1,79 @@
-# Session 6 — Practice (25 min)
+# Session 6 — Practice (30 min): Recursion & Recursive Thinking
 
-## Task 1 — `safe_int`
-Write `safe_int(value)` returning `int(value)` or `None` on failure. Test on
-`"42"`, `"N/A"`, `""`, `None`, `3.0`.
+## Task 1 — Recursive sum
+Write `rsum(n)` that adds `1 + 2 + ... + n` **with recursion** (no loop).
+Name the base case out loud before you write it. Test `rsum(5)` and `rsum(0)`.
 
-## Task 2 — Clean a survey column
-Given `raw = ["5","3","N/A","7","","1","two","4"]`, produce:
-- `clean` — list of valid Likert ints (1–5), and
-- `rejected` — list of `(value, reason)` pairs.
-Use a `clean_likert(n)` that **raises** `ValueError` for out-of-range or non-ints.
+## Task 2 — Recursion vs iteration
+Write `reverse(s)` that reverses a string recursively. Then write the loop version.
+Which reads more clearly to you? Test `reverse("data")`.
 
-## Task 3 — Write a test
-Put `clean_likert` in `clean.py` and write `test_clean.py` with pytest:
-one passing case and one `pytest.raises(ValueError)` case. Run `pytest`.
+## Task 3 — Flatten nested data
+Write `flatten(xs)` that turns a list-of-lists (nested to any depth) into one flat list:
+`flatten([1, [2, [3, 4]], 5])` → `[1, 2, 3, 4, 5]`. This is the move for nested JSON/exports.
 
-## Task 4 — Discuss
-Why is `except:` (bare) dangerous? Give one error it would hide that you'd rather see.
+## Task 4 — How deep does it go?
+Write `depth(xs)` returning how deeply a list is nested:
+`depth([1, [2, [3, [4]]]])` → `4`, `depth([1, 2, 3])` → `1`, `depth(5)` → `0`.
+
+## Task 5 — Trap check
+1. Why does this raise `RecursionError`, and what's the fix?
+   ```python
+   def f(n):
+       return n + f(n - 1)
+   ```
+2. This returns `None` instead of a number — why?
+   ```python
+   def fact(n):
+       if n <= 1:
+           return 1
+       n * fact(n - 1)
+   ```
+3. Name one case where a plain loop is the better choice over recursion.
 
 ---
 ## Solutions
 
 ```python
-def safe_int(value):
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return None
+# 1
+def rsum(n):
+    if n == 0:                      # base case
+        return 0
+    return n + rsum(n - 1)
+print(rsum(5), rsum(0))             # 15 0
 
-def clean_likert(n):
-    if isinstance(n, bool) or not isinstance(n, int):
-        raise ValueError(f"{n!r} not an int")
-    if not 1 <= n <= 5:
-        raise ValueError(f"{n} outside 1–5")
-    return n
+# 2
+def reverse(s):
+    if s == "":                     # base case: empty string
+        return ""
+    return reverse(s[1:]) + s[0]    # all-but-first, reversed, then first
+print(reverse("data"))             # "atad"
+# loop version: "".join(reversed(s))  — usually clearer for flat strings
 
-raw = ["5","3","N/A","7","","1","two","4"]
-clean, rejected = [], []
-for r in raw:
-    try:
-        clean.append(clean_likert(safe_int(r)))
-    except ValueError as e:
-        rejected.append((r, str(e)))
-print(clean)      # [5, 3, 1, 4]
-print(rejected)   # [('N/A', ...), ('7', ...), ('', ...), ('two', ...)]
+# 3
+def flatten(xs):
+    out = []
+    for x in xs:
+        if isinstance(x, list):
+            out.extend(flatten(x))  # recurse into the sub-list
+        else:
+            out.append(x)
+    return out
+print(flatten([1, [2, [3, 4]], 5]))   # [1, 2, 3, 4, 5]
+
+# 4
+def depth(xs):
+    if not isinstance(xs, list):
+        return 0                              # a non-list has no nesting
+    return 1 + max((depth(x) for x in xs), default=0)
+print(depth([1, [2, [3, [4]]]]), depth([1, 2, 3]), depth(5))   # 4 1 0
+
+# 5
+# 1) No reachable base case -> the calls never stop -> stack overflows.
+#    Fix: add `if n == 0: return 0` (or n <= 0) at the top.
+# 2) The recursive case computes n*fact(n-1) but never RETURNs it,
+#    so the function falls off the end and returns None. Add `return`.
+# 3) A loop is better when the work is a simple flat sequence, or when the
+#    depth could exceed ~1000 (Python has no tail-call optimization, so deep
+#    recursion hits RecursionError where a loop would be fine).
 ```
-
-```python
-# test_clean.py
-import pytest
-from clean import clean_likert
-def test_ok():   assert clean_likert(3) == 3
-def test_bad():
-    with pytest.raises(ValueError):
-        clean_likert(9)
-```
-
-Task 4: a bare `except:` also catches `KeyboardInterrupt` (Ctrl+C) and `NameError`
-from your own typos — so a misspelled variable would be silently swallowed instead of
-showing you the bug. Always catch the specific exception you expect.

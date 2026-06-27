@@ -70,7 +70,7 @@ learn-python/
 ├── slides/
 │   └── session-01..10-slides.md    ← Marp-compatible slide decks (one per session)
 ├── examples/
-│   └── session-01..10/             ← runnable demo.py + practice.md (+ sample CSVs in S7)
+│   └── session-01..10/             ← runnable demo.py + practice.md (+ sample CSVs in S8)
 ├── cheatsheets/
 │   ├── traps-and-gotchas.md        ← the quirks, wrong-vs-right, all verified
 │   ├── quick-reference.md          ← syntax you'll forget
@@ -98,11 +98,11 @@ learn-python/
 | 3 | Control Flow: Conditionals & Loops |
 | 4 | Data Structures (list/tuple/dict/set) |
 | 5 | Functions, Scope & Reusability |
-| 6 | Exceptions & Defensive Code |
-| 7 | Files, Libraries & Research Data |
-| 8 | Regular Expressions & Text Cleaning |
-| 9 | Modules, OOP & the Pythonic Toolkit |
-| 10 | Recursion & Recursive Thinking |
+| 6 | Recursion & Recursive Thinking |
+| 7 | Exceptions & Defensive Code |
+| 8 | Files, Libraries & Research Data |
+| 9 | Regular Expressions & Text Cleaning |
+| 10 | Modules, OOP & the Pythonic Toolkit |
 | 11 | Capstone (optional) |
 
 ## How to render the slides (optional)
@@ -114,14 +114,14 @@ They also read fine as-is in any Markdown viewer.
 Each `examples/session-XX/demo.py` is self-contained:
 ```bash
 cd examples/session-02 && python3 traps_demo.py
-cd examples/session-07 && python3 demo.py     # reads the bundled CSVs
+cd examples/session-08 && python3 demo.py     # reads the bundled CSVs
 ```
-Requires Python 3.11+. The only optional third-party packages are `pytest` (Session 6 test)
-and `pandas` (Session 7 teaser); everything else is the standard library.
+Requires Python 3.11+. The only optional third-party packages are `pytest` (Session 7 test)
+and `pandas` (Session 8 teaser); everything else is the standard library.
 
 ## Scaling to the available time
-- **~8 hours:** fold the Pythonic-toolkit half of S9 into S4/S5, drop the pandas teaser, and treat
-  recursion (S10) as optional self-study.
+- **~8 hours:** fold the Pythonic-toolkit half of S10 into S4/S5 and drop the pandas teaser
+  (recursion, S6, stays — it's a core skill, not an add-on).
 - **10 hours:** run S1–S10 as written (recommended).
 - **11 hours:** add the S11 capstone.
 

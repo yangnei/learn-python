@@ -141,4 +141,4 @@ Type hints document intent. **They are NOT enforced at runtime** (`mypy` checks 
 
 ## Summary
 You can write reusable, documented, reproducible functions.
-**Next:** make them survive messy real-world input — exceptions.
+**Next:** functions that call themselves — recursion.

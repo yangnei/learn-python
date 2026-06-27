@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Session 7 — Files, Libraries &amp; Research Data</title>
+<title>Session 7 — Exceptions &amp; Defensive Code</title>
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
 </head>
 <body data-page="session-07">
-<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Exceptions &amp; Defensive Code">S6</a><a href="session-07.html" class="active" data-page="session-07" title="Files, Libraries &amp; Research Data">S7</a><a href="session-08.html" data-page="session-08" title="Regular Expressions &amp; Text Cleaning">S8</a><a href="session-09.html" data-page="session-09" title="Modules, OOP &amp; the Pythonic Toolkit">S9</a><a href="session-10.html" data-page="session-10" title="Recursion &amp; Recursive Thinking">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Recursion &amp; Recursive Thinking">S6</a><a href="session-07.html" class="active" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a></nav></div></header>
 <main>
 
 <article>
@@ -31,196 +31,221 @@
 </main>
 <script type="text/markdown" id="lesson-md">
 # Session 7
-## Files, Libraries & Research Data
+## Exceptions & Defensive Code
 
-The hour your actual data shows up.
+Real research data is dirty. Make code that survives it.
 
 ---
 
-## Opening files with `with`
+## try / except
 
 ```python
-with open("notes.txt") as f:
-    text = f.read()
-# file auto-closes here, even if the code crashes
+try:
+    n = int(value)
+except ValueError:
+    n = None        # handle the bad case
 ```
 
-`with` = a context manager: sets up and tears down the resource for you.
-Always prefer it to a bare `open()`/`close()`.
+When code might fail at runtime, wrap it. The `except` catches the named error.
 
 ---
 
-## File modes (mind the trap)
+## Common exception types
 
-| Mode | Meaning |
+| Exception | Happens when |
 |---|---|
-| `"r"` | read (default) |
-| `"w"` | write — **truncates the file to empty first!** |
-| `"a"` | append |
-| `"r+"` | read + write |
-
-⚠️ Open the wrong file with `"w"` → its contents are gone.
-
----
-
-## Reading text
-
-```python
-with open("notes.txt") as f:
-    whole = f.read()           # one big string
-    # or
-    for line in f:             # line by line (memory-friendly)
-        print(line.rstrip())
-```
-
-⚠️ A file object is exhausted after one pass — re-open to read again.
+| `ValueError` | right type, bad value: `int("N/A")` |
+| `TypeError` | wrong type: `5 > "5"` |
+| `KeyError` | missing dict key: `d["nope"]` |
+| `IndexError` | bad list index: `xs[99]` |
+| `ZeroDivisionError` | `x / 0` |
+| `FileNotFoundError` | `open("missing.csv")` |
 
 ---
 
-## CSV in, as dicts 🧠
+## try / except / else / finally
 
 ```python
-import csv
-with open("students.csv", newline="") as f:
-    for row in csv.DictReader(f):
-        print(row["name"], row["score"])   # row is a dict keyed by header
-```
-
-`csv.DictReader` turns each row into a dict — your "list of dicts" dataset from Session 4.
-(`newline=""` avoids blank rows on Windows.)
-
----
-
-## CSV out
-
-```python
-with open("summary.csv", "w", newline="") as f:
-    w = csv.DictWriter(f, fieldnames=["name", "score"])
-    w.writeheader()
-    w.writerow({"name": "Ana", "score": 91})
+try:
+    n = int(value)
+except ValueError:
+    print("not a number")
+else:
+    print("ok:", n)      # only if NO exception
+finally:
+    print("always runs")  # cleanup
 ```
 
 ---
 
-## Libraries a researcher reaches for
+## Raise your own
 
 ```python
-import statistics
-statistics.mean(xs); statistics.median(xs); statistics.stdev(xs)
-
-import random
-random.choice(xs); random.randint(1, 6); random.shuffle(xs)
-
-from datetime import date
-date.today()
-
-from pathlib import Path
-Path("students.csv").exists()
+def clean_likert(n):
+    if not 1 <= n <= 5:
+        raise ValueError(f"{n} not in 1–5")
+    return n
 ```
 
-`pip install <package>` for third-party libs.
+`raise` throws an exception on purpose — caller decides how to handle it.
 
 ---
 
-## The pandas teaser (your next course)
+## EAFP vs LBYL
 
 ```python
-import pandas as pd
-df = pd.read_csv("students.csv")
-df["score"].describe()      # count, mean, std, min, quartiles, max
-df.groupby("major")["score"].mean()
+# LBYL — "look before you leap"
+if value.isdigit():
+    n = int(value)
+
+# EAFP — "easier to ask forgiveness" (Pythonic)
+try:
+    n = int(value)
+except ValueError:
+    n = None
 ```
 
-Everything you did by hand today — in three lines.
-We learned the fundamentals *underneath* it first.
+Both valid. EAFP shines when "checking first" is hard or racy.
+
+---
+
+## assert (developer check, not validation)
+
+```python
+assert len(scores) > 0, "scores must not be empty"
+```
+
+For *your* sanity checks while developing. Can be disabled (`python -O`),
+so **never** use `assert` to validate untrusted input — use `raise`.
+
+---
+
+## A first test with pytest
+
+```python
+# clean.py
+def clean_likert(n):
+    if not 1 <= n <= 5:
+        raise ValueError("1–5 only")
+    return n
+
+# test_clean.py
+import pytest
+from clean import clean_likert
+
+def test_valid():    assert clean_likert(3) == 3
+def test_invalid():
+    with pytest.raises(ValueError):
+        clean_likert(9)
+```
+Run: `pytest`
 
 ---
 
 ## Your turn
 
-`examples/session-07/practice.md` (uses `survey.csv`):
-1. Read `students.csv`; print class mean with `statistics.mean`.
-2. Compute per-item survey means; write `survey_summary.csv`.
+`examples/session-07/practice.md`:
+1. `safe_int(value)` returning int or None.
+2. Clean a dirty survey list, collecting good values + a rejection log.
+3. Write one `pytest` test.
 
 ---
 
 ## Traps recap
 
-- `"w"` silently overwrites — be sure of the filename.
-- `csv` module → open with `newline=""`.
-- Files exhaust after one read; re-open to re-read.
-- Specify `encoding="utf-8"` for non-ASCII text.
+- **Never** bare `except:` — name the exception.
+- Don't catch too broadly or swallow errors silently.
+- `assert` ≠ input validation (use `raise`).
+- Catch the *specific* error you expect.
 
 ## Summary
-You can load, summarize, and write real research data.
-**Next:** clean and validate text with regular expressions.
+You can validate messy input and fail loudly when you should.
+**Next:** read that messy data from real files.
 
 </script>
 <script type="text/markdown" id="practice-md">
 # Session 7 — Practice (25 min)
 
-Files provided: `students.csv`, `survey.csv`.
+## Task 1 — `safe_int`
+Write `safe_int(value)` returning `int(value)` or `None` on failure. Test on
+`"42"`, `"N/A"`, `""`, `None`, `3.0`.
 
-## Task 1 — Read & summarize students
-Read `students.csv` with `csv.DictReader`. Remember the values are **strings** — convert
-`score` to `int`. Print the class mean and median with the `statistics` module.
+## Task 2 — Clean a survey column
+Given `raw = ["5","3","N/A","7","","1","two","4"]`, produce:
+- `clean` — list of valid Likert ints (1–5), and
+- `rejected` — list of `(value, reason)` pairs.
+Use a `clean_likert(n)` that **raises** `ValueError` for out-of-range or non-ints.
 
-## Task 2 — Mean by major
-Build `{major: mean_score}`. (Hint: `dict.setdefault(key, []).append(...)`.)
+## Task 3 — Write a test
+Put `clean_likert` in `clean.py` and write `test_clean.py` with pytest:
+one passing case and one `pytest.raises(ValueError)` case. Run `pytest`.
 
-## Task 3 — Clean & summarize the survey
-`survey.csv` has `"N/A"` and blanks in numeric columns. For each `q*` item, compute the
-mean of the **valid** values only, and how many were valid. Write `survey_summary.csv`
-with columns `item,mean,n_valid`.
-
-## Task 4 — pandas teaser (optional)
-If `pandas` is installed: `pd.read_csv("students.csv")["score"].describe()`. Compare the
-mean to your hand-computed one.
-
-## Trap check
-What happens if you accidentally open `students.csv` with mode `"w"` before reading it?
+## Task 4 — Discuss
+Why is `except:` (bare) dangerous? Give one error it would hide that you'd rather see.
 
 ---
 
 <details><summary>Show solutions</summary>
 
-See `demo.py` in this folder — it implements Tasks 1–3 exactly. Key lines:
-
 ```python
-scores = [int(s["score"]) for s in students]     # convert strings!
-statistics.mean(scores)                           # 75.5
+def safe_int(value):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return None
 
-by_major = {}
-for s in students:
-    by_major.setdefault(s["major"], []).append(int(s["score"]))
+def clean_likert(n):
+    if isinstance(n, bool) or not isinstance(n, int):
+        raise ValueError(f"{n!r} not an int")
+    if not 1 <= n <= 5:
+        raise ValueError(f"{n} outside 1–5")
+    return n
 
-def to_int(x):
-    try: return int(x)
-    except (ValueError, TypeError): return None   # handles N/A and ""
+raw = ["5","3","N/A","7","","1","two","4"]
+clean, rejected = [], []
+for r in raw:
+    try:
+        clean.append(clean_likert(safe_int(r)))
+    except ValueError as e:
+        rejected.append((r, str(e)))
+print(clean)      # [5, 3, 1, 4]
+print(rejected)   # [('N/A', ...), ('7', ...), ('', ...), ('two', ...)]
 ```
 
-Trap: opening with `"w"` **truncates the file to empty immediately** — your data is gone
-before you ever read it. Use `"r"` (the default) to read.
+```python
+# test_clean.py
+import pytest
+from clean import clean_likert
+def test_ok():   assert clean_likert(3) == 3
+def test_bad():
+    with pytest.raises(ValueError):
+        clean_likert(9)
+```
+
+Task 4: a bare `except:` also catches `KeyboardInterrupt` (Ctrl+C) and `NameError`
+from your own typos — so a misspelled variable would be silently swallowed instead of
+showing you the bug. Always catch the specific exception you expect.
 
 
 </details>
 
 </script>
 <script type="text/markdown" id="quiz-md">
-### Quiz — Files & Data
-1. What does opening a file in `"w"` mode do to existing contents?
-2. Why prefer `with open(...)` over `open()`/`close()`?
-3. After `csv.DictReader`, what type is each row?
-4. CSV values read from a file are what type — and what must you do with numbers?
+### Quiz — Exceptions
+1. Which exception does `int("N/A")` raise?
+2. Why is a bare `except:` dangerous?
+3. When should you use `raise` vs `assert`?
+4. (Practical) Wrap `int(value)` so it returns `None` on failure.
 
 <details><summary>Show answers</summary>
 
-**Answers:** 1. Truncates it to empty immediately. 2. `with` auto-closes the file even if the
-code crashes. 3. A `dict` keyed by the header row. 4. Strings; convert with `int()`/`float()`.
+**Answers:** 1. `ValueError`. 2. It catches everything (even Ctrl+C and your own typos) and
+can hide bugs. 3. `raise` to validate real/untrusted input; `assert` for developer sanity
+checks (can be disabled). 4. `try: return int(value) except (ValueError, TypeError): return None`.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "read_csv_in_memory.py", "code": "import csv, statistics, io\n\n# A real CSV would be a file; here we read it from a string so it runs in-browser.\nDATA = \"\"\"name,major,score\nAna,Education,91\nBen,Psychology,58\nCara,Education,73\nDev,Sociology,64\nEve,Psychology,88\"\"\"\n\nrows = list(csv.DictReader(io.StringIO(DATA)))\nscores = [int(r[\"score\"]) for r in rows]      # CSV values are STRINGS \u2014 convert!\nprint(\"class mean:\", statistics.mean(scores))\n\nby_major = {}\nfor r in rows:\n    by_major.setdefault(r[\"major\"], []).append(int(r[\"score\"]))\nprint(\"by major:  \", {m: round(statistics.mean(v), 1) for m, v in by_major.items()})\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "clean_dirty_survey.py", "code": "def safe_int(v):\n    try:\n        return int(v)\n    except (ValueError, TypeError):\n        return None\n\ndef clean_likert(n):\n    if isinstance(n, bool) or not isinstance(n, int):\n        raise ValueError(f\"{n!r} not an int\")\n    if not 1 <= n <= 5:\n        raise ValueError(f\"{n} outside 1-5\")\n    return n\n\nraw = [\"5\", \"3\", \"N/A\", \"7\", \"\", \"1\", \"two\", \"4\"]\nclean, rejected = [], []\nfor r in raw:\n    try:\n        clean.append(clean_likert(safe_int(r)))\n    except ValueError as e:\n        rejected.append((r, str(e)))\nprint(\"clean:   \", clean)\nprint(\"rejected:\", rejected)\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

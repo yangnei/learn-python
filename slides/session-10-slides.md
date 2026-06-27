@@ -1,119 +1,141 @@
 ---
 marp: true
-title: "Session 10 — Recursion & Recursive Thinking"
+title: "Session 10 — Modules, OOP & the Pythonic Toolkit"
 paginate: true
 ---
 
 # Session 10
-## Recursion & Recursive Thinking
+## Modules, OOP & the Pythonic Toolkit
 
-A function that solves a problem by calling **itself** on a smaller piece.
-
----
-
-## The shape of every recursion
-
-```python
-def countdown(n):
-    if n <= 0:          # BASE CASE — when to stop
-        print("liftoff!")
-        return
-    print(n)
-    countdown(n - 1)    # RECURSIVE CASE — same problem, smaller input
-```
-
-Two parts, always:
-- a **base case** that stops, and
-- a **recursive case** that moves *toward* the base case.
+Organize code into reusable pieces — and finish with the moves experts use.
 
 ---
 
-## Trace the call stack
+## Modules: split your code into files
 
 ```python
-factorial(3)
-= 3 * factorial(2)
-=     3 * (2 * factorial(1))
-=         3 * (2 * 1)        # base case returns 1
-= 6
+# grades.py
+def letter_grade(score): ...
+def class_average(scores): ...
+
+# analysis.py
+from grades import letter_grade, class_average
 ```
 
-Each call waits on the one inside it. The calls stack up, then unwind.
-
-🧠 Each pending call is a **stack frame** — that matters in a moment.
+A `.py` file is a **module**. `import` reuses its functions elsewhere → no copy-paste.
 
 ---
 
-## Recursion vs iteration
+## The `__main__` guard
 
 ```python
-def factorial(n):
-    if n <= 1:
-        return 1
-    return n * factorial(n - 1)   # ← must RETURN the call
-
-def factorial_loop(n):
-    total = 1
-    for k in range(2, n + 1):
-        total *= k
-    return total
+# grades.py
+if __name__ == "__main__":
+    print(letter_grade(85))   # runs ONLY when you execute grades.py directly
 ```
 
-Same answer. For flat counting, the **loop** is usually clearer.
+On `import grades`, `__name__` is `"grades"`, so the block is skipped.
+One file can be both a runnable script *and* an importable library.
 
 ---
 
-## Where recursion shines: nested data
+## OOP: model a domain entity
 
 ```python
-def deep_sum(obj):
-    if isinstance(obj, (int, float)):
-        return obj
-    if isinstance(obj, dict):
-        return sum(deep_sum(v) for v in obj.values())
-    if isinstance(obj, (list, tuple)):
-        return sum(deep_sum(x) for x in obj)
-    return 0
+class Student:
+    def __init__(self, name, gpa):   # constructor
+        self.name = name
+        self.gpa = gpa
+    def __str__(self):               # how it prints
+        return f"{self.name} ({self.gpa})"
 
-deep_sum([1, [2, [3, 4]], {"a": 6}])   # 16
+ana = Student("Ana", 3.9)
+print(ana)        # Ana (3.9)
 ```
 
-Nested JSON, folder trees, threaded replies — a single loop can't reach all the way down. Recursion can.
+🧠 A class is an *operational definition*: the attributes + behaviors that "count" as a Student.
+`self` = "this particular student."
 
 ---
 
-## The trap: no base case
+## @property: validate on assignment
 
 ```python
-def runaway(n):
-    return runaway(n + 1)     # never stops
+class Student:
+    ...
+    @property
+    def gpa(self):
+        return self._gpa
+    @gpa.setter
+    def gpa(self, value):
+        if not 0 <= value <= 4:
+            raise ValueError("gpa must be 0–4")
+        self._gpa = value
 ```
 
-```
-RecursionError: maximum recursion depth exceeded
+`ana.gpa = 5.0` now raises — the object defends its own integrity.
+
+---
+
+## Inheritance
+
+```python
+class GradStudent(Student):
+    def __init__(self, name, gpa, advisor):
+        super().__init__(name, gpa)    # reuse parent setup
+        self.advisor = advisor
+    def __str__(self):
+        return super().__str__() + f" — {self.advisor}"
 ```
 
-Python has **no tail-call optimization** — every call keeps its frame
-(default limit ≈ 1000). Deep recursion *will* hit the ceiling.
+`GradStudent` *is a* `Student` plus extra. `super()` calls the parent.
+
+---
+
+## The Pythonic toolkit (recap tour)
+
+```python
+[s.name for s in roster if s.gpa >= 2.0]   # comprehension (from S4)
+list(map(lambda s: s.name.upper(), roster))# map: apply to all
+list(filter(lambda s: s.gpa < 2.0, roster))# filter: keep matches
+for i, s in enumerate(roster): ...          # index + item
+for a, b in zip(names, scores): ...         # parallel
+```
+
+---
+
+## Generators & walrus
+
+```python
+def gpas(students):
+    for s in students:
+        yield s.gpa          # one value at a time — low memory on big data
+
+g = gpas(roster)
+list(g)   # [3.9, 1.8, ...]
+list(g)   # []  ← a generator is exhausted after one pass
+
+if (n := len(roster)) > 30:   # walrus := : assign + test in one step
+    print(f"{n} students")
+```
 
 ---
 
 ## Your turn
 
 `examples/session-10/practice.md`:
-1. Recursive `rsum(n)` — name the base case first.
-2. `flatten([1, [2, [3, 4]], 5])` → one flat list.
-3. `depth(...)` — how deeply is a list nested?
+1. Import from `grades.py`. 2. Build the validating `Student` class.
+3. Add `GradStudent` with `super()`. 4. Comprehension + `map` + `filter` + a generator.
 
 ---
 
 ## Traps recap
 
-- Every recursion needs a **reachable base case**, or it overflows the stack.
-- **Return** the recursive call — forgetting to gives you a silent `None`.
-- Recursion isn't free: each call costs a stack frame (no tail-call optimization).
-- A plain **loop** is better for flat sequences and for very deep work.
+- `self` is just "this instance" — not magic.
+- A generator iterates **once**, then it's empty.
+- The `__main__` guard keeps imported modules from running their demo code.
+- Don't reach for a class when a function or dict will do.
 
 ## Summary
-You can solve problems that are defined in terms of themselves — especially nested data.
-**Next (optional):** the capstone — put all ten sessions together.
+You can structure code into modules and classes and write idiomatic Python.
+**Next (optional):** the capstone — put it all together.

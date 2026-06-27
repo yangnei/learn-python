@@ -1,137 +1,119 @@
 ---
 marp: true
-title: "Session 6 — Exceptions & Defensive Code"
+title: "Session 6 — Recursion & Recursive Thinking"
 paginate: true
 ---
 
 # Session 6
-## Exceptions & Defensive Code
+## Recursion & Recursive Thinking
 
-Real research data is dirty. Make code that survives it.
+A function that solves a problem by calling **itself** on a smaller piece.
 
 ---
 
-## try / except
+## The shape of every recursion
 
 ```python
-try:
-    n = int(value)
-except ValueError:
-    n = None        # handle the bad case
+def countdown(n):
+    if n <= 0:          # BASE CASE — when to stop
+        print("liftoff!")
+        return
+    print(n)
+    countdown(n - 1)    # RECURSIVE CASE — same problem, smaller input
 ```
 
-When code might fail at runtime, wrap it. The `except` catches the named error.
+Two parts, always:
+- a **base case** that stops, and
+- a **recursive case** that moves *toward* the base case.
 
 ---
 
-## Common exception types
-
-| Exception | Happens when |
-|---|---|
-| `ValueError` | right type, bad value: `int("N/A")` |
-| `TypeError` | wrong type: `5 > "5"` |
-| `KeyError` | missing dict key: `d["nope"]` |
-| `IndexError` | bad list index: `xs[99]` |
-| `ZeroDivisionError` | `x / 0` |
-| `FileNotFoundError` | `open("missing.csv")` |
-
----
-
-## try / except / else / finally
+## Trace the call stack
 
 ```python
-try:
-    n = int(value)
-except ValueError:
-    print("not a number")
-else:
-    print("ok:", n)      # only if NO exception
-finally:
-    print("always runs")  # cleanup
+factorial(3)
+= 3 * factorial(2)
+=     3 * (2 * factorial(1))
+=         3 * (2 * 1)        # base case returns 1
+= 6
 ```
+
+Each call waits on the one inside it. The calls stack up, then unwind.
+
+🧠 Each pending call is a **stack frame** — that matters in a moment.
 
 ---
 
-## Raise your own
+## Recursion vs iteration
 
 ```python
-def clean_likert(n):
-    if not 1 <= n <= 5:
-        raise ValueError(f"{n} not in 1–5")
-    return n
+def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)   # ← must RETURN the call
+
+def factorial_loop(n):
+    total = 1
+    for k in range(2, n + 1):
+        total *= k
+    return total
 ```
 
-`raise` throws an exception on purpose — caller decides how to handle it.
+Same answer. For flat counting, the **loop** is usually clearer.
 
 ---
 
-## EAFP vs LBYL
+## Where recursion shines: nested data
 
 ```python
-# LBYL — "look before you leap"
-if value.isdigit():
-    n = int(value)
+def deep_sum(obj):
+    if isinstance(obj, (int, float)):
+        return obj
+    if isinstance(obj, dict):
+        return sum(deep_sum(v) for v in obj.values())
+    if isinstance(obj, (list, tuple)):
+        return sum(deep_sum(x) for x in obj)
+    return 0
 
-# EAFP — "easier to ask forgiveness" (Pythonic)
-try:
-    n = int(value)
-except ValueError:
-    n = None
+deep_sum([1, [2, [3, 4]], {"a": 6}])   # 16
 ```
 
-Both valid. EAFP shines when "checking first" is hard or racy.
+Nested JSON, folder trees, threaded replies — a single loop can't reach all the way down. Recursion can.
 
 ---
 
-## assert (developer check, not validation)
+## The trap: no base case
 
 ```python
-assert len(scores) > 0, "scores must not be empty"
+def runaway(n):
+    return runaway(n + 1)     # never stops
 ```
 
-For *your* sanity checks while developing. Can be disabled (`python -O`),
-so **never** use `assert` to validate untrusted input — use `raise`.
-
----
-
-## A first test with pytest
-
-```python
-# clean.py
-def clean_likert(n):
-    if not 1 <= n <= 5:
-        raise ValueError("1–5 only")
-    return n
-
-# test_clean.py
-import pytest
-from clean import clean_likert
-
-def test_valid():    assert clean_likert(3) == 3
-def test_invalid():
-    with pytest.raises(ValueError):
-        clean_likert(9)
 ```
-Run: `pytest`
+RecursionError: maximum recursion depth exceeded
+```
+
+Python has **no tail-call optimization** — every call keeps its frame
+(default limit ≈ 1000). Deep recursion *will* hit the ceiling.
 
 ---
 
 ## Your turn
 
 `examples/session-06/practice.md`:
-1. `safe_int(value)` returning int or None.
-2. Clean a dirty survey list, collecting good values + a rejection log.
-3. Write one `pytest` test.
+1. Recursive `rsum(n)` — name the base case first.
+2. `flatten([1, [2, [3, 4]], 5])` → one flat list.
+3. `depth(...)` — how deeply is a list nested?
 
 ---
 
 ## Traps recap
 
-- **Never** bare `except:` — name the exception.
-- Don't catch too broadly or swallow errors silently.
-- `assert` ≠ input validation (use `raise`).
-- Catch the *specific* error you expect.
+- Every recursion needs a **reachable base case**, or it overflows the stack.
+- **Return** the recursive call — forgetting to gives you a silent `None`.
+- Recursion isn't free: each call costs a stack frame (no tail-call optimization).
+- A plain **loop** is better for flat sequences and for very deep work.
 
 ## Summary
-You can validate messy input and fail loudly when you should.
-**Next:** read that messy data from real files.
+You can solve problems that are defined in terms of themselves — especially nested data.
+**Next:** make your code survive messy real-world input — exceptions.

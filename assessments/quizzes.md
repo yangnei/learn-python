@@ -67,55 +67,7 @@ list is created once and persists across calls; use `items=None` then create ins
 
 ---
 
-## Session 6 — Exceptions
-1. Which exception does `int("N/A")` raise?
-2. Why is a bare `except:` dangerous?
-3. When should you use `raise` vs `assert`?
-4. (Practical) Wrap `int(value)` so it returns `None` on failure.
-
-**Answers:** 1. `ValueError`. 2. It catches everything (even Ctrl+C and your own typos) and
-can hide bugs. 3. `raise` to validate real/untrusted input; `assert` for developer sanity
-checks (can be disabled). 4. `try: return int(value) except (ValueError, TypeError): return None`.
-
----
-
-## Session 7 — Files & Data
-1. What does opening a file in `"w"` mode do to existing contents?
-2. Why prefer `with open(...)` over `open()`/`close()`?
-3. After `csv.DictReader`, what type is each row?
-4. CSV values read from a file are what type — and what must you do with numbers?
-
-**Answers:** 1. Truncates it to empty immediately. 2. `with` auto-closes the file even if the
-code crashes. 3. A `dict` keyed by the header row. 4. Strings; convert with `int()`/`float()`.
-
----
-
-## Session 8 — Regular Expressions
-1. In regex, what does `.` match? How do you match a literal dot?
-2. Why write regex patterns as raw strings `r"..."`?
-3. Which function do you use to (a) check the *whole* string matches, and (b) replace matches?
-4. What does `re.search` return when there's no match, and what must you do before `.group()`?
-
-**Answers:** 1. Any character (except newline); use `\.` for a literal dot. 2. So backslashes
-aren't treated as Python string escapes. 3. (a) `re.fullmatch`, (b) `re.sub`. 4. It returns
-`None`; check `if m:` before calling `m.group()` or you'll hit an `AttributeError`.
-
----
-
-## Session 9 — Modules, OOP & Pythonic
-1. In a class, what is `self`?
-2. What happens if you iterate a generator twice?
-3. Why doesn't a module's `if __name__ == "__main__":` block run when you `import` it?
-4. What does a `@property` setter let you do that a plain attribute can't?
-
-**Answers:** 1. The current instance ("this particular object"). 2. The second pass is empty —
-a generator is exhausted after one iteration. 3. On import, `__name__` is the module's name, not
-`"__main__"`, so the block is skipped. 4. Validate (or transform) the value on every assignment,
-so the object can reject bad data.
-
----
-
-## Session 10 — Recursion & Recursive Thinking
+## Session 6 — Recursion & Recursive Thinking
 1. What two parts must every recursive function have?
 2. What error comes from a base case that's never reached, and why doesn't Python just keep going?
 3. What does this `fact` return for `fact(4)`, and why?
@@ -135,6 +87,54 @@ limit (~1000). 3. `None` — the recursive case computes `n * fact(n-1)` but nev
 the function falls off the end. 4. A flat sequence, or work deep enough to exceed the recursion
 limit (a loop has no frame cost). 5. The data is *defined in terms of itself* (a list may contain
 lists), so a function defined in terms of itself mirrors its shape and can reach every level.
+
+---
+
+## Session 7 — Exceptions
+1. Which exception does `int("N/A")` raise?
+2. Why is a bare `except:` dangerous?
+3. When should you use `raise` vs `assert`?
+4. (Practical) Wrap `int(value)` so it returns `None` on failure.
+
+**Answers:** 1. `ValueError`. 2. It catches everything (even Ctrl+C and your own typos) and
+can hide bugs. 3. `raise` to validate real/untrusted input; `assert` for developer sanity
+checks (can be disabled). 4. `try: return int(value) except (ValueError, TypeError): return None`.
+
+---
+
+## Session 8 — Files & Data
+1. What does opening a file in `"w"` mode do to existing contents?
+2. Why prefer `with open(...)` over `open()`/`close()`?
+3. After `csv.DictReader`, what type is each row?
+4. CSV values read from a file are what type — and what must you do with numbers?
+
+**Answers:** 1. Truncates it to empty immediately. 2. `with` auto-closes the file even if the
+code crashes. 3. A `dict` keyed by the header row. 4. Strings; convert with `int()`/`float()`.
+
+---
+
+## Session 9 — Regular Expressions
+1. In regex, what does `.` match? How do you match a literal dot?
+2. Why write regex patterns as raw strings `r"..."`?
+3. Which function do you use to (a) check the *whole* string matches, and (b) replace matches?
+4. What does `re.search` return when there's no match, and what must you do before `.group()`?
+
+**Answers:** 1. Any character (except newline); use `\.` for a literal dot. 2. So backslashes
+aren't treated as Python string escapes. 3. (a) `re.fullmatch`, (b) `re.sub`. 4. It returns
+`None`; check `if m:` before calling `m.group()` or you'll hit an `AttributeError`.
+
+---
+
+## Session 10 — Modules, OOP & Pythonic
+1. In a class, what is `self`?
+2. What happens if you iterate a generator twice?
+3. Why doesn't a module's `if __name__ == "__main__":` block run when you `import` it?
+4. What does a `@property` setter let you do that a plain attribute can't?
+
+**Answers:** 1. The current instance ("this particular object"). 2. The second pass is empty —
+a generator is exhausted after one iteration. 3. On import, `__name__` is the module's name, not
+`"__main__"`, so the block is skipped. 4. Validate (or transform) the value on every assignment,
+so the object can reject bad data.
 
 ---
 

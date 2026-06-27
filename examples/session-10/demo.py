@@ -1,68 +1,77 @@
-"""Session 10 — Recursion & Recursive Thinking  (run me: python3 demo.py)."""
-
-import sys
-
-
-# 1) The shape of EVERY recursive function: a base case + a recursive case.
-def countdown(n):
-    if n <= 0:                 # BASE CASE — the stop condition
-        print("liftoff!")
-        return
-    print(n)
-    countdown(n - 1)           # RECURSIVE CASE — same problem, smaller input
-
-print("countdown:")
-countdown(3)
+"""
+Session 10 — Modules, OOP & the Pythonic Toolkit
+Run me from this folder:  python3 demo.py
+"""
+from grades import letter_grade, class_average   # import from our own module (grades.py)
 
 
-# 2) Recursion vs iteration: same answer, two styles. Each call adds a stack frame.
-def factorial(n):
-    if n <= 1:
-        return 1               # base case
-    return n * factorial(n - 1)   # remember to RETURN the recursive call
-
-def factorial_loop(n):
-    total = 1
-    for k in range(2, n + 1):
-        total *= k
-    return total
-
-print("\nfactorial(5):", factorial(5), "==", factorial_loop(5))
+# --- 1. Modules: reuse code from another file ---------------------------
+print("letter for 85:", letter_grade(85))
+print("average:", class_average([91, 58, 73]))
 
 
-# 3) Where recursion SHINES: naturally NESTED data, where one loop can't reach
-#    all the way down. This is shaped like a real nested-JSON export.
-export = {
-    "cohort": "2026",
-    "students": [
-        {"name": "Ana", "scores": [91, 88]},
-        {"name": "Ben", "scores": [58, [60, 64]]},   # arbitrarily nested
-    ],
-}
+# --- 2. OOP: model a domain entity --------------------------------------
+class Student:
+    def __init__(self, name: str, gpa: float):
+        self.name = name
+        self.gpa = gpa             # runs through the setter below (validates!)
 
-def deep_sum(obj):
-    """Add up every number found anywhere inside nested lists/dicts."""
-    if isinstance(obj, bool):                 # bool is an int subclass (Session 2!)
-        return 0
-    if isinstance(obj, (int, float)):
-        return obj
-    if isinstance(obj, dict):
-        return sum(deep_sum(v) for v in obj.values())
-    if isinstance(obj, (list, tuple)):
-        return sum(deep_sum(x) for x in obj)
-    return 0                                  # strings, None, etc. contribute nothing
+    def __str__(self) -> str:      # how the object prints
+        return f"{self.name}: {self.gpa} ({self.standing()})"
 
-print("\ndeep_sum of nested export:", deep_sum(export))   # 91+88+58+60+64 = 361
+    def standing(self) -> str:
+        return "Good" if self.gpa >= 2.0 else "Probation"
+
+    @property                       # makes .gpa look like an attribute...
+    def gpa(self) -> float:
+        return self._gpa
+
+    @gpa.setter                     # ...but validates on every assignment
+    def gpa(self, value: float):
+        if not 0 <= value <= 4:
+            raise ValueError(f"gpa {value} not in 0-4")
+        self._gpa = value
 
 
-# 4) The trap: with no reachable base case, recursion never stops. Python has no
-#    tail-call optimization, so it just piles up stack frames until it gives up.
-print("\nPython's recursion limit:", sys.getrecursionlimit())
-
-def runaway(n):
-    return runaway(n + 1)        # BUG: never reaches a base case
-
+ana = Student("Ana", 3.9)
+print("\n", ana)                    # uses __str__
 try:
-    runaway(0)
-except RecursionError:
-    print("RecursionError: maximum recursion depth exceeded (as expected)")
+    ana.gpa = 5.0                   # rejected by the setter
+except ValueError as e:
+    print("rejected:", e)
+
+
+# --- 3. Inheritance ------------------------------------------------------
+class GradStudent(Student):
+    def __init__(self, name, gpa, advisor):
+        super().__init__(name, gpa)     # reuse the parent's setup
+        self.advisor = advisor
+    def __str__(self):
+        return super().__str__() + f" — advised by {self.advisor}"
+
+print("\n", GradStudent("Ben", 3.4, "Dr. Lee"))
+
+
+# --- 4. The Pythonic toolkit --------------------------------------------
+roster = [Student("Ana", 3.9), Student("Ben", 1.8), Student("Cara", 3.2)]
+
+print("\ngood standing:", [s.name for s in roster if s.gpa >= 2.0])   # comprehension
+print("upper:", list(map(lambda s: s.name.upper(), roster)))         # map
+at_risk = filter(lambda s: s.gpa < 2.0, roster)                      # filter the objects
+print("at risk:", [s.name for s in at_risk])
+
+for i, s in enumerate(roster, start=1):                              # enumerate
+    print(i, s.name)
+
+# generator: produce values lazily; great for huge data
+def gpas(students):
+    for s in students:
+        yield s.gpa
+
+g = gpas(roster)
+print("\nmean gpa:", round(class_average(list(g)), 2))
+print("second pass:", list(g))     # [] — a generator is exhausted after one pass
+
+# walrus := : assign and test in one step
+if (n := len(roster)) > 2:
+    print(f"\n{n} students enrolled")

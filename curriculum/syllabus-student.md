@@ -23,11 +23,11 @@ is downloadable from the website if you want to read offline.)
 | 3 | **Control Flow: Conditionals & Loops** | `if/elif/else`, chained comparisons, `for`/`while`, `break`, `enumerate`/`zip`, validation loops | `slides/session-03` · `examples/session-03` |
 | 4 | **Data Structures** | Use `list/tuple/dict/set`, comprehensions, sorting, understand aliasing | `slides/session-04` · `examples/session-04` |
 | 5 | **Functions, Scope & Reuse** | Write reusable functions, `*args/**kwargs`, type hints; dodge the mutable-default bug | `slides/session-05` · `examples/session-05` |
-| 6 | **Exceptions & Defensive Code** | Validate messy input with `try/except`, raise errors, write a first test | `slides/session-06` · `examples/session-06` |
-| 7 | **Files, Libraries & Research Data** | Read/write CSV survey data, use `statistics`/`datetime`, `pip install`, pandas teaser | `slides/session-07` · `examples/session-07` |
-| 8 | **Regular Expressions & Text Cleaning** | Validate, extract, and clean real text with regex patterns & capture groups | `slides/session-08` · `examples/session-08` |
-| 9 | **Modules, OOP & the Pythonic Toolkit** | Import modules; build a small class with `@property`; use generators/`map`/`filter` | `slides/session-09` · `examples/session-09` |
-| 10 | **Recursion & Recursive Thinking** | Write functions that call themselves (base + recursive case), trace the call stack, recurse over nested data | `slides/session-10` · `examples/session-10` |
+| 6 | **Recursion & Recursive Thinking** | Write functions that call themselves (base + recursive case), trace the call stack, recurse over nested data | `slides/session-06` · `examples/session-06` |
+| 7 | **Exceptions & Defensive Code** | Validate messy input with `try/except`, raise errors, write a first test | `slides/session-07` · `examples/session-07` |
+| 8 | **Files, Libraries & Research Data** | Read/write CSV survey data, use `statistics`/`datetime`, `pip install`, pandas teaser | `slides/session-08` · `examples/session-08` |
+| 9 | **Regular Expressions & Text Cleaning** | Validate, extract, and clean real text with regex patterns & capture groups | `slides/session-09` · `examples/session-09` |
+| 10 | **Modules, OOP & the Pythonic Toolkit** | Import modules; build a small class with `@property`; use generators/`map`/`filter` | `slides/session-10` · `examples/session-10` |
 | 11 | **Capstone (optional)** | Build a Gradebook & Survey Analyzer end-to-end | `assessments/capstone-project` |
 
 Session 2 is the most load-bearing hour — if you deeply master one, make it that one.

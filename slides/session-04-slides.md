@@ -59,7 +59,7 @@ roster = [
 ```
 
 Each dict = a **row/respondent**; each key = a **variable/column**.
-This is your tidy dataset until pandas shows up (Session 7).
+This is your tidy dataset until pandas shows up (Session 8).
 
 ---
 

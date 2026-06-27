@@ -25,16 +25,16 @@ Write a program `analyzer.py` that:
 - [ ] conditionals / chained comparisons + loops with `enumerate`/`zip` (S3)
 - [ ] list of dicts + a comprehension + a dict (S4)
 - [ ] functions with docstrings + type hints; **no mutable default args** (S5)
-- [ ] `try/except` to survive dirty values; no bare `except:` (S6)
-- [ ] `csv.DictReader`/`DictWriter`, `statistics`, `with open(...)` (S7)
-- [ ] a module or a small class (S9); optionally a regex validation (S8)
+- [ ] `try/except` to survive dirty values; no bare `except:` (S7)
+- [ ] `csv.DictReader`/`DictWriter`, `statistics`, `with open(...)` (S8)
+- [ ] a module or a small class (S10); optionally a regex validation (S9)
 
 ## Stretch goals (pick any)
 - Validate student emails/IDs with a regex.
 - Add a `Student` class with a validating `@property` and use it to hold each record.
 - Use a **generator** to stream rows if the file were huge.
 - Read a **nested** export (e.g., grades grouped by class → student → attempts) and total it with
-  a **recursive** `deep_sum` (S10).
+  a **recursive** `deep_sum` (S6).
 - Add a `--top N` command-line argument with `sys.argv` or `argparse`.
 - Sort and print the top/bottom 3 students by score.
 
