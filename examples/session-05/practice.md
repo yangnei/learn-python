@@ -16,6 +16,16 @@ the list grow. Then fix it with the `None` pattern and prove each call starts fr
 Write `summary(*scores)` that returns a dict `{"n":..., "mean":..., "max":..., "min":...}`.
 Call it both as `summary(91, 58, 73)` and as `summary(*my_list)`.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+def f(a, *, b):          # everything after * is keyword-only
+    return a, b
+print(f(1, b=2))                     # -> (1, 2)
+print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into arguments)
+```
+
 ---
 ## Solutions
 

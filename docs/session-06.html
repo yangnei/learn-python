@@ -183,6 +183,18 @@ Write `depth(xs)` returning how deeply a list is nested:
    ```
 3. Name one case where a plain loop is the better choice over recursion.
 
+## Bonus — Pythonic idiom drill
+One decorator makes exponential recursion instant by remembering past calls.
+
+```python
+import functools
+
+@functools.cache                     # memoize: each n is computed once
+def fib(n):
+    return n if n < 2 else fib(n - 1) + fib(n - 2)
+print(fib(35))                       # -> 9227465   (try this WITHOUT @cache... then wait)
+```
+
 ---
 
 <details><summary>Show solutions</summary>
@@ -261,7 +273,7 @@ lists), so a function defined in terms of itself mirrors its shape and can reach
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "recursion.py", "code": "# Recursion = base case (stop) + recursive case (smaller problem). Predict, then Run.\ndef factorial(n):\n    if n <= 1:                 # BASE CASE\n        return 1\n    return n * factorial(n - 1)   # RECURSIVE CASE (remember to return!)\n\nprint(\"factorial(5):\", factorial(5))\n\n# Recursion shines on NESTED data, where a single loop can't reach all the way down.\ndef deep_sum(obj):\n    if isinstance(obj, bool):              # bool is an int subclass (Session 2!)\n        return 0\n    if isinstance(obj, (int, float)):\n        return obj\n    if isinstance(obj, (list, tuple)):\n        return sum(deep_sum(x) for x in obj)\n    if isinstance(obj, dict):\n        return sum(deep_sum(v) for v in obj.values())\n    return 0\n\nnested = [1, [2, 3, [4, 5]], {\"a\": 6, \"b\": [7, 8]}]\nprint(\"deep_sum:\", deep_sum(nested))   # 1+2+3+4+5+6+7+8 = 36\n\n# Missing base case -> infinite recursion -> RecursionError. Uncomment to see it:\n# def oops(n): return oops(n + 1)\n# oops(0)\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "recursion.py", "code": "# Recursion = base case (stop) + recursive case (smaller problem). Predict, then Run.\ndef factorial(n):\n    if n <= 1:                 # BASE CASE\n        return 1\n    return n * factorial(n - 1)   # RECURSIVE CASE (remember to return!)\n\nprint(\"factorial(5):\", factorial(5))\n\n# Recursion shines on NESTED data, where a single loop can't reach all the way down.\ndef deep_sum(obj):\n    if isinstance(obj, bool):              # bool is an int subclass (Session 2!)\n        return 0\n    if isinstance(obj, (int, float)):\n        return obj\n    if isinstance(obj, (list, tuple)):\n        return sum(deep_sum(x) for x in obj)\n    if isinstance(obj, dict):\n        return sum(deep_sum(v) for v in obj.values())\n    return 0\n\nnested = [1, [2, 3, [4, 5]], {\"a\": 6, \"b\": [7, 8]}]\nprint(\"deep_sum:\", deep_sum(nested))   # 1+2+3+4+5+6+7+8 = 36\n\n# Memoization: @cache remembers past calls, turning exponential fibonacci into instant.\nimport functools\n@functools.cache\ndef fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\nprint(\"fib(35):\", fib(35))             # 9227465 \u2014 try removing @cache, then wait...\n\n# Missing base case -> infinite recursion -> RecursionError. Uncomment to see it:\n# def oops(n): return oops(n + 1)\n# oops(0)\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

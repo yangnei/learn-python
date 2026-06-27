@@ -26,6 +26,16 @@ for x in xs:
         xs.remove(x)
 ```
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+nums = [80, 92, 45]
+print(all(n >= 60 for n in nums))    # -> False   (45 fails)
+print(any(n >= 90 for n in nums))    # -> True    (92 passes)
+print(92 in nums, 60 in nums)        # -> True False
+```
+
 ---
 ## Solutions
 

@@ -44,6 +44,11 @@ print(f"{name} scored {score:.1f}")          # one decimal
 print(f"{n_students:,} students")            # thousands separator
 print("int('42') + 8 =", int("42") + 8)      # convert text to number
 print("int(3.9) =", int(3.9), "| round(3.9) =", round(3.9))
+
+x, y = 1, 2; x, y = y, x                      # the Pythonic swap — no temp variable
+print("swapped:", x, y)
+print(f"{score = }")                          # self-documenting f-string (great for debugging)
+print(name.upper(), "| 'da' in name:", "da" in name)   # string method + membership
 '''}],
     2: [
         {"title": "the_traps.py", "code": '''\
@@ -95,6 +100,8 @@ for name, score in zip(names, scores):        # two lists together
     print(f"{name}: {'PASS' if score >= 60 else 'FAIL'}")
 
 print("passes:", sum(s >= 60 for s in scores))  # bools sum!
+print("all pass?", all(s >= 60 for s in scores)) # any()/all() over a generator
+print("any fail?", any(s < 60 for s in scores))
 '''}],
     4: [{"title": "structures_and_aliasing.py", "code": '''\
 roster = [{"name": "Ana", "score": 91},
@@ -110,6 +117,11 @@ a = [1, 2, 3]; b = a; a.append(4)
 print("alias b:", b)        # [1, 2, 3, 4]
 c = a.copy(); a.append(5)
 print("copy  c:", c)        # unaffected
+
+head, *tail = [10, 20, 30]
+print("unpack:", head, tail)            # 10 [20, 30]  (star-unpacking)
+print("merge: ", {"a": 1} | {"b": 2})   # {'a': 1, 'b': 2}  (dict union, 3.9+)
+print("set & :", {1, 2, 3} & {2, 3, 4}) # {2, 3}  (set intersection)
 '''}],
     5: [{"title": "mutable_default_bug.py", "code": '''\
 def add_bad(name, roster=[]):     # BUG: default list is shared across calls
@@ -127,6 +139,11 @@ def add_ok(name, roster=None):    # FIX: default None, create inside
 
 print("FIXED:", add_ok("Ana"))    # ['Ana']
 print("FIXED:", add_ok("Ben"))    # ['Ben']
+
+def report(name, *, verbose=False):    # everything after * is keyword-only
+    return f"{name} (full)" if verbose else name
+print("kw-only: ", report("Ana", verbose=True))
+print("**unpack:", report(**{"name": "Ben", "verbose": False}))   # ** spreads a dict
 '''}],
     7: [{"title": "clean_dirty_survey.py", "code": '''\
 def safe_int(v):
@@ -151,6 +168,15 @@ for r in raw:
         rejected.append((r, str(e)))
 print("clean:   ", clean)
 print("rejected:", rejected)
+
+# Your own exception type + assert (a cheap internal sanity check):
+class LikertError(ValueError):
+    pass
+print("subclass of ValueError?", issubclass(LikertError, ValueError))   # True
+try:
+    assert 1 == 2, "values differ"
+except AssertionError as e:
+    print("assert caught:", e)
 '''}],
     8: [{"title": "read_csv_in_memory.py", "code": '''\
 import csv, statistics, io
@@ -171,6 +197,10 @@ by_major = {}
 for r in rows:
     by_major.setdefault(r["major"], []).append(int(r["score"]))
 print("by major:  ", {m: round(statistics.mean(v), 1) for m, v in by_major.items()})
+
+import json                                   # serialize a Python object to text and back
+blob = json.dumps({"n": len(rows), "mean": statistics.mean(scores)})
+print("json:      ", blob, "->", json.loads(blob)["n"])
 '''}],
     9: [{"title": "regex_basics.py", "code": '''\
 import re
@@ -187,6 +217,11 @@ print("dept:", m.group(1), "| number:", m.group(2))
 # Clean and mine free-text responses
 print(re.sub(r"\\s+", " ", "too    much   space"))             # collapse whitespace
 print(re.findall(r"#(\\w+)", "loved #python and #stats!"))     # all hashtags
+
+# Named groups read better than .group(1)/.group(2):
+m = re.search(r"(?P<dept>[A-Z]{2})(?P<num>\\d{4})", "ED1234")
+print(m.groupdict())                                           # {'dept': 'ED', 'num': '1234'}
+print(re.split(r"\\s*,\\s*", "a, b ,c"))                       # ['a', 'b', 'c']
 '''}],
     10: [{"title": "modules_oop_pythonic.py", "code": '''\
 # A small class with a validating @property
@@ -222,6 +257,21 @@ def gpas(students):                # generator: yields one value at a time
 g = gpas(roster)
 print("first pass: ", list(g))
 print("second pass:", list(g))     # [] - a generator is exhausted after one pass
+
+# @dataclass writes __init__/__repr__/__eq__ for you:
+from dataclasses import dataclass
+@dataclass
+class Grade:
+    course: str
+    score: int
+print(Grade("ED1", 91), "| equal?", Grade("ED1", 91) == Grade("ED1", 91))
+
+def classify(v):                   # match/case: structural pattern matching (3.10+)
+    match v:
+        case {"gpa": x} if x >= 3.5: return "honors"
+        case [first, *_]: return f"head={first}"
+        case _: return "other"
+print(classify({"gpa": 3.9}), classify([1, 2]), classify(7))
 '''}],
     6: [{"title": "recursion.py", "code": '''\
 # Recursion = base case (stop) + recursive case (smaller problem). Predict, then Run.
@@ -246,6 +296,13 @@ def deep_sum(obj):
 
 nested = [1, [2, 3, [4, 5]], {"a": 6, "b": [7, 8]}]
 print("deep_sum:", deep_sum(nested))   # 1+2+3+4+5+6+7+8 = 36
+
+# Memoization: @cache remembers past calls, turning exponential fibonacci into instant.
+import functools
+@functools.cache
+def fib(n):
+    return n if n < 2 else fib(n - 1) + fib(n - 2)
+print("fib(35):", fib(35))             # 9227465 — try removing @cache, then wait...
 
 # Missing base case -> infinite recursion -> RecursionError. Uncomment to see it:
 # def oops(n): return oops(n + 1)

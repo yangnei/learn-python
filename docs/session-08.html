@@ -184,6 +184,16 @@ mean to your hand-computed one.
 ## Trap check
 What happens if you accidentally open `students.csv` with mode `"w"` before reading it?
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+import json
+s = json.dumps({"n": 3, "ok": True})
+print(s)                             # -> {"n": 3, "ok": true}   (Python True -> JSON true)
+print(json.loads(s)["ok"])           # -> True                   (and back to a Python bool)
+```
+
 ---
 
 <details><summary>Show solutions</summary>
@@ -224,7 +234,7 @@ code crashes. 3. A `dict` keyed by the header row. 4. Strings; convert with `int
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "read_csv_in_memory.py", "code": "import csv, statistics, io\n\n# A real CSV would be a file; here we read it from a string so it runs in-browser.\nDATA = \"\"\"name,major,score\nAna,Education,91\nBen,Psychology,58\nCara,Education,73\nDev,Sociology,64\nEve,Psychology,88\"\"\"\n\nrows = list(csv.DictReader(io.StringIO(DATA)))\nscores = [int(r[\"score\"]) for r in rows]      # CSV values are STRINGS \u2014 convert!\nprint(\"class mean:\", statistics.mean(scores))\n\nby_major = {}\nfor r in rows:\n    by_major.setdefault(r[\"major\"], []).append(int(r[\"score\"]))\nprint(\"by major:  \", {m: round(statistics.mean(v), 1) for m, v in by_major.items()})\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "read_csv_in_memory.py", "code": "import csv, statistics, io\n\n# A real CSV would be a file; here we read it from a string so it runs in-browser.\nDATA = \"\"\"name,major,score\nAna,Education,91\nBen,Psychology,58\nCara,Education,73\nDev,Sociology,64\nEve,Psychology,88\"\"\"\n\nrows = list(csv.DictReader(io.StringIO(DATA)))\nscores = [int(r[\"score\"]) for r in rows]      # CSV values are STRINGS \u2014 convert!\nprint(\"class mean:\", statistics.mean(scores))\n\nby_major = {}\nfor r in rows:\n    by_major.setdefault(r[\"major\"], []).append(int(r[\"score\"]))\nprint(\"by major:  \", {m: round(statistics.mean(v), 1) for m, v in by_major.items()})\n\nimport json                                   # serialize a Python object to text and back\nblob = json.dumps({\"n\": len(rows), \"mean\": statistics.mean(scores)})\nprint(\"json:      \", blob, \"->\", json.loads(blob)[\"n\"])\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

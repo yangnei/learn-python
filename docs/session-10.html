@@ -199,6 +199,25 @@ Given a roster of `Student`s:
 4. mean gpa via a **generator** that `yield`s each gpa — then show the generator is empty on a
    second pass.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+from dataclasses import dataclass
+
+@dataclass                           # auto __init__, __repr__, __eq__
+class Point:
+    x: int
+    y: int
+print(Point(1, 2), Point(1, 2) == Point(1, 2))   # -> Point(x=1, y=2) True
+
+def head(v):
+    match v:                         # structural pattern matching (3.10+)
+        case [first, *_]: return first
+        case _: return None
+print(head([9, 8]), head(5))         # -> 9 None
+```
+
 ---
 
 <details><summary>Show solutions</summary>
@@ -248,7 +267,7 @@ so the object can reject bad data.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "modules_oop_pythonic.py", "code": "# A small class with a validating @property\nclass Student:\n    def __init__(self, name, gpa):\n        self.name = name\n        self.gpa = gpa             # runs through the setter (validates!)\n    def __str__(self):\n        return f\"{self.name} ({self.gpa})\"\n    @property\n    def gpa(self):\n        return self._gpa\n    @gpa.setter\n    def gpa(self, value):\n        if not 0 <= value <= 4:\n            raise ValueError(f\"gpa {value} out of 0-4\")\n        self._gpa = value\n\nroster = [Student(\"Ana\", 3.9), Student(\"Ben\", 1.8)]\nprint([str(s) for s in roster])\ntry:\n    roster[0].gpa = 5.0            # rejected by the setter\nexcept ValueError as e:\n    print(\"rejected:\", e)\n\n# The Pythonic toolkit\nprint(\"good standing:\", [s.name for s in roster if s.gpa >= 2.0])   # comprehension\nprint(\"upper:\", list(map(lambda s: s.name.upper(), roster)))        # map\n\ndef gpas(students):                # generator: yields one value at a time\n    for s in students:\n        yield s.gpa\ng = gpas(roster)\nprint(\"first pass: \", list(g))\nprint(\"second pass:\", list(g))     # [] - a generator is exhausted after one pass\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "modules_oop_pythonic.py", "code": "# A small class with a validating @property\nclass Student:\n    def __init__(self, name, gpa):\n        self.name = name\n        self.gpa = gpa             # runs through the setter (validates!)\n    def __str__(self):\n        return f\"{self.name} ({self.gpa})\"\n    @property\n    def gpa(self):\n        return self._gpa\n    @gpa.setter\n    def gpa(self, value):\n        if not 0 <= value <= 4:\n            raise ValueError(f\"gpa {value} out of 0-4\")\n        self._gpa = value\n\nroster = [Student(\"Ana\", 3.9), Student(\"Ben\", 1.8)]\nprint([str(s) for s in roster])\ntry:\n    roster[0].gpa = 5.0            # rejected by the setter\nexcept ValueError as e:\n    print(\"rejected:\", e)\n\n# The Pythonic toolkit\nprint(\"good standing:\", [s.name for s in roster if s.gpa >= 2.0])   # comprehension\nprint(\"upper:\", list(map(lambda s: s.name.upper(), roster)))        # map\n\ndef gpas(students):                # generator: yields one value at a time\n    for s in students:\n        yield s.gpa\ng = gpas(roster)\nprint(\"first pass: \", list(g))\nprint(\"second pass:\", list(g))     # [] - a generator is exhausted after one pass\n\n# @dataclass writes __init__/__repr__/__eq__ for you:\nfrom dataclasses import dataclass\n@dataclass\nclass Grade:\n    course: str\n    score: int\nprint(Grade(\"ED1\", 91), \"| equal?\", Grade(\"ED1\", 91) == Grade(\"ED1\", 91))\n\ndef classify(v):                   # match/case: structural pattern matching (3.10+)\n    match v:\n        case {\"gpa\": x} if x >= 3.5: return \"honors\"\n        case [first, *_]: return f\"head={first}\"\n        case _: return \"other\"\nprint(classify({\"gpa\": 3.9}), classify([1, 2]), classify(7))\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

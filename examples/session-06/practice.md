@@ -31,6 +31,18 @@ Write `depth(xs)` returning how deeply a list is nested:
    ```
 3. Name one case where a plain loop is the better choice over recursion.
 
+## Bonus — Pythonic idiom drill
+One decorator makes exponential recursion instant by remembering past calls.
+
+```python
+import functools
+
+@functools.cache                     # memoize: each n is computed once
+def fib(n):
+    return n if n < 2 else fib(n - 1) + fib(n - 2)
+print(fib(35))                       # -> 9227465   (try this WITHOUT @cache... then wait)
+```
+
 ---
 ## Solutions
 

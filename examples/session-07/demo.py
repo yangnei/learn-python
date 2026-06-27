@@ -14,13 +14,16 @@ def safe_int(value):
 for v in ["42", "N/A", "", None, "7"]:
     print(f"safe_int({v!r}) = {safe_int(v)}")
 
-# --- 2. raise your own validation error ---------------------------------
+# --- 2. Your own exception type, and raising it -------------------------
+class LikertError(ValueError):
+    """Raised when a value isn't a valid 1–5 Likert response."""
+
 def clean_likert(n):
-    """Return n if it's a valid 1–5 Likert int, else raise ValueError."""
+    """Return n if it's a valid 1–5 Likert int, else raise LikertError."""
     if isinstance(n, bool) or not isinstance(n, int):
-        raise ValueError(f"{n!r} is not an integer")
+        raise LikertError(f"{n!r} is not an integer")
     if not 1 <= n <= 5:
-        raise ValueError(f"{n} is outside 1–5")
+        raise LikertError(f"{n} is outside 1–5")
     return n
 
 # --- 3. clean a dirty survey column, keeping a rejection log ------------
@@ -29,8 +32,8 @@ clean, rejected = [], []
 for r in raw_responses:
     n = safe_int(r)
     try:
-        clean.append(clean_likert(n))        # may raise
-    except ValueError as e:
+        clean.append(clean_likert(n))        # may raise LikertError
+    except LikertError as e:                 # catching the base ValueError works too
         rejected.append((r, str(e)))
 
 print("\nclean:", clean)
@@ -38,7 +41,19 @@ print("rejected:")
 for original, why in rejected:
     print(f"  {original!r}: {why}")
 
-# --- 4. else / finally ---------------------------------------------------
+# --- 4. Exception chaining: keep the original cause with `raise ... from` -
+def parse_score(text):
+    try:
+        return int(text)
+    except ValueError as e:
+        raise LikertError(f"bad score {text!r}") from e   # preserves the __cause__
+
+try:
+    parse_score("oops")
+except LikertError as e:
+    print("\nraised:", e, "| caused by:", repr(e.__cause__))
+
+# --- 5. else / finally ---------------------------------------------------
 def parse(value):
     try:
         n = int(value)
@@ -51,7 +66,14 @@ def parse(value):
 
 print("\n", parse("10"), parse("x"))
 
-# --- 5. TRAP: bare except hides real bugs (don't do this) ---------------
+# --- 6. assert: a cheap internal sanity check ---------------------------
+def mean(xs):
+    assert xs, "mean() needs at least one value"   # AssertionError if xs is empty
+    return sum(xs) / len(xs)
+
+print("mean:", mean([2, 4, 6]))
+
+# --- 7. TRAP: bare except hides real bugs (don't do this) ---------------
 # try:
 #     risky()
 # except:            # ❌ catches EVERYTHING, even Ctrl+C and typos

@@ -17,6 +17,20 @@ one passing case and one `pytest.raises(ValueError)` case. Run `pytest`.
 ## Task 4 — Discuss
 Why is `except:` (bare) dangerous? Give one error it would hide that you'd rather see.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+class LikertError(ValueError):       # your own exception type
+    pass
+print(issubclass(LikertError, ValueError))   # -> True  (so `except ValueError` still catches it)
+
+try:
+    assert 1 == 2, "values differ"   # assert: cheap internal sanity check
+except AssertionError as e:
+    print(e)                         # -> values differ
+```
+
 ---
 ## Solutions
 

@@ -28,6 +28,15 @@ def clean_score(value):
 Test it on: `87`, `87.0`, `"87"`, `"eighty"`, `120`, `True`.
 *What does `True` do, and why? (Hint: bool is an int...)*
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+x = int("257"); y = int("257")
+print(x == y, x is y)                # -> True False   (equal value, different objects)
+print(float("nan") == float("nan"))  # -> False        (NaN equals nothing, not even itself)
+```
+
 ---
 ## Solution
 

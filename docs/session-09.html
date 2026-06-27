@@ -203,6 +203,16 @@ Turn `"Curie, Marie"` into `"Marie Curie"` with a single regex + groups.
 Give one task where a plain string method (`.split()`, `.strip()`, `.replace()`) is the better,
 clearer choice than a regex.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+import re
+m = re.search(r"(?P<year>\d{4})", "class of 2026")
+print(m.group("year"), m.groupdict())   # -> 2026 {'year': '2026'}   (named groups)
+print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        (split on commas + spaces)
+```
+
 ---
 
 <details><summary>Show solutions</summary>
@@ -242,7 +252,7 @@ aren't treated as Python string escapes. 3. (a) `re.fullmatch`, (b) `re.sub`. 4.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "regex_basics.py", "code": "import re\n\n# Validate a university email. Raw string r\"...\" keeps backslashes literal;\n# \\. means a LITERAL dot (a bare . would match any character).\nfor addr in [\"ana@university.edu\", \"ana@gmail.com\", \"ana@@x.edu\"]:\n    print(addr, \"->\", re.fullmatch(r\"\\w+@\\w+\\.edu\", addr) is not None)\n\n# Extract pieces with capture groups\nm = re.search(r\"([A-Z]{2})(\\d{4})\", \"Course ED1234 meets Tue\")\nprint(\"dept:\", m.group(1), \"| number:\", m.group(2))\n\n# Clean and mine free-text responses\nprint(re.sub(r\"\\s+\", \" \", \"too    much   space\"))             # collapse whitespace\nprint(re.findall(r\"#(\\w+)\", \"loved #python and #stats!\"))     # all hashtags\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "regex_basics.py", "code": "import re\n\n# Validate a university email. Raw string r\"...\" keeps backslashes literal;\n# \\. means a LITERAL dot (a bare . would match any character).\nfor addr in [\"ana@university.edu\", \"ana@gmail.com\", \"ana@@x.edu\"]:\n    print(addr, \"->\", re.fullmatch(r\"\\w+@\\w+\\.edu\", addr) is not None)\n\n# Extract pieces with capture groups\nm = re.search(r\"([A-Z]{2})(\\d{4})\", \"Course ED1234 meets Tue\")\nprint(\"dept:\", m.group(1), \"| number:\", m.group(2))\n\n# Clean and mine free-text responses\nprint(re.sub(r\"\\s+\", \" \", \"too    much   space\"))             # collapse whitespace\nprint(re.findall(r\"#(\\w+)\", \"loved #python and #stats!\"))     # all hashtags\n\n# Named groups read better than .group(1)/.group(2):\nm = re.search(r\"(?P<dept>[A-Z]{2})(?P<num>\\d{4})\", \"ED1234\")\nprint(m.groupdict())                                           # {'dept': 'ED', 'num': '1234'}\nprint(re.split(r\"\\s*,\\s*\", \"a, b ,c\"))                       # ['a', 'b', 'c']\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

@@ -21,6 +21,16 @@ mean to your hand-computed one.
 ## Trap check
 What happens if you accidentally open `students.csv` with mode `"w"` before reading it?
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+import json
+s = json.dumps({"n": 3, "ok": True})
+print(s)                             # -> {"n": 3, "ok": true}   (Python True -> JSON true)
+print(json.loads(s)["ok"])           # -> True                   (and back to a Python bool)
+```
+
 ---
 ## Solutions
 See `demo.py` in this folder — it implements Tasks 1–3 exactly. Key lines:

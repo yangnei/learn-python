@@ -32,6 +32,7 @@ names  = ["Ana", "Ben", "Cara", "Dev"]
 scores = [91, 58, 73, 64]
 
 print("\nrange(1,5) =", list(range(1, 5)))   # [1,2,3,4] — stop excluded!
+print("'Ben' in names:", "Ben" in names)     # True — membership test, no loop needed
 
 total = 0
 for s in scores:
@@ -47,15 +48,21 @@ for name, score in zip(names, scores):
 
 print("passes:", sum(s >= 60 for s in scores))   # bools sum! (Session 2)
 
-# --- 5. break / continue -------------------------------------------------
+# --- 5. any / all: did ALL pass? did ANY fail? --------------------------
+print("\nall passed?", all(s >= 60 for s in scores))   # False
+print("any failed?", any(s < 60 for s in scores))      # True
+
+# --- 6. break / continue + the for...else clause ------------------------
+# `else` on a loop runs ONLY if the loop finished WITHOUT hitting `break`.
 print("\nfirst failing student:")
 for name, score in zip(names, scores):
-    if score >= 60:
-        continue
-    print(" ->", name)
-    break
+    if score < 60:
+        print(" -> found:", name)
+        break
+else:
+    print(" -> nobody failed")     # would run only if no break happened
 
-# --- 6. The validation loop (simulated input) ---------------------------
+# --- 7. The validation loop (simulated input) ---------------------------
 def to_valid_score(raw):
     """The logic inside a `while True:` prompt: int 0..100 or None."""
     return int(raw) if raw.isdigit() and 0 <= int(raw) <= 100 else None

@@ -187,6 +187,20 @@ one passing case and one `pytest.raises(ValueError)` case. Run `pytest`.
 ## Task 4 — Discuss
 Why is `except:` (bare) dangerous? Give one error it would hide that you'd rather see.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+class LikertError(ValueError):       # your own exception type
+    pass
+print(issubclass(LikertError, ValueError))   # -> True  (so `except ValueError` still catches it)
+
+try:
+    assert 1 == 2, "values differ"   # assert: cheap internal sanity check
+except AssertionError as e:
+    print(e)                         # -> values differ
+```
+
 ---
 
 <details><summary>Show solutions</summary>
@@ -249,7 +263,7 @@ checks (can be disabled). 4. `try: return int(value) except (ValueError, TypeErr
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "clean_dirty_survey.py", "code": "def safe_int(v):\n    try:\n        return int(v)\n    except (ValueError, TypeError):\n        return None\n\ndef clean_likert(n):\n    if isinstance(n, bool) or not isinstance(n, int):\n        raise ValueError(f\"{n!r} not an int\")\n    if not 1 <= n <= 5:\n        raise ValueError(f\"{n} outside 1-5\")\n    return n\n\nraw = [\"5\", \"3\", \"N/A\", \"7\", \"\", \"1\", \"two\", \"4\"]\nclean, rejected = [], []\nfor r in raw:\n    try:\n        clean.append(clean_likert(safe_int(r)))\n    except ValueError as e:\n        rejected.append((r, str(e)))\nprint(\"clean:   \", clean)\nprint(\"rejected:\", rejected)\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "clean_dirty_survey.py", "code": "def safe_int(v):\n    try:\n        return int(v)\n    except (ValueError, TypeError):\n        return None\n\ndef clean_likert(n):\n    if isinstance(n, bool) or not isinstance(n, int):\n        raise ValueError(f\"{n!r} not an int\")\n    if not 1 <= n <= 5:\n        raise ValueError(f\"{n} outside 1-5\")\n    return n\n\nraw = [\"5\", \"3\", \"N/A\", \"7\", \"\", \"1\", \"two\", \"4\"]\nclean, rejected = [], []\nfor r in raw:\n    try:\n        clean.append(clean_likert(safe_int(r)))\n    except ValueError as e:\n        rejected.append((r, str(e)))\nprint(\"clean:   \", clean)\nprint(\"rejected:\", rejected)\n\n# Your own exception type + assert (a cheap internal sanity check):\nclass LikertError(ValueError):\n    pass\nprint(\"subclass of ValueError?\", issubclass(LikertError, ValueError))   # True\ntry:\n    assert 1 == 2, \"values differ\"\nexcept AssertionError as e:\n    print(\"assert caught:\", e)\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

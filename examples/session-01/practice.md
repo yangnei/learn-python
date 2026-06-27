@@ -18,6 +18,17 @@ Then deliberately type `twenty` instead of a number and **read the traceback's l
 Without converting, what does `input("a: ") + input("b: ")` print if you type `2` then `3`?
 Now fix it so it prints `5`.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+a, b = 1, 2
+a, b = b, a;          print(a, b)        # -> 2 1   (swap, no temp variable)
+print(f"{a + b = }")                     # -> a + b = 3   (self-documenting f-string)
+print("CS50".lower(), "  hi ".strip())   # -> cs50 hi
+print("@" in "ana@uni.edu", len("data")) # -> True 4   (membership + length)
+```
+
 ---
 ## Solutions
 

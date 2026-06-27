@@ -24,6 +24,16 @@ Turn `"Curie, Marie"` into `"Marie Curie"` with a single regex + groups.
 Give one task where a plain string method (`.split()`, `.strip()`, `.replace()`) is the better,
 clearer choice than a regex.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+import re
+m = re.search(r"(?P<year>\d{4})", "class of 2026")
+print(m.group("year"), m.groupdict())   # -> 2026 {'year': '2026'}   (named groups)
+print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        (split on commas + spaces)
+```
+
 ---
 ## Solutions
 See `demo.py` in this folder — it implements all six. Key lines:

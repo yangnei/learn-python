@@ -197,6 +197,16 @@ for x in xs:
         xs.remove(x)
 ```
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+nums = [80, 92, 45]
+print(all(n >= 60 for n in nums))    # -> False   (45 fails)
+print(any(n >= 90 for n in nums))    # -> True    (92 passes)
+print(92 in nums, 60 in nums)        # -> True False
+```
+
 ---
 
 <details><summary>Show solutions</summary>
@@ -254,7 +264,7 @@ bool. 3. `passed` is already a bool; write `if passed:`. 4. `[1, 2, 3, 4]` (5 ex
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "grades_and_logic.py", "code": "def letter_grade(score):\n    if not 0 <= score <= 100:        # chained comparison\n        return \"Invalid\"\n    for cutoff, letter in [(90, \"A\"), (80, \"B\"), (70, \"C\"), (60, \"D\")]:\n        if score >= cutoff:\n            return letter\n    return \"F\"\n\nfor s in [95, 90, 89.999, 60, 59, 120]:\n    print(s, \"->\", letter_grade(s))\n\nprint(\"5 and 0     =\", 5 and 0)        # and/or return an operand\nprint(\"'' or 'N/A' =\", \"\" or \"N/A\")    # default-value idiom\n"}, {"title": "enumerate_zip.py", "code": "names  = [\"Ana\", \"Ben\", \"Cara\", \"Dev\"]\nscores = [91, 58, 73, 64]\n\nfor i, name in enumerate(names, start=1):     # index + value\n    print(i, name)\n\nprint(\"---\")\nfor name, score in zip(names, scores):        # two lists together\n    print(f\"{name}: {'PASS' if score >= 60 else 'FAIL'}\")\n\nprint(\"passes:\", sum(s >= 60 for s in scores))  # bools sum!\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "grades_and_logic.py", "code": "def letter_grade(score):\n    if not 0 <= score <= 100:        # chained comparison\n        return \"Invalid\"\n    for cutoff, letter in [(90, \"A\"), (80, \"B\"), (70, \"C\"), (60, \"D\")]:\n        if score >= cutoff:\n            return letter\n    return \"F\"\n\nfor s in [95, 90, 89.999, 60, 59, 120]:\n    print(s, \"->\", letter_grade(s))\n\nprint(\"5 and 0     =\", 5 and 0)        # and/or return an operand\nprint(\"'' or 'N/A' =\", \"\" or \"N/A\")    # default-value idiom\n"}, {"title": "enumerate_zip.py", "code": "names  = [\"Ana\", \"Ben\", \"Cara\", \"Dev\"]\nscores = [91, 58, 73, 64]\n\nfor i, name in enumerate(names, start=1):     # index + value\n    print(i, name)\n\nprint(\"---\")\nfor name, score in zip(names, scores):        # two lists together\n    print(f\"{name}: {'PASS' if score >= 60 else 'FAIL'}\")\n\nprint(\"passes:\", sum(s >= 60 for s in scores))  # bools sum!\nprint(\"all pass?\", all(s >= 60 for s in scores)) # any()/all() over a generator\nprint(\"any fail?\", any(s < 60 for s in scores))\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

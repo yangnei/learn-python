@@ -9,6 +9,7 @@ print("=== 1. == vs is ===")
 a = [1, 2]; b = [1, 2]
 print("a == b :", a == b)          # True  (same value)
 print("a is b :", a is b)          # False (different objects)
+print("id(a) == id(b)?", id(a) == id(b))   # False — `is` is really an id() check
 c = a
 print("a is c :", a is c)          # True  (c is an alias for a)
 
@@ -30,10 +31,13 @@ print("7 / 2    :", 7 / 2)         # 3.5  (always float)
 print("7 // 2   :", 7 // 2)        # 3
 print("-7 // 2  :", -7 // 2)       # -4   (floors toward -inf)
 
-print("\n=== 4. Float precision ===")
+print("\n=== 4. Float precision (and the NaN oddity) ===")
 print("0.1 + 0.2          :", 0.1 + 0.2)            # 0.30000000000000004
 print("0.1 + 0.2 == 0.3   :", 0.1 + 0.2 == 0.3)     # False
 print("math.isclose(...)  :", math.isclose(0.1 + 0.2, 0.3))  # True  <- the fix
+nan = float("nan")
+print("nan == nan         :", nan == nan)           # False! NaN equals nothing, not even itself
+print("math.isnan(nan)    :", math.isnan(nan))      # True   <- the right test
 
 print("\n=== 5. Comparing across types ===")
 print('5 == "5" :', 5 == "5")      # False (no error)
@@ -56,3 +60,11 @@ print("isinstance(True, int)    :", isinstance(True, int))        # True
 print("\n=== 8. Truthiness ===")
 for v in (0, 0.0, "", [], {}, None, "0", [0], "False"):
     print(f"bool({v!r:>7}) = {bool(v)}")
+
+print("\n=== 9. The small-int cache (an implementation detail — never rely on it) ===")
+m = 256; p = 256
+print("256 cached    :", m is p)        # True  — CPython pre-caches small ints (-5..256)
+m = int("257"); p = int("257")          # built at runtime, so NOT folded to one object
+print("257 runtime   :", m is p)        # False — outside the cache, separate objects
+print("but 257 == 257:", m == p)        # True  — value is equal; identity is not
+# Lesson: this is why you compare values with ==, never identities with `is`.

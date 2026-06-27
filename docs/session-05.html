@@ -193,6 +193,16 @@ the list grow. Then fix it with the `None` pattern and prove each call starts fr
 Write `summary(*scores)` that returns a dict `{"n":..., "mean":..., "max":..., "min":...}`.
 Call it both as `summary(91, 58, 73)` and as `summary(*my_list)`.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+def f(a, *, b):          # everything after * is keyword-only
+    return a, b
+print(f(1, b=2))                     # -> (1, 2)
+print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into arguments)
+```
+
 ---
 
 <details><summary>Show solutions</summary>
@@ -247,7 +257,7 @@ list is created once and persists across calls; use `items=None` then create ins
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "mutable_default_bug.py", "code": "def add_bad(name, roster=[]):     # BUG: default list is shared across calls\n    roster.append(name)\n    return roster\n\nprint(\"BUGGY:\", add_bad(\"Ana\"))   # ['Ana']\nprint(\"BUGGY:\", add_bad(\"Ben\"))   # ['Ana', 'Ben']  <- persists!\n\ndef add_ok(name, roster=None):    # FIX: default None, create inside\n    if roster is None:\n        roster = []\n    roster.append(name)\n    return roster\n\nprint(\"FIXED:\", add_ok(\"Ana\"))    # ['Ana']\nprint(\"FIXED:\", add_ok(\"Ben\"))    # ['Ben']\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "mutable_default_bug.py", "code": "def add_bad(name, roster=[]):     # BUG: default list is shared across calls\n    roster.append(name)\n    return roster\n\nprint(\"BUGGY:\", add_bad(\"Ana\"))   # ['Ana']\nprint(\"BUGGY:\", add_bad(\"Ben\"))   # ['Ana', 'Ben']  <- persists!\n\ndef add_ok(name, roster=None):    # FIX: default None, create inside\n    if roster is None:\n        roster = []\n    roster.append(name)\n    return roster\n\nprint(\"FIXED:\", add_ok(\"Ana\"))    # ['Ana']\nprint(\"FIXED:\", add_ok(\"Ben\"))    # ['Ben']\n\ndef report(name, *, verbose=False):    # everything after * is keyword-only\n    return f\"{name} (full)\" if verbose else name\nprint(\"kw-only: \", report(\"Ana\", verbose=True))\nprint(\"**unpack:\", report(**{\"name\": \"Ben\", \"verbose\": False}))   # ** spreads a dict\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

@@ -24,6 +24,17 @@ From `["A","B","A","C","B"]`, get the distinct values and how many there are.
 Show that `b = roster` then `roster.append({...})` also changes `b`. Then make `b` an
 independent copy so it doesn't. (Hint: nested dicts → `copy.deepcopy`.)
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+head, *tail = [10, 20, 30, 40]
+print(head, tail)                    # -> 10 [20, 30, 40]   (star-unpacking)
+print({"a": 1} | {"b": 2})           # -> {'a': 1, 'b': 2}  (dict union, 3.9+)
+print({1, 2, 3} & {2, 3, 4})         # -> {2, 3}            (set intersection)
+print(list(zip(*[(1, 2), (3, 4)])))  # -> [(1, 3), (2, 4)]  (transpose)
+```
+
 ---
 ## Solutions
 

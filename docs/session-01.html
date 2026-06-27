@@ -188,6 +188,17 @@ Then deliberately type `twenty` instead of a number and **read the traceback's l
 Without converting, what does `input("a: ") + input("b: ")` print if you type `2` then `3`?
 Now fix it so it prints `5`.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+a, b = 1, 2
+a, b = b, a;          print(a, b)        # -> 2 1   (swap, no temp variable)
+print(f"{a + b = }")                     # -> a + b = 3   (self-documenting f-string)
+print("CS50".lower(), "  hi ".strip())   # -> cs50 hi
+print("@" in "ana@uni.edu", len("data")) # -> True 4   (membership + length)
+```
+
 ---
 
 <details><summary>Show solutions</summary>
@@ -227,7 +238,7 @@ print(a + b)          # 5
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "types_and_fstrings.py", "code": "# Edit me, then press Run. Predict the output first!\nname = \"Ada\"\nscore = 87.456\nn_students = 1234\n\nprint(type(name), type(score))\nprint(f\"{name} scored {score:.1f}\")          # one decimal\nprint(f\"{n_students:,} students\")            # thousands separator\nprint(\"int('42') + 8 =\", int(\"42\") + 8)      # convert text to number\nprint(\"int(3.9) =\", int(3.9), \"| round(3.9) =\", round(3.9))\n"}]</script>
+<script type="application/json" id="playgrounds-data">[{"title": "types_and_fstrings.py", "code": "# Edit me, then press Run. Predict the output first!\nname = \"Ada\"\nscore = 87.456\nn_students = 1234\n\nprint(type(name), type(score))\nprint(f\"{name} scored {score:.1f}\")          # one decimal\nprint(f\"{n_students:,} students\")            # thousands separator\nprint(\"int('42') + 8 =\", int(\"42\") + 8)      # convert text to number\nprint(\"int(3.9) =\", int(3.9), \"| round(3.9) =\", round(3.9))\n\nx, y = 1, 2; x, y = y, x                      # the Pythonic swap \u2014 no temp variable\nprint(\"swapped:\", x, y)\nprint(f\"{score = }\")                          # self-documenting f-string (great for debugging)\nprint(name.upper(), \"| 'da' in name:\", \"da\" in name)   # string method + membership\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

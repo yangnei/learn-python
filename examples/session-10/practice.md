@@ -25,6 +25,25 @@ Given a roster of `Student`s:
 4. mean gpa via a **generator** that `yield`s each gpa — then show the generator is empty on a
    second pass.
 
+## Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+from dataclasses import dataclass
+
+@dataclass                           # auto __init__, __repr__, __eq__
+class Point:
+    x: int
+    y: int
+print(Point(1, 2), Point(1, 2) == Point(1, 2))   # -> Point(x=1, y=2) True
+
+def head(v):
+    match v:                         # structural pattern matching (3.10+)
+        case [first, *_]: return first
+        case _: return None
+print(head([9, 8]), head(5))         # -> 9 None
+```
+
 ---
 ## Solutions
 See `demo.py` — it implements Tasks 2–4. Key points:
