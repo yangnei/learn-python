@@ -93,7 +93,7 @@ function buildPlaygrounds(){
 
   const note = document.createElement("div");
   note.className = "note";
-  note.innerHTML = "These editors run real Python <strong>in your browser</strong> (via Pyodide) — nothing is installed and nothing leaves your machine. Edit the code, then press <strong>Run ▶</strong>. Predict the output first!";
+  note.innerHTML = "Edit the code, then press <strong>Run ▶</strong>. Predict the output first!";
   host.appendChild(note);
 
   snippets.forEach((snip, idx)=>{
