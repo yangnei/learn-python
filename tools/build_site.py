@@ -329,8 +329,6 @@ def build_index() -> str:
             f'<div class="d">{html.escape(desc)}</div></a>')
     body = f"""
 <h1 class="page-title">Learn Python</h1>
-<p class="intro">A fast, hands-on path from "never coded" to writing real Python for your
-research data — run every example right in the browser, no install needed.</p>
 <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download>&#8595; Download the full course (PDF)</a>
 <span class="dl-note">— all 9 sessions, practice, and cheat sheets for offline reading.</span></p>
 
