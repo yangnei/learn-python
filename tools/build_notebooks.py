@@ -131,7 +131,10 @@ def build_notebook(n: int, title: str, desc: str) -> dict:
         f"> {desc}\n\n"
         "**How to use this notebook:** read each cell, **predict** what it prints, "
         "then run it with **Shift + Enter**. Change one thing and predict again — the "
-        "surprise is the lesson. Practice tasks (with collapsed solutions) are at the bottom."
+        "surprise is the lesson. Practice tasks (with collapsed solutions) are at the bottom.\n\n"
+        "**Tips:** press **Tab** to autocomplete a name, and **Shift + Tab** for a function's "
+        "help. Need a library? Run `%pip install <name>` in a cell (e.g. `%pip install pandas`) — "
+        "in the browser (JupyterLite) that fetches a Pyodide build and lasts for the session."
     )
     cells = [md(intro)]
 

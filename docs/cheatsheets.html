@@ -50,6 +50,12 @@ cell-by-cell document. Three ways to use them; pick whatever fits:
 next. Predict the output before you run — the surprise is the lesson — then edit a cell and re-run
 to experiment.
 
+**Autocomplete & libraries:** press **Tab** to complete a name and **Shift + Tab** to pop up a
+function's help. To add a package, run `%pip install <name>` *in a cell* (e.g. `%pip install pandas`).
+In the browser (JupyterLite) only Pyodide-compatible packages work — the big ones like `pandas`,
+`numpy`, and `matplotlib` do — and the install lasts for the session, so re-run that cell after a
+kernel restart. In local Jupyter or Colab, `%pip install` is permanent for that environment.
+
 ## Install Python (pick your OS)
 
 **Windows**
