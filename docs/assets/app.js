@@ -159,6 +159,17 @@ function markNav(){
   });
 }
 
+/* ---------- dark / light theme toggle ---------- */
+function setupTheme(){
+  const btn = document.querySelector(".theme-toggle");
+  if(!btn) return;
+  btn.addEventListener("click", ()=>{
+    const next = document.documentElement.getAttribute("data-theme")==="dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem("lp.theme", next); }catch{}
+  });
+}
+
 /* ---------- boot ---------- */
 document.addEventListener("DOMContentLoaded", ()=>{
   renderMarkdownInto("lesson-md","lesson");
@@ -167,4 +178,5 @@ document.addEventListener("DOMContentLoaded", ()=>{
   renderMarkdownInto("cheats-md","cheats");
   buildPlaygrounds();
   setupCompletion();
+  setupTheme();
 });

@@ -262,6 +262,14 @@ CDN = {
 # Offline PDF companion (built by tools/build_student_pdf.py, served from docs/).
 STUDENT_PDF = "learn-python-student.pdf"
 
+# Set the theme on <html> before first paint (no flash). Reads saved choice, else the OS pref.
+THEME_INIT = (
+    '<script>(function(){try{var k="lp.theme",t=localStorage.getItem(k);'
+    'if(t!=="light"&&t!=="dark"){t=(window.matchMedia&&'
+    'matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}'
+    'document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>'
+)
+
 
 def strip_frontmatter(md: str) -> str:
     """Remove a leading YAML front-matter block (--- ... ---) from slide markdown."""
@@ -316,6 +324,9 @@ def nav_html(active: str) -> str:
         links.append(f'<a href="{page}.html"{cls_attr} data-page="{page}" title="{html.escape(title)}">S{n}</a>')
     links.append(f'<a href="cheatsheets.html"{" class=\"active\"" if active=="cheats" else ""}>Cheat sheets</a>')
     links.append(f'<a class="dl" href="{STUDENT_PDF}" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a>')
+    links.append('<button class="theme-toggle" type="button" aria-label="Switch light or dark theme" '
+                 'title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span>'
+                 '<span class="ti-sun" aria-hidden="true">&#9728;</span></button>')
     return ('<header class="site"><div class="nav-inner">'
             '<a class="brand" href="index.html">Learn <span class="py">Python</span></a>'
             f'<nav class="nav-links">{"".join(links)}</nav></div></header>')
@@ -328,6 +339,7 @@ def page_shell(title: str, active: str, body: str, scripts: str, page_id: str = 
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+{THEME_INIT}
 <title>{html.escape(title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
