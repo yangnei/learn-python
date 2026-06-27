@@ -262,11 +262,11 @@ CDN = {
 # Offline PDF companion (built by tools/build_student_pdf.py, served from docs/).
 STUDENT_PDF = "learn-python-student.pdf"
 
-# Set the theme on <html> before first paint (no flash). Reads saved choice, else the OS pref.
+# Set the theme on <html> before first paint (no flash). Uses the saved choice if any,
+# otherwise defaults to light — the OS preference is intentionally not auto-applied.
 THEME_INIT = (
     '<script>(function(){try{var k="lp.theme",t=localStorage.getItem(k);'
-    'if(t!=="light"&&t!=="dark"){t=(window.matchMedia&&'
-    'matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}'
+    'if(t!=="light"&&t!=="dark"){t="light";}'
     'document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>'
 )
 
