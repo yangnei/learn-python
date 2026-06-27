@@ -58,7 +58,7 @@ builds need `markdown` + a headless Chromium.
 
 ## What's in the box
 ```
-python-for-researchers/
+learn-python/
 ├── README.md                       ← you are here
 ├── brief/
 │   └── course-brief.md             ← audience, outcomes, scope (the "why")
