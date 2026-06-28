@@ -17,19 +17,36 @@
 
 <article>
   
-<aside class="nb-bar" data-nb-src="jupyter/notebooks/index.html?path=session-01.ipynb">
-  <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">▸ Run as a notebook</button>
-  <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-01.ipynb" target="_blank" rel="noopener">Open in Colab</a>
-  <a class="nb-btn" href="notebooks/session-01.ipynb" download>Download .ipynb</a>
-  <a class="nb-btn nb-icon" href="jupyter/notebooks/index.html?path=session-01.ipynb" target="_blank" rel="noopener" title="Open the notebook in a new tab" aria-label="Open the notebook in a new tab">&#8599;</a>
+<aside class="nb-bar">
+  <a class="nb-btn nb-primary" href="notebooks/session-01.ipynb" download>&#8595; Download this session (.ipynb)</a>
+  <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener">Open a blank notebook in Colab &#8599;</a>
 </aside>
-<div class="nb-embed" hidden></div>
   <div id="lesson-a" class="md"></div>
-  <div id="practice-a" class="md practice-block"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-01-a.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — Part A</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-01-a.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
   <div id="lesson-b" class="md"></div>
-  <div id="practice-b" class="md practice-block"></div>
-  <h2>Try it live</h2>
-  <section id="playgrounds"></section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-01-b.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — Part B</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-01-b.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=scratch.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Try it yourself</button>
+      <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
   <h2>Check yourself</h2>
 <div id="quiz" class="md"></div>
   <div class="page-foot">
@@ -180,60 +197,6 @@ ValueError: invalid literal for int() with base 10: 'thirty'
 ## Summary
 You can run code, name values, convert types, format output, and read an error.
 **Next:** *Part B of this session* — the dynamic-typing traps.
-</script>
-<script type="text/markdown" id="practice-a-md">
-## Practice — Part A
-
-Type each solution yourself. Predict output before running. Solutions at the bottom.
-
-### Task 1 — Warm-up REPL
-In the REPL (`python3`), check the type of: `42`, `42.0`, `"42"`, `True`, `None`, `7/2`, `7//2`.
-*What surprises you?* (Hint: `7/2`.)
-
-### Task 2 — GPA reporter (`gpa.py`)
-Ask for a name and a GPA (a decimal). Print:
-`"<name>'s GPA is <gpa to 2 decimals>, which is <87.5%> of a 4.0 scale."`
-
-### Task 3 — Survey age bucket (`age.py`)
-Ask for an age (integer). Print the age, and the age in "months lived" (age × 12).
-Then deliberately type `twenty` instead of a number and **read the traceback's last line.**
-
-### Task 4 — Stretch: the string trap
-Without converting, what does `input("a: ") + input("b: ")` print if you type `2` then `3`?
-Now fix it so it prints `5`.
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-a, b = 1, 2
-a, b = b, a;          print(a, b)        # -> 2 1   (swap, no temp variable)
-print(f"{a + b = }")                     # -> a + b = 3   (self-documenting f-string)
-print("CS50".lower(), "  hi ".strip())   # -> cs50 hi
-print("@" in "ana@uni.edu", len("data")) # -> True 4   (membership + length)
-```
-
-<details><summary>Show solutions</summary>
-
-```python
-# Task 2 — gpa.py
-name = input("Name: ")
-gpa = float(input("GPA: "))
-print(f"{name}'s GPA is {gpa:.2f}, which is {gpa/4:.1%} of a 4.0 scale.")
-
-# Task 3 — age.py
-age = int(input("Age: "))
-print(f"You are {age} years old, about {age*12} months.")
-# Typing "twenty" -> ValueError: invalid literal for int() with base 10: 'twenty'
-
-# Task 4
-# "2" + "3" -> "23"  (string concatenation)
-a = int(input("a: ")); b = int(input("b: "))
-print(a + b)          # 5
-```
-
-</details>
-
 </script>
 <script type="text/markdown" id="lesson-b-md">
 # Part B
@@ -430,76 +393,6 @@ x=[1]; y=x; x.append(2); y   # ?
 **Next:** Control flow & data structures.
 
 </script>
-<script type="text/markdown" id="practice-b-md">
-## Practice — Part B
-
-### Predict-the-output gauntlet
-For each line, write *why* (one sentence). Predict, then run to check.
-
-```python
-True + True            # 2     — bools are ints; True is 1
-3 == 3.0               # True  — numbers compare by value
-0.1 + 0.2 == 0.3       # False — binary float rounding
-5 == "5"               # False — different types, no error
-5 > "5"                # 💥    — can't ORDER int vs str
-[1,2] == (1,2)         # False — list vs tuple are different types
-bool("0")              # True  — non-empty string is truthy
-x=[1]; y=x; x.append(2); y   # [1,2] — y is an alias of x
-```
-
-### Build `clean_score()`
-Write a function that safely turns a value into a float on a 0–100 scale:
-
-```python
-def clean_score(value):
-    """
-    Accept 87, 87.0, or "87" and return 87.0 (a float).
-    - Reject anything outside 0..100 with a clear message (return None).
-    - Compare floats safely (no exact ==).
-    """
-```
-Test it on: `87`, `87.0`, `"87"`, `"eighty"`, `120`, `True`.
-*What does `True` do, and why? (Hint: bool is an int...)*
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-x = int("257"); y = int("257")
-print(x == y, x is y)                # -> True False   (equal value, different objects)
-print(float("nan") == float("nan"))  # -> False        (NaN equals nothing, not even itself)
-```
-
-<details><summary>Show solutions</summary>
-
-```python
-import math
-
-def clean_score(value):
-    # Reject bools explicitly — they'd sneak through as ints (True == 1).
-    if isinstance(value, bool):
-        print(f"Rejected {value!r}: looks like a flag, not a score.")
-        return None
-    try:
-        score = float(value)              # handles int, float, and numeric strings
-    except (ValueError, TypeError):
-        print(f"Rejected {value!r}: not a number.")
-        return None
-    if not 0 <= score <= 100:
-        print(f"Rejected {value!r}: out of range 0–100.")
-        return None
-    return score
-
-for v in [87, 87.0, "87", "eighty", 120, True]:
-    print(v, "->", clean_score(v))
-# 87->87.0, 87.0->87.0, "87"->87.0, "eighty"->None, 120->None, True->None
-```
-Key lesson: `float(True)` is `1.0`, so without the explicit bool check a flag would
-pass as a valid score. This is the `bool ⊂ int` trap in a real function.
-
-</details>
-
-</script>
 <script type="text/markdown" id="quiz-md">
 ### Quiz — Running Python, Types & the Type Traps
 *Part A — Variables & Types*
@@ -521,7 +414,6 @@ pass as a valid score. This is the `bool ⊂ int` trap in a real function.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "types_and_fstrings.py", "code": "# Edit me, then press Run. Predict the output first!\nname = \"Ada\"\nscore = 87.456\nn_students = 1234\n\nprint(type(name), type(score))\nprint(f\"{name} scored {score:.1f}\")          # one decimal\nprint(f\"{n_students:,} students\")            # thousands separator\nprint(\"int('42') + 8 =\", int(\"42\") + 8)      # convert text to number\nprint(\"int(3.9) =\", int(3.9), \"| round(3.9) =\", round(3.9))\n\nx, y = 1, 2; x, y = y, x                      # the Pythonic swap \u2014 no temp variable\nprint(\"swapped:\", x, y)\nprint(f\"{score = }\")                          # self-documenting f-string (great for debugging)\nprint(name.upper(), \"| 'da' in name:\", \"da\" in name)   # string method + membership\n"}, {"title": "the_traps.py", "code": "import math\nprint(\"True == 1            :\", True == 1)\nprint(\"5 + True             :\", 5 + True)\nprint(\"sum([True,False,True]):\", sum([True, False, True]))\nprint(\"3 == 3.0             :\", 3 == 3.0)\nprint(\"0.1 + 0.2            :\", 0.1 + 0.2)\nprint(\"0.1 + 0.2 == 0.3     :\", 0.1 + 0.2 == 0.3)\nprint(\"math.isclose(...)    :\", math.isclose(0.1 + 0.2, 0.3))\nprint('5 == \"5\"             :', 5 == \"5\")\nprint(\"[1,2] == (1,2)       :\", [1, 2] == (1, 2))\na = [1, 2]; b = a; a.append(3)\nprint(\"alias b              :\", b)    # b changed too!\n"}, {"title": "comparisons_that_crash.py", "code": "# Some comparisons return False; some CRASH. Run it and read the error.\nprint('5 == \"5\" :', 5 == \"5\")     # False, no error\nprint('5 > \"5\"  :', 5 > \"5\")      # TypeError! Python can't rank text vs number\n# Fix: compare numbers. Comment the line above and try:\n# print(5 > int(\"5\"))\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

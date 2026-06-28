@@ -17,19 +17,36 @@
 
 <article>
   
-<aside class="nb-bar" data-nb-src="jupyter/notebooks/index.html?path=session-03.ipynb">
-  <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">▸ Run as a notebook</button>
-  <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-03.ipynb" target="_blank" rel="noopener">Open in Colab</a>
-  <a class="nb-btn" href="notebooks/session-03.ipynb" download>Download .ipynb</a>
-  <a class="nb-btn nb-icon" href="jupyter/notebooks/index.html?path=session-03.ipynb" target="_blank" rel="noopener" title="Open the notebook in a new tab" aria-label="Open the notebook in a new tab">&#8599;</a>
+<aside class="nb-bar">
+  <a class="nb-btn nb-primary" href="notebooks/session-03.ipynb" download>&#8595; Download this session (.ipynb)</a>
+  <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener">Open a blank notebook in Colab &#8599;</a>
 </aside>
-<div class="nb-embed" hidden></div>
   <div id="lesson-a" class="md"></div>
-  <div id="practice-a" class="md practice-block"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-03-a.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — Part A</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-03-a.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
   <div id="lesson-b" class="md"></div>
-  <div id="practice-b" class="md practice-block"></div>
-  <h2>Try it live</h2>
-  <section id="playgrounds"></section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-03-b.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — Part B</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-03-b.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=scratch.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Try it yourself</button>
+      <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
   <h2>Check yourself</h2>
 <div id="quiz" class="md"></div>
   <div class="page-foot">
@@ -190,71 +207,6 @@ Type hints document intent. **They are NOT enforced at runtime** (`mypy` checks 
 You can write reusable, documented, reproducible functions.
 **Next:** *Part B of this session* — recursion.
 </script>
-<script type="text/markdown" id="practice-a-md">
-## Practice — Part A
-
-### Task 1 — Grade-functions module
-Write three functions with docstrings and type hints:
-- `class_average(scores: list[float]) -> float`
-- `letter_grade(score: float) -> str`  (reuse Session 3)
-- `pass_rate(scores: list[float], passing: float = 60) -> float`  (fraction passing, 0–1)
-
-Use bool-summing for `pass_rate` (recall `sum(s >= passing for s in scores)`).
-
-### Task 2 — Reproduce & fix the mutable-default bug
-Write `add_note(text, notes=[])` that appends and returns. Call it three times and watch
-the list grow. Then fix it with the `None` pattern and prove each call starts fresh.
-
-### Task 3 — *args summary
-Write `summary(*scores)` that returns a dict `{"n":..., "mean":..., "max":..., "min":...}`.
-Call it both as `summary(91, 58, 73)` and as `summary(*my_list)`.
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-def f(a, *, b):          # everything after * is keyword-only
-    return a, b
-print(f(1, b=2))                     # -> (1, 2)
-print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into arguments)
-```
-
-<details><summary>Show solutions</summary>
-
-```python
-def class_average(scores: list[float]) -> float:
-    """Mean of scores."""
-    return sum(scores) / len(scores)
-
-def letter_grade(score: float) -> str:
-    """A/B/C/D/F by 90/80/70/60 cutoffs."""
-    for cutoff, letter in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
-        if score >= cutoff:
-            return letter
-    return "F"
-
-def pass_rate(scores: list[float], passing: float = 60) -> float:
-    """Fraction of scores >= passing (0..1)."""
-    return sum(s >= passing for s in scores) / len(scores)
-
-# Task 2
-def add_note(text, notes=None):     # fixed version
-    if notes is None:
-        notes = []
-    notes.append(text)
-    return notes
-
-# Task 3
-def summary(*scores):
-    return {"n": len(scores), "mean": sum(scores)/len(scores),
-            "max": max(scores), "min": min(scores)}
-print(summary(91, 58, 73))
-print(summary(*[91, 58, 73]))
-```
-
-</details>
-
-</script>
 <script type="text/markdown" id="lesson-b-md">
 # Part B
 ## Recursion & Recursive Thinking
@@ -369,101 +321,6 @@ You can solve problems that are defined in terms of themselves — especially ne
 **Next:** Exceptions, files & research data.
 
 </script>
-<script type="text/markdown" id="practice-b-md">
-## Practice — Part B
-
-### Task 1 — Recursive sum
-Write `rsum(n)` that adds `1 + 2 + ... + n` **with recursion** (no loop).
-Name the base case out loud before you write it. Test `rsum(5)` and `rsum(0)`.
-
-### Task 2 — Recursion vs iteration
-Write `reverse(s)` that reverses a string recursively. Then write the loop version.
-Which reads more clearly to you? Test `reverse("data")`.
-
-### Task 3 — Flatten nested data
-Write `flatten(xs)` that turns a list-of-lists (nested to any depth) into one flat list:
-`flatten([1, [2, [3, 4]], 5])` → `[1, 2, 3, 4, 5]`. This is the move for nested JSON/exports.
-
-### Task 4 — How deep does it go?
-Write `depth(xs)` returning how deeply a list is nested:
-`depth([1, [2, [3, [4]]]])` → `4`, `depth([1, 2, 3])` → `1`, `depth(5)` → `0`.
-
-### Task 5 — Trap check
-1. Why does this raise `RecursionError`, and what's the fix?
-   ```python
-   def f(n):
-       return n + f(n - 1)
-   ```
-2. This returns `None` instead of a number — why?
-   ```python
-   def fact(n):
-       if n <= 1:
-           return 1
-       n * fact(n - 1)
-   ```
-3. Name one case where a plain loop is the better choice over recursion.
-
-### Bonus — Pythonic idiom drill
-One decorator makes exponential recursion instant by remembering past calls.
-
-```python
-import functools
-
-@functools.cache                     # memoize: each n is computed once
-def fib(n):
-    return n if n < 2 else fib(n - 1) + fib(n - 2)
-print(fib(35))                       # -> 9227465   (try this WITHOUT @cache... then wait)
-```
-
-<details><summary>Show solutions</summary>
-
-```python
-# 1
-def rsum(n):
-    if n == 0:                      # base case
-        return 0
-    return n + rsum(n - 1)
-print(rsum(5), rsum(0))             # 15 0
-
-# 2
-def reverse(s):
-    if s == "":                     # base case: empty string
-        return ""
-    return reverse(s[1:]) + s[0]    # all-but-first, reversed, then first
-print(reverse("data"))             # "atad"
-# loop version: "".join(reversed(s))  — usually clearer for flat strings
-
-# 3
-def flatten(xs):
-    out = []
-    for x in xs:
-        if isinstance(x, list):
-            out.extend(flatten(x))  # recurse into the sub-list
-        else:
-            out.append(x)
-    return out
-print(flatten([1, [2, [3, 4]], 5]))   # [1, 2, 3, 4, 5]
-
-# 4
-def depth(xs):
-    if not isinstance(xs, list):
-        return 0                              # a non-list has no nesting
-    return 1 + max((depth(x) for x in xs), default=0)
-print(depth([1, [2, [3, [4]]]]), depth([1, 2, 3]), depth(5))   # 4 1 0
-
-# 5
-# 1) No reachable base case -> the calls never stop -> stack overflows.
-#    Fix: add `if n == 0: return 0` (or n <= 0) at the top.
-# 2) The recursive case computes n*fact(n-1) but never RETURNs it,
-#    so the function falls off the end and returns None. Add `return`.
-# 3) A loop is better when the work is a simple flat sequence, or when the
-#    depth could exceed ~1000 (Python has no tail-call optimization, so deep
-#    recursion hits RecursionError where a loop would be fine).
-```
-
-</details>
-
-</script>
 <script type="text/markdown" id="quiz-md">
 ### Quiz — Functions, Scope & Recursion
 *Part A — Functions & Scope*
@@ -488,7 +345,6 @@ defined in terms of itself mirrors its shape and can reach every level.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "mutable_default_bug.py", "code": "def add_bad(name, roster=[]):     # BUG: default list is shared across calls\n    roster.append(name)\n    return roster\n\nprint(\"BUGGY:\", add_bad(\"Ana\"))   # ['Ana']\nprint(\"BUGGY:\", add_bad(\"Ben\"))   # ['Ana', 'Ben']  <- persists!\n\ndef add_ok(name, roster=None):    # FIX: default None, create inside\n    if roster is None:\n        roster = []\n    roster.append(name)\n    return roster\n\nprint(\"FIXED:\", add_ok(\"Ana\"))    # ['Ana']\nprint(\"FIXED:\", add_ok(\"Ben\"))    # ['Ben']\n\ndef report(name, *, verbose=False):    # everything after * is keyword-only\n    return f\"{name} (full)\" if verbose else name\nprint(\"kw-only: \", report(\"Ana\", verbose=True))\nprint(\"**unpack:\", report(**{\"name\": \"Ben\", \"verbose\": False}))   # ** spreads a dict\n"}, {"title": "recursion.py", "code": "# Recursion = base case (stop) + recursive case (smaller problem). Predict, then Run.\ndef factorial(n):\n    if n <= 1:                 # BASE CASE\n        return 1\n    return n * factorial(n - 1)   # RECURSIVE CASE (remember to return!)\n\nprint(\"factorial(5):\", factorial(5))\n\n# Recursion shines on NESTED data, where a single loop can't reach all the way down.\ndef deep_sum(obj):\n    if isinstance(obj, bool):              # bool is an int subclass (Session 2!)\n        return 0\n    if isinstance(obj, (int, float)):\n        return obj\n    if isinstance(obj, (list, tuple)):\n        return sum(deep_sum(x) for x in obj)\n    if isinstance(obj, dict):\n        return sum(deep_sum(v) for v in obj.values())\n    return 0\n\nnested = [1, [2, 3, [4, 5]], {\"a\": 6, \"b\": [7, 8]}]\nprint(\"deep_sum:\", deep_sum(nested))   # 1+2+3+4+5+6+7+8 = 36\n\n# Memoization: @cache remembers past calls, turning exponential fibonacci into instant.\nimport functools\n@functools.cache\ndef fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\nprint(\"fib(35):\", fib(35))             # 9227465 \u2014 try removing @cache, then wait...\n\n# Missing base case -> infinite recursion -> RecursionError. Uncomment to see it:\n# def oops(n): return oops(n + 1)\n# oops(0)\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

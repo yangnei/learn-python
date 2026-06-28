@@ -138,40 +138,14 @@ def code(source: str) -> dict:
     return _cell("code", source, execution_count=None, outputs=[])
 
 
-def build_notebook(n: int, title: str, desc: str) -> dict:
-    _counter[0] = 0
-    intro = (
-        f"# Session {n} — {title}\n\n"
-        f"> {desc}\n\n"
-        "**How to use this notebook:** read each cell, **predict** what it prints, "
-        "then run it with **Shift + Enter**. Change one thing and predict again — the "
-        "surprise is the lesson. This session has two halves (**Part A**, **Part B**); each "
-        "ends with its own practice (solutions collapsed).\n\n"
-        "**Tips:** press **Tab** to autocomplete a name, and **Shift + Tab** for a function's "
-        "help. Need a library? Run `%pip install <name>` in a cell (e.g. `%pip install pandas`) — "
-        "in the browser (JupyterLite) that fetches a Pyodide build and lasts for the session."
-    )
-    cells = [md(intro)]
+TIPS = (
+    "**Tips:** press **Tab** to autocomplete a name, **Shift + Tab** for a function's help. "
+    "Need a library? Run `%pip install <name>` in a cell (e.g. `%pip install pandas`) — in the "
+    "browser (JupyterLite) it fetches a Pyodide build and lasts for the session."
+)
 
-    s = setup_cell(n)
-    if s:
-        cells.append(code(s))
 
-    demo_src = (EXAMPLES / f"session-{n:02d}" / DEMO_NAME.get(n, "demo.py")).read_text()
-    demo_src = patch_demo(n, strip_module_docstring(demo_src))
-    src_a, src_b = split_demo_halves(demo_src)
-    topic_a, topic_b = banner_topic(demo_src, "A"), banner_topic(demo_src, "B")
-    ta, sa, tb, sb = _bs.split_practice((EXAMPLES / f"session-{n:02d}" / "practice.md").read_text())
-
-    # Part A: teach, then practise; then Part B: teach, then practise.
-    cells.append(md(f"## Part A — {topic_a}"))
-    cells.extend(code(c) for c in split_code_cells(src_a))
-    cells.extend(practice_cells_for("Part A", ta, sa))
-
-    cells.append(md(f"## Part B — {topic_b}"))
-    cells.extend(code(c) for c in split_code_cells(src_b))
-    cells.extend(practice_cells_for("Part B", tb, sb))
-
+def _nb(cells: list[dict]) -> dict:
     return {
         "cells": cells,
         "metadata": {
@@ -183,14 +157,81 @@ def build_notebook(n: int, title: str, desc: str) -> dict:
     }
 
 
+def _session_data(n: int):
+    demo_src = patch_demo(n, strip_module_docstring(
+        (EXAMPLES / f"session-{n:02d}" / "demo.py").read_text()))
+    src_a, src_b = split_demo_halves(demo_src)
+    topic_a, topic_b = banner_topic(demo_src, "A"), banner_topic(demo_src, "B")
+    ta, sa, tb, sb = _bs.split_practice((EXAMPLES / f"session-{n:02d}" / "practice.md").read_text())
+    return src_a, src_b, topic_a, topic_b, ta, sa, tb, sb
+
+
+def build_notebook(n: int, title: str, desc: str) -> dict:
+    """The full session (both halves) — offered as the top-of-page download."""
+    _counter[0] = 0
+    src_a, src_b, topic_a, topic_b, ta, sa, tb, sb = _session_data(n)
+    intro = (f"# Session {n} — {title}\n\n> {desc}\n\n"
+             "Two halves (**Part A**, **Part B**); each ends with its own practice (solutions "
+             "collapsed). Predict each cell, then **Shift + Enter**.\n\n" + TIPS)
+    cells = [md(intro)]
+    s = setup_cell(n)
+    if s:
+        cells.append(code(s))
+    cells.append(md(f"## Part A — {topic_a}"))
+    cells.extend(code(c) for c in split_code_cells(src_a))
+    cells.extend(practice_cells_for("Part A", ta, sa))
+    cells.append(md(f"## Part B — {topic_b}"))
+    cells.extend(code(c) for c in split_code_cells(src_b))
+    cells.extend(practice_cells_for("Part B", tb, sb))
+    return _nb(cells)
+
+
+def build_half(n: int, part: str) -> dict:
+    """One half (A or B): just that topic's demo + practice — embedded on the page."""
+    _counter[0] = 0
+    src_a, src_b, topic_a, topic_b, ta, sa, tb, sb = _session_data(n)
+    if part == "A":
+        topic, src, tasks, sol, setup = topic_a, src_a, ta, sa, None
+    else:
+        topic, src, tasks, sol, setup = topic_b, src_b, tb, sb, setup_cell(n)
+    intro = (f"# Session {n}, Part {part} — {topic}\n\n"
+             "Read each cell, **predict** the output, then run it with **Shift + Enter**. "
+             "The practice (solutions collapsed) is at the end.\n\n" + TIPS)
+    cells = [md(intro)]
+    if setup:
+        cells.append(code(setup))
+    cells.extend(code(c) for c in split_code_cells(src))
+    cells.extend(practice_cells_for("Practice", tasks, sol))
+    return _nb(cells)
+
+
+def build_scratch() -> dict:
+    """A blank sandbox notebook for the 'Try it yourself' slot."""
+    _counter[0] = 0
+    cells = [
+        md("# Scratch notebook\n\nYour own playground — type Python and press "
+           "**Shift + Enter** to run.\n\n" + TIPS),
+        code("# Try anything here.\n"),
+    ]
+    return _nb(cells)
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    count = 0
     for n, title, desc, _key in SESSIONS:
-        nb = build_notebook(n, title, desc)
-        path = OUT / f"session-{n:02d}.ipynb"
-        path.write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n")
-        print(f"   {path.relative_to(ROOT)}  ({len(nb['cells'])} cells)")
-    print(f"Wrote {len(SESSIONS)} notebooks to {OUT.relative_to(ROOT)}/")
+        variants = {
+            f"session-{n:02d}": build_notebook(n, title, desc),
+            f"session-{n:02d}-a": build_half(n, "A"),
+            f"session-{n:02d}-b": build_half(n, "B"),
+        }
+        for stem, nb in variants.items():
+            (OUT / f"{stem}.ipynb").write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n")
+            count += 1
+    (OUT / "scratch.ipynb").write_text(json.dumps(build_scratch(), indent=1, ensure_ascii=False) + "\n")
+    count += 1
+    print(f"Wrote {count} notebooks to {OUT.relative_to(ROOT)}/ "
+          f"({len(SESSIONS)} full + {2*len(SESSIONS)} halves + 1 scratch)")
 
 
 if __name__ == "__main__":

@@ -17,19 +17,36 @@
 
 <article>
   
-<aside class="nb-bar" data-nb-src="jupyter/notebooks/index.html?path=session-05.ipynb">
-  <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">▸ Run as a notebook</button>
-  <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-05.ipynb" target="_blank" rel="noopener">Open in Colab</a>
-  <a class="nb-btn" href="notebooks/session-05.ipynb" download>Download .ipynb</a>
-  <a class="nb-btn nb-icon" href="jupyter/notebooks/index.html?path=session-05.ipynb" target="_blank" rel="noopener" title="Open the notebook in a new tab" aria-label="Open the notebook in a new tab">&#8599;</a>
+<aside class="nb-bar">
+  <a class="nb-btn nb-primary" href="notebooks/session-05.ipynb" download>&#8595; Download this session (.ipynb)</a>
+  <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener">Open a blank notebook in Colab &#8599;</a>
 </aside>
-<div class="nb-embed" hidden></div>
   <div id="lesson-a" class="md"></div>
-  <div id="practice-a" class="md practice-block"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-05-a.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — Part A</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-05-a.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
   <div id="lesson-b" class="md"></div>
-  <div id="practice-b" class="md practice-block"></div>
-  <h2>Try it live</h2>
-  <section id="playgrounds"></section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-05-b.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — Part B</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-05-b.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=scratch.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Try it yourself</button>
+      <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
   <h2>Check yourself</h2>
 <div id="quiz" class="md"></div>
   <div class="page-foot">
@@ -192,64 +209,6 @@ Regex shines for *variable* patterns. For fixed strings, plain methods read bett
 You can validate, extract, and clean real-world text.
 **Next:** *Part B of this session* — modules, OOP & the Pythonic toolkit.
 </script>
-<script type="text/markdown" id="practice-a-md">
-## Practice — Part A
-
-Always use raw strings `r"..."`. Predict each result before running.
-
-### Task 1 — Validate
-Write `valid_university_email(addr)` returning `True` only for `something@something.edu`.
-Test: `"ana@university.edu"`, `"ana@gmail.com"`, `"a@b.edu.evil.com"`.
-
-### Task 2 — Extract with groups
-From `"Course ED1234 meets Tue"`, pull the department (`ED`) and number (`1234`) using one
-regex with two capture groups.
-
-### Task 3 — Clean
-Collapse all runs of whitespace in `"  too    much\t space "` to single spaces and trim.
-
-### Task 4 — Mine free text
-From a list of open-ended responses, count how often each `#hashtag` appears
-(use `re.findall(r"#(\w+)", text)` and `collections.Counter`).
-
-### Task 5 — Reformat
-Turn `"Curie, Marie"` into `"Marie Curie"` with a single regex + groups.
-
-### Task 6 — Judgment
-Give one task where a plain string method (`.split()`, `.strip()`, `.replace()`) is the better,
-clearer choice than a regex.
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-import re
-m = re.search(r"(?P<year>\d{4})", "class of 2026")
-print(m.group("year"), m.groupdict())   # -> 2026 {'year': '2026'}   (named groups)
-print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        (split on commas + spaces)
-```
-
-<details><summary>Show solutions</summary>
-
-See `demo.py` in this folder — it implements all six. Key lines:
-
-```python
-re.fullmatch(r"\w+@\w+\.edu", addr) is not None      # 1 (fullmatch anchors both ends)
-m = re.search(r"([A-Z]{2})(\d{4})", s); m.group(1), m.group(2)   # 2
-re.sub(r"\s+", " ", messy).strip()                   # 3
-from collections import Counter; Counter(re.findall(r"#(\w+)", text))   # 4
-m = re.search(r"^(.+),\s*(.+)$", s); f"{m.group(2)} {m.group(1)}"      # 5
-```
-Task 6: splitting `"a,b,c"` on commas is just `"a,b,c".split(",")` — no regex needed.
-Reach for regex only when the pattern is genuinely variable (digits, optional parts, anchors).
-```
-```
-Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and never forget the
-`r"..."` prefix or your backslashes become Python escape sequences.
-
-</details>
-
-</script>
 <script type="text/markdown" id="lesson-b-md">
 # Part B
 ## Modules, OOP & the Pythonic Toolkit
@@ -388,83 +347,6 @@ You can structure code into modules and classes and write idiomatic Python.
 **Next:** the capstone project.
 
 </script>
-<script type="text/markdown" id="practice-b-md">
-## Practice — Part B
-
-Files in this folder: `grades.py` (a module you import), `demo.py` (worked example).
-
-### Task 1 — Use a module
-From a new file, `from grades import letter_grade, class_average` and call both. Why does the
-`if __name__ == "__main__":` block in `grades.py` NOT run when you import it?
-
-### Task 2 — A class with a validating property
-Build `Student(name, gpa)` with:
-- `__str__` → `"Ana: 3.9 (Good)"`,
-- `standing()` → `"Good"` if gpa ≥ 2.0 else `"Probation"`,
-- a `@property` setter for `gpa` that raises `ValueError` outside 0–4.
-Prove the setter rejects `5.0`.
-
-### Task 3 — Inheritance
-Add `GradStudent(Student)` that also stores an `advisor` and uses `super().__init__(...)`.
-Override `__str__` to append the advisor.
-
-### Task 4 — The Pythonic toolkit
-Given a roster of `Student`s:
-1. names in good standing (list comprehension),
-2. uppercase names (`map`),
-3. at-risk students (`filter`),
-4. mean gpa via a **generator** that `yield`s each gpa — then show the generator is empty on a
-   second pass.
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-from dataclasses import dataclass
-
-@dataclass                           # auto __init__, __repr__, __eq__
-class Point:
-    x: int
-    y: int
-print(Point(1, 2), Point(1, 2) == Point(1, 2))   # -> Point(x=1, y=2) True
-
-def head(v):
-    match v:                         # structural pattern matching (3.10+)
-        case [first, *_]: return first
-        case _: return None
-print(head([9, 8]), head(5))         # -> 9 None
-```
-
-<details><summary>Show solutions</summary>
-
-See `demo.py` — it implements Tasks 2–4. Key points:
-
-```python
-@property
-def gpa(self): return self._gpa
-@gpa.setter
-def gpa(self, v):
-    if not 0 <= v <= 4: raise ValueError(...)
-    self._gpa = v
-
-class GradStudent(Student):
-    def __init__(self, name, gpa, advisor):
-        super().__init__(name, gpa)
-        self.advisor = advisor
-
-[s.name for s in roster if s.gpa >= 2.0]          # comprehension
-list(map(lambda s: s.name.upper(), roster))        # map
-[s.name for s in filter(lambda s: s.gpa < 2.0, roster)]   # filter
-def gpas(rs):
-    for s in rs: yield s.gpa                        # generator (exhausts after one pass)
-```
-Task 1: the `__name__` guard is only `"__main__"` when the file is **run directly**; on `import`
-its `__name__` is `"grades"`, so the demo block is skipped — that's how a file can be both a
-runnable script and an importable module.
-
-</details>
-
-</script>
 <script type="text/markdown" id="quiz-md">
 ### Quiz — Regular Expressions, Modules & OOP
 *Part A — Regular Expressions*
@@ -487,7 +369,6 @@ module's name, not `"__main__"`, so the block is skipped.
 
 </details>
 </script>
-<script type="application/json" id="playgrounds-data">[{"title": "regex_basics.py", "code": "import re\n\n# Validate a university email. Raw string r\"...\" keeps backslashes literal;\n# \\. means a LITERAL dot (a bare . would match any character).\nfor addr in [\"ana@university.edu\", \"ana@gmail.com\", \"ana@@x.edu\"]:\n    print(addr, \"->\", re.fullmatch(r\"\\w+@\\w+\\.edu\", addr) is not None)\n\n# Extract pieces with capture groups\nm = re.search(r\"([A-Z]{2})(\\d{4})\", \"Course ED1234 meets Tue\")\nprint(\"dept:\", m.group(1), \"| number:\", m.group(2))\n\n# Clean and mine free-text responses\nprint(re.sub(r\"\\s+\", \" \", \"too    much   space\"))             # collapse whitespace\nprint(re.findall(r\"#(\\w+)\", \"loved #python and #stats!\"))     # all hashtags\n\n# Named groups read better than .group(1)/.group(2):\nm = re.search(r\"(?P<dept>[A-Z]{2})(?P<num>\\d{4})\", \"ED1234\")\nprint(m.groupdict())                                           # {'dept': 'ED', 'num': '1234'}\nprint(re.split(r\"\\s*,\\s*\", \"a, b ,c\"))                       # ['a', 'b', 'c']\n"}, {"title": "modules_oop_pythonic.py", "code": "# A small class with a validating @property\nclass Student:\n    def __init__(self, name, gpa):\n        self.name = name\n        self.gpa = gpa             # runs through the setter (validates!)\n    def __str__(self):\n        return f\"{self.name} ({self.gpa})\"\n    @property\n    def gpa(self):\n        return self._gpa\n    @gpa.setter\n    def gpa(self, value):\n        if not 0 <= value <= 4:\n            raise ValueError(f\"gpa {value} out of 0-4\")\n        self._gpa = value\n\nroster = [Student(\"Ana\", 3.9), Student(\"Ben\", 1.8)]\nprint([str(s) for s in roster])\ntry:\n    roster[0].gpa = 5.0            # rejected by the setter\nexcept ValueError as e:\n    print(\"rejected:\", e)\n\n# The Pythonic toolkit\nprint(\"good standing:\", [s.name for s in roster if s.gpa >= 2.0])   # comprehension\nprint(\"upper:\", list(map(lambda s: s.name.upper(), roster)))        # map\n\ndef gpas(students):                # generator: yields one value at a time\n    for s in students:\n        yield s.gpa\ng = gpas(roster)\nprint(\"first pass: \", list(g))\nprint(\"second pass:\", list(g))     # [] - a generator is exhausted after one pass\n\n# @dataclass writes __init__/__repr__/__eq__ for you:\nfrom dataclasses import dataclass\n@dataclass\nclass Grade:\n    course: str\n    score: int\nprint(Grade(\"ED1\", 91), \"| equal?\", Grade(\"ED1\", 91) == Grade(\"ED1\", 91))\n\ndef classify(v):                   # match/case: structural pattern matching (3.10+)\n    match v:\n        case {\"gpa\": x} if x >= 3.5: return \"honors\"\n        case [first, *_]: return f\"head={first}\"\n        case _: return \"other\"\nprint(classify({\"gpa\": 3.9}), classify([1, 2]), classify(7))\n"}]</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

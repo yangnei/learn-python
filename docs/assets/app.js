@@ -174,10 +174,11 @@ function setupTheme(){
 /* ---------- embedded JupyterLite notebook (lazy) ---------- */
 function setupNotebookEmbed(){
   document.querySelectorAll("[data-nb-embed]").forEach(btn=>{
-    const bar = btn.closest(".nb-bar");
-    const holder = bar && bar.nextElementSibling;
-    if(!bar || !holder || !holder.classList.contains("nb-embed")) return;
-    const src = bar.getAttribute("data-nb-src");
+    const slot = btn.closest("[data-nb-src]");
+    const holder = slot && slot.querySelector(".nb-embed");
+    if(!slot || !holder) return;
+    const src = slot.getAttribute("data-nb-src");
+    const label = btn.textContent;   // e.g. "▸ Practice — Part A"
     btn.addEventListener("click", ()=>{
       const opening = holder.hasAttribute("hidden");
       if(opening){
@@ -192,7 +193,7 @@ function setupNotebookEmbed(){
       } else {
         holder.setAttribute("hidden","");
         btn.setAttribute("aria-expanded","false");
-        btn.textContent = "▸ Run as a notebook";
+        btn.textContent = label;
       }
     });
   });

@@ -330,25 +330,43 @@ STUDENT_PDF = "learn-python-student.pdf"
 # (built by tools/build_jupyterlite.sh), both served from docs/. The Colab launcher reads
 # the .ipynb straight from the GitHub repo, so these must match the live repo path.
 GH_OWNER, GH_REPO, GH_BRANCH = "yangnei", "learn-python", "main"
-NB_DIR = "notebooks"          # docs/notebooks/session-NN.ipynb
+NB_DIR = "notebooks"          # docs/notebooks/session-NN{,-a,-b}.ipynb + scratch.ipynb
 LITE_DIR = "jupyter"          # docs/jupyter/  (JupyterLite static app)
+# Colab's blank-notebook launcher (the top-of-page button + the scratch slot).
+COLAB_BLANK = "https://colab.research.google.com/#create=true"
+
+
+def colab_for(stem: str) -> str:
+    """Colab launcher that opens one of our committed notebooks straight from GitHub."""
+    return (f"https://colab.research.google.com/github/{GH_OWNER}/{GH_REPO}"
+            f"/blob/{GH_BRANCH}/docs/{NB_DIR}/{stem}.ipynb")
+
+
+def lite_for(stem: str) -> str:
+    """JupyterLite single-document URL for one notebook (embedded in an iframe)."""
+    return f"{LITE_DIR}/notebooks/index.html?path={stem}.ipynb"
 
 
 def notebook_bar(n: int) -> str:
-    """Launch bar: run this session as a notebook (in-browser, Colab, or download)."""
-    stem = f"session-{n:02d}.ipynb"
-    lite = f"{LITE_DIR}/notebooks/index.html?path={stem}"
-    colab = (f"https://colab.research.google.com/github/{GH_OWNER}/{GH_REPO}"
-             f"/blob/{GH_BRANCH}/docs/{NB_DIR}/{stem}")
-    download = f"{NB_DIR}/{stem}"
+    """Top launch bar: download the whole session, or open a blank notebook in Colab."""
+    download = f"{NB_DIR}/session-{n:02d}.ipynb"
     return f"""
-<aside class="nb-bar" data-nb-src="{lite}">
-  <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">▸ Run as a notebook</button>
-  <a class="nb-btn" href="{colab}" target="_blank" rel="noopener">Open in Colab</a>
-  <a class="nb-btn" href="{download}" download>Download .ipynb</a>
-  <a class="nb-btn nb-icon" href="{lite}" target="_blank" rel="noopener" title="Open the notebook in a new tab" aria-label="Open the notebook in a new tab">&#8599;</a>
-</aside>
-<div class="nb-embed" hidden></div>"""
+<aside class="nb-bar">
+  <a class="nb-btn nb-primary" href="{download}" download>&#8595; Download this session (.ipynb)</a>
+  <a class="nb-btn" href="{COLAB_BLANK}" target="_blank" rel="noopener">Open a blank notebook in Colab &#8599;</a>
+</aside>"""
+
+
+def embed_slot(label: str, lite_src: str, colab_url: str) -> str:
+    """A lazy-loading notebook slot: a Run button (embeds JupyterLite) + a Colab link."""
+    return f"""
+  <section class="nb-slot" data-nb-src="{lite_src}">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; {label}</button>
+      <a class="nb-btn" href="{colab_url}" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>"""
 
 # Set the theme on <html> before first paint (no flash). Uses the saved choice if any,
 # otherwise defaults to light — the OS preference is intentionally not auto-applied.
@@ -535,39 +553,34 @@ def practice_part_md(heading: str, tasks: str, solution: str) -> str:
 
 def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quizzes_text: str) -> str:
     lesson_a, lesson_b = split_lesson(strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text()))
-    practice_path = examples_dir / f"session-{n:02d}" / "practice.md"
-    pa = pb = ""
-    if practice_path.exists():
-        ta, sa, tb, sb = split_practice(practice_path.read_text())
-        pa = practice_part_md("Practice — Part A", ta, sa) if ta else ""
-        pb = practice_part_md("Practice — Part B", tb, sb) if tb else ""
     quiz = session_quiz_md(quizzes_text, n)
     quiz_block = (f'<h2>Check yourself</h2>\n<div id="quiz" class="md"></div>' if quiz else "")
+    stem = f"session-{n:02d}"
+
+    # The practice for each half (and the open scratch) lives in embedded, runnable
+    # notebooks rather than on the page: three lazy-loaded JupyterLite slots.
+    slot_a = embed_slot("Practice — Part A", lite_for(f"{stem}-a"), colab_for(f"{stem}-a"))
+    slot_b = embed_slot("Practice — Part B", lite_for(f"{stem}-b"), colab_for(f"{stem}-b"))
+    slot_try = embed_slot("Try it yourself", lite_for("scratch"), COLAB_BLANK)
 
     if lesson_b:   # the normal case: two interleaved halves
         lesson_html = (
             '  <div id="lesson-a" class="md"></div>\n'
-            '  <div id="practice-a" class="md practice-block"></div>\n'
+            f'{slot_a}\n'
             '  <div id="lesson-b" class="md"></div>\n'
-            '  <div id="practice-b" class="md practice-block"></div>')
+            f'{slot_b}\n'
+            f'{slot_try}')
         md_blocks = [md_script("lesson-a-md", lesson_a),
-                     md_script("practice-a-md", pa) if pa else "",
-                     md_script("lesson-b-md", lesson_b),
-                     md_script("practice-b-md", pb) if pb else ""]
-    else:          # fallback: single lesson + combined practice
-        combined = (pa + "\n\n" + pb).strip()
+                     md_script("lesson-b-md", lesson_b)]
+    else:          # fallback: single lesson, both practice notebooks after it
         lesson_html = ('  <div id="lesson-a" class="md"></div>\n'
-                       '  <div id="practice-a" class="md practice-block"></div>')
-        md_blocks = [md_script("lesson-a-md", lesson_a),
-                     md_script("practice-a-md", combined) if combined else ""]
+                       f'{slot_a}\n{slot_b}\n{slot_try}')
+        md_blocks = [md_script("lesson-a-md", lesson_a)]
 
-    pg = PLAYGROUNDS.get(n, [])
     body = f"""
 <article>
   {notebook_bar(n)}
 {lesson_html}
-  <h2>Try it live</h2>
-  <section id="playgrounds"></section>
   {quiz_block}
   <div class="page-foot">
     <button id="complete-btn" class="complete-btn" type="button">Mark this session complete</button>
@@ -581,7 +594,6 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
 """
     scripts = "\n".join([b for b in md_blocks if b] + [
         md_script("quiz-md", quiz) if quiz else "",
-        f'<script type="application/json" id="playgrounds-data">{json.dumps(pg)}</script>',
     ])
     return page_shell(f"Session {n} — {title}", f"session-{n:02d}", body, scripts, page_id=f"session-{n:02d}")
 
