@@ -23,10 +23,12 @@
   <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-05.ipynb" target="_blank" rel="noopener">Open in Colab</a>
   <a class="nb-btn" href="notebooks/session-05.ipynb" download>Download .ipynb</a>
 </aside>
-  <div id="lesson" class="md"></div>
+  <div id="lesson-a" class="md"></div>
+  <div id="practice-a" class="md practice-block"></div>
+  <div id="lesson-b" class="md"></div>
+  <div id="practice-b" class="md practice-block"></div>
+  <h2>Try it live</h2>
   <section id="playgrounds"></section>
-  <h2>Practice</h2>
-<div id="practice" class="md"></div>
   <h2>Check yourself</h2>
 <div id="quiz" class="md"></div>
   <div class="page-foot">
@@ -40,7 +42,7 @@
 </article>
 
 </main>
-<script type="text/markdown" id="lesson-md">
+<script type="text/markdown" id="lesson-a-md">
 # Session 5
 ## Regular Expressions, Modules & OOP
 
@@ -188,9 +190,66 @@ Regex shines for *variable* patterns. For fixed strings, plain methods read bett
 ## Summary
 You can validate, extract, and clean real-world text.
 **Next:** *Part B of this session* — modules, OOP & the Pythonic toolkit.
+</script>
+<script type="text/markdown" id="practice-a-md">
+## Practice — Part A
 
----
+Always use raw strings `r"..."`. Predict each result before running.
 
+### Task 1 — Validate
+Write `valid_university_email(addr)` returning `True` only for `something@something.edu`.
+Test: `"ana@university.edu"`, `"ana@gmail.com"`, `"a@b.edu.evil.com"`.
+
+### Task 2 — Extract with groups
+From `"Course ED1234 meets Tue"`, pull the department (`ED`) and number (`1234`) using one
+regex with two capture groups.
+
+### Task 3 — Clean
+Collapse all runs of whitespace in `"  too    much\t space "` to single spaces and trim.
+
+### Task 4 — Mine free text
+From a list of open-ended responses, count how often each `#hashtag` appears
+(use `re.findall(r"#(\w+)", text)` and `collections.Counter`).
+
+### Task 5 — Reformat
+Turn `"Curie, Marie"` into `"Marie Curie"` with a single regex + groups.
+
+### Task 6 — Judgment
+Give one task where a plain string method (`.split()`, `.strip()`, `.replace()`) is the better,
+clearer choice than a regex.
+
+### Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+import re
+m = re.search(r"(?P<year>\d{4})", "class of 2026")
+print(m.group("year"), m.groupdict())   # -> 2026 {'year': '2026'}   (named groups)
+print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        (split on commas + spaces)
+```
+
+<details><summary>Show solutions</summary>
+
+See `demo.py` in this folder — it implements all six. Key lines:
+
+```python
+re.fullmatch(r"\w+@\w+\.edu", addr) is not None      # 1 (fullmatch anchors both ends)
+m = re.search(r"([A-Z]{2})(\d{4})", s); m.group(1), m.group(2)   # 2
+re.sub(r"\s+", " ", messy).strip()                   # 3
+from collections import Counter; Counter(re.findall(r"#(\w+)", text))   # 4
+m = re.search(r"^(.+),\s*(.+)$", s); f"{m.group(2)} {m.group(1)}"      # 5
+```
+Task 6: splitting `"a,b,c"` on commas is just `"a,b,c".split(",")` — no regex needed.
+Reach for regex only when the pattern is genuinely variable (digits, optional parts, anchors).
+```
+```
+Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and never forget the
+`r"..."` prefix or your backslashes become Python escape sequences.
+
+</details>
+
+</script>
+<script type="text/markdown" id="lesson-b-md">
 # Part B
 ## Modules, OOP & the Pythonic Toolkit
 
@@ -328,48 +387,8 @@ You can structure code into modules and classes and write idiomatic Python.
 **Next:** the capstone project.
 
 </script>
-<script type="text/markdown" id="practice-md">
-# Session 5 — Practice: Regex, Modules & OOP
-
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
-
-## Part A — Regular Expressions & Text Cleaning
-
-Always use raw strings `r"..."`. Predict each result before running.
-
-### Task 1 — Validate
-Write `valid_university_email(addr)` returning `True` only for `something@something.edu`.
-Test: `"ana@university.edu"`, `"ana@gmail.com"`, `"a@b.edu.evil.com"`.
-
-### Task 2 — Extract with groups
-From `"Course ED1234 meets Tue"`, pull the department (`ED`) and number (`1234`) using one
-regex with two capture groups.
-
-### Task 3 — Clean
-Collapse all runs of whitespace in `"  too    much\t space "` to single spaces and trim.
-
-### Task 4 — Mine free text
-From a list of open-ended responses, count how often each `#hashtag` appears
-(use `re.findall(r"#(\w+)", text)` and `collections.Counter`).
-
-### Task 5 — Reformat
-Turn `"Curie, Marie"` into `"Marie Curie"` with a single regex + groups.
-
-### Task 6 — Judgment
-Give one task where a plain string method (`.split()`, `.strip()`, `.replace()`) is the better,
-clearer choice than a regex.
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-import re
-m = re.search(r"(?P<year>\d{4})", "class of 2026")
-print(m.group("year"), m.groupdict())   # -> 2026 {'year': '2026'}   (named groups)
-print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        (split on commas + spaces)
-```
-
-## Part B — Modules, OOP & the Pythonic Toolkit
+<script type="text/markdown" id="practice-b-md">
+## Practice — Part B
 
 Files in this folder: `grades.py` (a module you import), `demo.py` (worked example).
 
@@ -415,29 +434,7 @@ def head(v):
 print(head([9, 8]), head(5))         # -> 9 None
 ```
 
----
-
 <details><summary>Show solutions</summary>
-
-### Part A — Regular Expressions & Text Cleaning
-
-See `demo.py` in this folder — it implements all six. Key lines:
-
-```python
-re.fullmatch(r"\w+@\w+\.edu", addr) is not None      # 1 (fullmatch anchors both ends)
-m = re.search(r"([A-Z]{2})(\d{4})", s); m.group(1), m.group(2)   # 2
-re.sub(r"\s+", " ", messy).strip()                   # 3
-from collections import Counter; Counter(re.findall(r"#(\w+)", text))   # 4
-m = re.search(r"^(.+),\s*(.+)$", s); f"{m.group(2)} {m.group(1)}"      # 5
-```
-Task 6: splitting `"a,b,c"` on commas is just `"a,b,c".split(",")` — no regex needed.
-Reach for regex only when the pattern is genuinely variable (digits, optional parts, anchors).
-```
-```
-Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and never forget the
-`r"..."` prefix or your backslashes become Python escape sequences.
-
-### Part B — Modules, OOP & the Pythonic Toolkit
 
 See `demo.py` — it implements Tasks 2–4. Key points:
 
@@ -463,7 +460,6 @@ def gpas(rs):
 Task 1: the `__name__` guard is only `"__main__"` when the file is **run directly**; on `import`
 its `__name__` is `"grades"`, so the demo block is skipped — that's how a file can be both a
 runnable script and an importable module.
-
 
 </details>
 

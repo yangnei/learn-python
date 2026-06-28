@@ -491,22 +491,82 @@ def build_index() -> str:
     return page_shell("Learn Python — Home", "index", body, "")
 
 
+def split_lesson(lesson_md: str) -> tuple[str, str]:
+    """Split a merged (frontmatter-stripped) deck into Part A / Part B markdown.
+
+    Decks are joined by `---` slide separators with `# Part B` opening the second half.
+    """
+    parts = re.split(r"\n+-{3,}[ \t]*\n+(?=# Part B\b)", lesson_md, maxsplit=1)
+    if len(parts) == 2:
+        return parts[0].rstrip(), parts[1].lstrip()
+    return lesson_md, ""
+
+
+def split_practice(practice_md: str) -> tuple[str, str, str, str]:
+    """Return (tasks_a, solutions_a, tasks_b, solutions_b) from a merged practice file.
+
+    Layout: title/intro, `## Part A`, `## Part B`, `---`, `## Solutions` with
+    `### Part A` / `### Part B` subsections.
+    """
+    m = re.search(r"(?m)^##\s+Solutions?\s*$", practice_md)
+    tasks_region = practice_md[:m.start()] if m else practice_md
+    sol_region = practice_md[m.end():] if m else ""
+
+    tb = re.split(r"(?m)^##\s+Part B\b.*$", tasks_region, maxsplit=1)
+    ta = re.split(r"(?m)^##\s+Part A\b.*$", tb[0], maxsplit=1)
+    tasks_a = (ta[1] if len(ta) == 2 else tb[0]).strip()
+    tasks_b = re.sub(r"\n-{3,}\s*$", "", tb[1]).strip() if len(tb) == 2 else ""
+
+    sb = re.split(r"(?m)^###\s+Part B\b.*$", sol_region, maxsplit=1)
+    sa = re.split(r"(?m)^###\s+Part A\b.*$", sb[0], maxsplit=1)
+    sol_a = (sa[1] if len(sa) == 2 else "").strip()
+    sol_b = (sb[1] if len(sb) == 2 else "").strip()
+    return tasks_a, sol_a, tasks_b, sol_b
+
+
+def practice_part_md(heading: str, tasks: str, solution: str) -> str:
+    """One practice block: a heading, the tasks, and collapsed solutions."""
+    out = f"## {heading}\n\n{tasks}\n"
+    if solution:
+        out += "\n<details><summary>Show solutions</summary>\n\n" + solution + "\n\n</details>\n"
+    return out
+
+
 def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quizzes_text: str) -> str:
-    lesson = strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text())
-    # practice file is practice.md in each example folder
+    lesson_a, lesson_b = split_lesson(strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text()))
     practice_path = examples_dir / f"session-{n:02d}" / "practice.md"
-    practice = wrap_solutions(practice_path.read_text()) if practice_path.exists() else ""
+    pa = pb = ""
+    if practice_path.exists():
+        ta, sa, tb, sb = split_practice(practice_path.read_text())
+        pa = practice_part_md("Practice — Part A", ta, sa) if ta else ""
+        pb = practice_part_md("Practice — Part B", tb, sb) if tb else ""
     quiz = session_quiz_md(quizzes_text, n)
     quiz_block = (f'<h2>Check yourself</h2>\n<div id="quiz" class="md"></div>' if quiz else "")
-    practice_block = (f'<h2>Practice</h2>\n<div id="practice" class="md"></div>' if practice else "")
+
+    if lesson_b:   # the normal case: two interleaved halves
+        lesson_html = (
+            '  <div id="lesson-a" class="md"></div>\n'
+            '  <div id="practice-a" class="md practice-block"></div>\n'
+            '  <div id="lesson-b" class="md"></div>\n'
+            '  <div id="practice-b" class="md practice-block"></div>')
+        md_blocks = [md_script("lesson-a-md", lesson_a),
+                     md_script("practice-a-md", pa) if pa else "",
+                     md_script("lesson-b-md", lesson_b),
+                     md_script("practice-b-md", pb) if pb else ""]
+    else:          # fallback: single lesson + combined practice
+        combined = (pa + "\n\n" + pb).strip()
+        lesson_html = ('  <div id="lesson-a" class="md"></div>\n'
+                       '  <div id="practice-a" class="md practice-block"></div>')
+        md_blocks = [md_script("lesson-a-md", lesson_a),
+                     md_script("practice-a-md", combined) if combined else ""]
 
     pg = PLAYGROUNDS.get(n, [])
     body = f"""
 <article>
   {notebook_bar(n)}
-  <div id="lesson" class="md"></div>
+{lesson_html}
+  <h2>Try it live</h2>
   <section id="playgrounds"></section>
-  {practice_block}
   {quiz_block}
   <div class="page-foot">
     <button id="complete-btn" class="complete-btn" type="button">Mark this session complete</button>
@@ -518,9 +578,7 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
   </div>
 </article>
 """
-    scripts = "\n".join([
-        md_script("lesson-md", lesson),
-        md_script("practice-md", practice) if practice else "",
+    scripts = "\n".join([b for b in md_blocks if b] + [
         md_script("quiz-md", quiz) if quiz else "",
         f'<script type="application/json" id="playgrounds-data">{json.dumps(pg)}</script>',
     ])

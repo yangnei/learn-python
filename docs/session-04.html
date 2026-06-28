@@ -23,10 +23,12 @@
   <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-04.ipynb" target="_blank" rel="noopener">Open in Colab</a>
   <a class="nb-btn" href="notebooks/session-04.ipynb" download>Download .ipynb</a>
 </aside>
-  <div id="lesson" class="md"></div>
+  <div id="lesson-a" class="md"></div>
+  <div id="practice-a" class="md practice-block"></div>
+  <div id="lesson-b" class="md"></div>
+  <div id="practice-b" class="md practice-block"></div>
+  <h2>Try it live</h2>
   <section id="playgrounds"></section>
-  <h2>Practice</h2>
-<div id="practice" class="md"></div>
   <h2>Check yourself</h2>
 <div id="quiz" class="md"></div>
   <div class="page-foot">
@@ -40,7 +42,7 @@
 </article>
 
 </main>
-<script type="text/markdown" id="lesson-md">
+<script type="text/markdown" id="lesson-a-md">
 # Session 4
 ## Exceptions, Files & Research Data
 
@@ -179,9 +181,86 @@ Run: `pytest`
 ## Summary
 You can validate messy input and fail loudly when you should.
 **Next:** *Part B of this session* — files & research data.
+</script>
+<script type="text/markdown" id="practice-a-md">
+## Practice — Part A
 
----
+### Task 1 — `safe_int`
+Write `safe_int(value)` returning `int(value)` or `None` on failure. Test on
+`"42"`, `"N/A"`, `""`, `None`, `3.0`.
 
+### Task 2 — Clean a survey column
+Given `raw = ["5","3","N/A","7","","1","two","4"]`, produce:
+- `clean` — list of valid Likert ints (1–5), and
+- `rejected` — list of `(value, reason)` pairs.
+Use a `clean_likert(n)` that **raises** `ValueError` for out-of-range or non-ints.
+
+### Task 3 — Write a test
+Put `clean_likert` in `clean.py` and write `test_clean.py` with pytest:
+one passing case and one `pytest.raises(ValueError)` case. Run `pytest`.
+
+### Task 4 — Discuss
+Why is `except:` (bare) dangerous? Give one error it would hide that you'd rather see.
+
+### Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+class LikertError(ValueError):       # your own exception type
+    pass
+print(issubclass(LikertError, ValueError))   # -> True  (so `except ValueError` still catches it)
+
+try:
+    assert 1 == 2, "values differ"   # assert: cheap internal sanity check
+except AssertionError as e:
+    print(e)                         # -> values differ
+```
+
+<details><summary>Show solutions</summary>
+
+```python
+def safe_int(value):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return None
+
+def clean_likert(n):
+    if isinstance(n, bool) or not isinstance(n, int):
+        raise ValueError(f"{n!r} not an int")
+    if not 1 <= n <= 5:
+        raise ValueError(f"{n} outside 1–5")
+    return n
+
+raw = ["5","3","N/A","7","","1","two","4"]
+clean, rejected = [], []
+for r in raw:
+    try:
+        clean.append(clean_likert(safe_int(r)))
+    except ValueError as e:
+        rejected.append((r, str(e)))
+print(clean)      # [5, 3, 1, 4]
+print(rejected)   # [('N/A', ...), ('7', ...), ('', ...), ('two', ...)]
+```
+
+```python
+# test_clean.py
+import pytest
+from clean import clean_likert
+def test_ok():   assert clean_likert(3) == 3
+def test_bad():
+    with pytest.raises(ValueError):
+        clean_likert(9)
+```
+
+Task 4: a bare `except:` also catches `KeyboardInterrupt` (Ctrl+C) and `NameError`
+from your own typos — so a misspelled variable would be silently swallowed instead of
+showing you the bug. Always catch the specific exception you expect.
+
+</details>
+
+</script>
+<script type="text/markdown" id="lesson-b-md">
 # Part B
 ## Files, Libraries & Research Data
 
@@ -306,45 +385,8 @@ You can load, summarize, and write real research data.
 **Next:** Regular expressions, modules & OOP.
 
 </script>
-<script type="text/markdown" id="practice-md">
-# Session 4 — Practice: Exceptions, Files & Research Data
-
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
-
-## Part A — Exceptions & Defensive Code
-
-### Task 1 — `safe_int`
-Write `safe_int(value)` returning `int(value)` or `None` on failure. Test on
-`"42"`, `"N/A"`, `""`, `None`, `3.0`.
-
-### Task 2 — Clean a survey column
-Given `raw = ["5","3","N/A","7","","1","two","4"]`, produce:
-- `clean` — list of valid Likert ints (1–5), and
-- `rejected` — list of `(value, reason)` pairs.
-Use a `clean_likert(n)` that **raises** `ValueError` for out-of-range or non-ints.
-
-### Task 3 — Write a test
-Put `clean_likert` in `clean.py` and write `test_clean.py` with pytest:
-one passing case and one `pytest.raises(ValueError)` case. Run `pytest`.
-
-### Task 4 — Discuss
-Why is `except:` (bare) dangerous? Give one error it would hide that you'd rather see.
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-class LikertError(ValueError):       # your own exception type
-    pass
-print(issubclass(LikertError, ValueError))   # -> True  (so `except ValueError` still catches it)
-
-try:
-    assert 1 == 2, "values differ"   # assert: cheap internal sanity check
-except AssertionError as e:
-    print(e)                         # -> values differ
-```
-
-## Part B — Files, Libraries & Research Data
+<script type="text/markdown" id="practice-b-md">
+## Practice — Part B
 
 Files provided: `students.csv`, `survey.csv`.
 
@@ -377,52 +419,7 @@ print(s)                             # -> {"n": 3, "ok": true}   (Python True ->
 print(json.loads(s)["ok"])           # -> True                   (and back to a Python bool)
 ```
 
----
-
 <details><summary>Show solutions</summary>
-
-### Part A — Exceptions & Defensive Code
-
-```python
-def safe_int(value):
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return None
-
-def clean_likert(n):
-    if isinstance(n, bool) or not isinstance(n, int):
-        raise ValueError(f"{n!r} not an int")
-    if not 1 <= n <= 5:
-        raise ValueError(f"{n} outside 1–5")
-    return n
-
-raw = ["5","3","N/A","7","","1","two","4"]
-clean, rejected = [], []
-for r in raw:
-    try:
-        clean.append(clean_likert(safe_int(r)))
-    except ValueError as e:
-        rejected.append((r, str(e)))
-print(clean)      # [5, 3, 1, 4]
-print(rejected)   # [('N/A', ...), ('7', ...), ('', ...), ('two', ...)]
-```
-
-```python
-# test_clean.py
-import pytest
-from clean import clean_likert
-def test_ok():   assert clean_likert(3) == 3
-def test_bad():
-    with pytest.raises(ValueError):
-        clean_likert(9)
-```
-
-Task 4: a bare `except:` also catches `KeyboardInterrupt` (Ctrl+C) and `NameError`
-from your own typos — so a misspelled variable would be silently swallowed instead of
-showing you the bug. Always catch the specific exception you expect.
-
-### Part B — Files, Libraries & Research Data
 
 See `demo.py` in this folder — it implements Tasks 1–3 exactly. Key lines:
 
@@ -441,7 +438,6 @@ def to_int(x):
 
 Trap: opening with `"w"` **truncates the file to empty immediately** — your data is gone
 before you ever read it. Use `"r"` (the default) to read.
-
 
 </details>
 

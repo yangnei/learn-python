@@ -23,10 +23,12 @@
   <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-03.ipynb" target="_blank" rel="noopener">Open in Colab</a>
   <a class="nb-btn" href="notebooks/session-03.ipynb" download>Download .ipynb</a>
 </aside>
-  <div id="lesson" class="md"></div>
+  <div id="lesson-a" class="md"></div>
+  <div id="practice-a" class="md practice-block"></div>
+  <div id="lesson-b" class="md"></div>
+  <div id="practice-b" class="md practice-block"></div>
+  <h2>Try it live</h2>
   <section id="playgrounds"></section>
-  <h2>Practice</h2>
-<div id="practice" class="md"></div>
   <h2>Check yourself</h2>
 <div id="quiz" class="md"></div>
   <div class="page-foot">
@@ -40,7 +42,7 @@
 </article>
 
 </main>
-<script type="text/markdown" id="lesson-md">
+<script type="text/markdown" id="lesson-a-md">
 # Session 3
 ## Functions, Scope & Recursion
 
@@ -186,9 +188,73 @@ Type hints document intent. **They are NOT enforced at runtime** (`mypy` checks 
 ## Summary
 You can write reusable, documented, reproducible functions.
 **Next:** *Part B of this session* — recursion.
+</script>
+<script type="text/markdown" id="practice-a-md">
+## Practice — Part A
 
----
+### Task 1 — Grade-functions module
+Write three functions with docstrings and type hints:
+- `class_average(scores: list[float]) -> float`
+- `letter_grade(score: float) -> str`  (reuse Session 3)
+- `pass_rate(scores: list[float], passing: float = 60) -> float`  (fraction passing, 0–1)
 
+Use bool-summing for `pass_rate` (recall `sum(s >= passing for s in scores)`).
+
+### Task 2 — Reproduce & fix the mutable-default bug
+Write `add_note(text, notes=[])` that appends and returns. Call it three times and watch
+the list grow. Then fix it with the `None` pattern and prove each call starts fresh.
+
+### Task 3 — *args summary
+Write `summary(*scores)` that returns a dict `{"n":..., "mean":..., "max":..., "min":...}`.
+Call it both as `summary(91, 58, 73)` and as `summary(*my_list)`.
+
+### Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+def f(a, *, b):          # everything after * is keyword-only
+    return a, b
+print(f(1, b=2))                     # -> (1, 2)
+print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into arguments)
+```
+
+<details><summary>Show solutions</summary>
+
+```python
+def class_average(scores: list[float]) -> float:
+    """Mean of scores."""
+    return sum(scores) / len(scores)
+
+def letter_grade(score: float) -> str:
+    """A/B/C/D/F by 90/80/70/60 cutoffs."""
+    for cutoff, letter in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
+        if score >= cutoff:
+            return letter
+    return "F"
+
+def pass_rate(scores: list[float], passing: float = 60) -> float:
+    """Fraction of scores >= passing (0..1)."""
+    return sum(s >= passing for s in scores) / len(scores)
+
+# Task 2
+def add_note(text, notes=None):     # fixed version
+    if notes is None:
+        notes = []
+    notes.append(text)
+    return notes
+
+# Task 3
+def summary(*scores):
+    return {"n": len(scores), "mean": sum(scores)/len(scores),
+            "max": max(scores), "min": min(scores)}
+print(summary(91, 58, 73))
+print(summary(*[91, 58, 73]))
+```
+
+</details>
+
+</script>
+<script type="text/markdown" id="lesson-b-md">
 # Part B
 ## Recursion & Recursive Thinking
 
@@ -302,40 +368,8 @@ You can solve problems that are defined in terms of themselves — especially ne
 **Next:** Exceptions, files & research data.
 
 </script>
-<script type="text/markdown" id="practice-md">
-# Session 3 — Practice: Functions & Recursion
-
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
-
-## Part A — Functions, Scope & Reusability
-
-### Task 1 — Grade-functions module
-Write three functions with docstrings and type hints:
-- `class_average(scores: list[float]) -> float`
-- `letter_grade(score: float) -> str`  (reuse Session 3)
-- `pass_rate(scores: list[float], passing: float = 60) -> float`  (fraction passing, 0–1)
-
-Use bool-summing for `pass_rate` (recall `sum(s >= passing for s in scores)`).
-
-### Task 2 — Reproduce & fix the mutable-default bug
-Write `add_note(text, notes=[])` that appends and returns. Call it three times and watch
-the list grow. Then fix it with the `None` pattern and prove each call starts fresh.
-
-### Task 3 — *args summary
-Write `summary(*scores)` that returns a dict `{"n":..., "mean":..., "max":..., "min":...}`.
-Call it both as `summary(91, 58, 73)` and as `summary(*my_list)`.
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-def f(a, *, b):          # everything after * is keyword-only
-    return a, b
-print(f(1, b=2))                     # -> (1, 2)
-print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into arguments)
-```
-
-## Part B — Recursion & Recursive Thinking
+<script type="text/markdown" id="practice-b-md">
+## Practice — Part B
 
 ### Task 1 — Recursive sum
 Write `rsum(n)` that adds `1 + 2 + ... + n` **with recursion** (no loop).
@@ -380,44 +414,7 @@ def fib(n):
 print(fib(35))                       # -> 9227465   (try this WITHOUT @cache... then wait)
 ```
 
----
-
 <details><summary>Show solutions</summary>
-
-### Part A — Functions, Scope & Reusability
-
-```python
-def class_average(scores: list[float]) -> float:
-    """Mean of scores."""
-    return sum(scores) / len(scores)
-
-def letter_grade(score: float) -> str:
-    """A/B/C/D/F by 90/80/70/60 cutoffs."""
-    for cutoff, letter in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
-        if score >= cutoff:
-            return letter
-    return "F"
-
-def pass_rate(scores: list[float], passing: float = 60) -> float:
-    """Fraction of scores >= passing (0..1)."""
-    return sum(s >= passing for s in scores) / len(scores)
-
-# Task 2
-def add_note(text, notes=None):     # fixed version
-    if notes is None:
-        notes = []
-    notes.append(text)
-    return notes
-
-# Task 3
-def summary(*scores):
-    return {"n": len(scores), "mean": sum(scores)/len(scores),
-            "max": max(scores), "min": min(scores)}
-print(summary(91, 58, 73))
-print(summary(*[91, 58, 73]))
-```
-
-### Part B — Recursion & Recursive Thinking
 
 ```python
 # 1
@@ -462,7 +459,6 @@ print(depth([1, [2, [3, [4]]]]), depth([1, 2, 3]), depth(5))   # 4 1 0
 #    depth could exceed ~1000 (Python has no tail-call optimization, so deep
 #    recursion hits RecursionError where a loop would be fine).
 ```
-
 
 </details>
 

@@ -261,6 +261,12 @@ textarea.code{width:100%;border:0;background:var(--code-bg);color:var(--code-fg)
 .nb-primary:hover{background:#f6c356;color:#3a2c05;border-color:#e0a51f}
 @media(max-width:560px){.nb-label{margin-right:0;flex-basis:100%}}
 
+/* ---------- per-part practice panel (right after each topic) ---------- */
+.practice-block{border-left:3px solid var(--gold);background:var(--surface-soft);
+  border-radius:0 10px 10px 0;padding:6px 22px;margin:10px 0 34px}
+.practice-block > h2:first-child{margin-top:14px;color:var(--gold-ink)}
+.practice-block > h2:first-child::before{content:"✎ ";color:var(--gold-ink)}
+
 /* ---------- a11y / motion ---------- */
 a:focus-visible,button:focus-visible,textarea:focus-visible,summary:focus-visible{
   outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}

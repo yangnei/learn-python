@@ -12,6 +12,7 @@ Requires `chromium` (or `chromium-browser`) on PATH for the final print step.
 Output:  docs/learn-python-student.pdf  (served by the GitHub Pages site).
 """
 from __future__ import annotations
+import importlib.util
 import re
 import shutil
 import subprocess
@@ -23,6 +24,19 @@ import markdown  # provided by the build venv
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
+
+# Reuse the lesson/practice splitters from the site builder (single source of truth).
+_bs_spec = importlib.util.spec_from_file_location("bs", ROOT / "tools" / "build_site.py")
+_bs = importlib.util.module_from_spec(_bs_spec)
+_bs_spec.loader.exec_module(_bs)
+
+
+def pdf_practice(heading: str, tasks: str, solution: str) -> str:
+    """Practice markdown for the PDF — solutions shown (a printed <details> would hide them)."""
+    out = f"## {heading}\n\n{tasks}\n"
+    if solution:
+        out += f"\n### Solutions\n\n{solution}\n"
+    return out
 
 # Sessions that have a lesson deck + practice file (capstone is an appendix).
 N_SESSIONS = 5
@@ -126,13 +140,21 @@ def render() -> str:
     # Front matter: the student syllabus.
     sections.append(convert((ROOT / "curriculum" / "syllabus-student.md").read_text()))
 
-    # Each session: lesson deck (frontmatter stripped) + its practice.
+    # Each session, two halves: Part A lesson + practice, then Part B lesson + practice.
     for n in range(1, N_SESSIONS + 1):
-        lesson = strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text())
-        sections.append(f'<div class="pagebreak"></div>{convert(lesson)}')
+        lesson_a, lesson_b = _bs.split_lesson(
+            strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text()))
         practice_path = examples_dir / f"session-{n:02d}" / "practice.md"
+        ta = sa = tb = sb = ""
         if practice_path.exists():
-            sections.append(f'<div class="pagebreak"></div>{convert(practice_path.read_text())}')
+            ta, sa, tb, sb = _bs.split_practice(practice_path.read_text())
+        sections.append(f'<div class="pagebreak"></div>{convert(lesson_a)}')
+        if ta:
+            sections.append(convert(pdf_practice("Practice — Part A", ta, sa)))
+        if lesson_b:
+            sections.append(f'<div class="pagebreak"></div>{convert(lesson_b)}')
+            if tb:
+                sections.append(convert(pdf_practice("Practice — Part B", tb, sb)))
 
     # Appendices: cheat sheets and quizzes.
     for fname in ("setup-and-tools.md", "traps-and-gotchas.md", "quick-reference.md", "glossary.md"):

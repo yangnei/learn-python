@@ -23,10 +23,12 @@
   <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-02.ipynb" target="_blank" rel="noopener">Open in Colab</a>
   <a class="nb-btn" href="notebooks/session-02.ipynb" download>Download .ipynb</a>
 </aside>
-  <div id="lesson" class="md"></div>
+  <div id="lesson-a" class="md"></div>
+  <div id="practice-a" class="md practice-block"></div>
+  <div id="lesson-b" class="md"></div>
+  <div id="practice-b" class="md practice-block"></div>
+  <h2>Try it live</h2>
   <section id="playgrounds"></section>
-  <h2>Practice</h2>
-<div id="practice" class="md"></div>
   <h2>Check yourself</h2>
 <div id="quiz" class="md"></div>
   <div class="page-foot">
@@ -40,7 +42,7 @@
 </article>
 
 </main>
-<script type="text/markdown" id="lesson-md">
+<script type="text/markdown" id="lesson-a-md">
 # Session 2
 ## Control Flow & Data Structures
 
@@ -180,9 +182,84 @@ while True:
 ## Summary
 You can branch and repeat cleanly.
 **Next:** *Part B of this session* — data structures.
+</script>
+<script type="text/markdown" id="practice-a-md">
+## Practice — Part A
 
----
+### Task 1 — Grade-band classifier
+Write `letter_grade(score)` returning A/B/C/D/F (90/80/70/60 cutoffs), `"Invalid"` outside 0–100.
+**Test the boundaries:** 90, 89.999, 0, 100, -5, 101.
 
+### Task 2 — Boolean logic
+1. What is `5 and 0`? `"" or "N/A"`? Why aren't they `True`/`False`?
+2. Rewrite `if attended == True:` the Pythonic way.
+
+### Task 3 — Average + pass/fail (loops)
+Given `names = ["Ana","Ben","Cara","Dev"]` and `scores = [91, 58, 73, 64]`:
+1. Compute the mean with a loop and a running total.
+2. Use `zip` to print `"<name>: PASS"` (≥60) or `"<name>: FAIL"`.
+3. Count the passes with `sum(s >= 60 for s in scores)`.
+
+### Task 4 — Validation loop
+Write a real `while True:` prompt that keeps asking until the user types an integer 0–100.
+
+### Task 5 — Trap check
+Why does this skip elements, and what's the fix?
+```python
+xs = [1, 2, 3, 4]
+for x in xs:
+    if x % 2 == 0:
+        xs.remove(x)
+```
+
+### Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+nums = [80, 92, 45]
+print(all(n >= 60 for n in nums))    # -> False   (45 fails)
+print(any(n >= 90 for n in nums))    # -> True    (92 passes)
+print(92 in nums, 60 in nums)        # -> True False
+```
+
+<details><summary>Show solutions</summary>
+
+```python
+# 1
+def letter_grade(score):
+    if not 0 <= score <= 100: return "Invalid"
+    for cutoff, g in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
+        if score >= cutoff: return g
+    return "F"
+# 90->A, 89.999->B, 0->F, 100->A, -5->Invalid, 101->Invalid
+
+# 2
+# 5 and 0 -> 0 ; "" or "N/A" -> "N/A"  (and/or return an operand, not a bool)
+result = "pass" if attended else "absent"     # and just `if attended:`
+
+# 3
+total = 0
+for s in scores: total += s
+print(total / len(scores))                    # 71.5
+for name, score in zip(names, scores):
+    print(f"{name}: {'PASS' if score >= 60 else 'FAIL'}")
+print("passes:", sum(s >= 60 for s in scores))   # 3
+
+# 4
+while True:
+    raw = input("Score 0–100: ")
+    if raw.isdigit() and 0 <= int(raw) <= 100:
+        print("Got", int(raw)); break
+    print("Try again.")
+
+# 5  Removing while iterating shifts indices, so elements get skipped.
+xs = [x for x in xs if x % 2 != 0]            # build a new list instead -> [1, 3]
+```
+
+</details>
+
+</script>
+<script type="text/markdown" id="lesson-b-md">
 # Part B
 ## Data Structures
 
@@ -313,50 +390,8 @@ You can store, look up, dedup, sort, and reshape data.
 **Next:** Functions, scope & recursion.
 
 </script>
-<script type="text/markdown" id="practice-md">
-# Session 2 — Practice: Control Flow & Data Structures
-
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
-
-## Part A — Control Flow: Conditionals & Loops
-
-### Task 1 — Grade-band classifier
-Write `letter_grade(score)` returning A/B/C/D/F (90/80/70/60 cutoffs), `"Invalid"` outside 0–100.
-**Test the boundaries:** 90, 89.999, 0, 100, -5, 101.
-
-### Task 2 — Boolean logic
-1. What is `5 and 0`? `"" or "N/A"`? Why aren't they `True`/`False`?
-2. Rewrite `if attended == True:` the Pythonic way.
-
-### Task 3 — Average + pass/fail (loops)
-Given `names = ["Ana","Ben","Cara","Dev"]` and `scores = [91, 58, 73, 64]`:
-1. Compute the mean with a loop and a running total.
-2. Use `zip` to print `"<name>: PASS"` (≥60) or `"<name>: FAIL"`.
-3. Count the passes with `sum(s >= 60 for s in scores)`.
-
-### Task 4 — Validation loop
-Write a real `while True:` prompt that keeps asking until the user types an integer 0–100.
-
-### Task 5 — Trap check
-Why does this skip elements, and what's the fix?
-```python
-xs = [1, 2, 3, 4]
-for x in xs:
-    if x % 2 == 0:
-        xs.remove(x)
-```
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-nums = [80, 92, 45]
-print(all(n >= 60 for n in nums))    # -> False   (45 fails)
-print(any(n >= 90 for n in nums))    # -> True    (92 passes)
-print(92 in nums, 60 in nums)        # -> True False
-```
-
-## Part B — Data Structures: list, tuple, dict, set
+<script type="text/markdown" id="practice-b-md">
+## Practice — Part B
 
 Start from:
 ```python
@@ -393,45 +428,7 @@ print({1, 2, 3} & {2, 3, 4})         # -> {2, 3}            (set intersection)
 print(list(zip(*[(1, 2), (3, 4)])))  # -> [(1, 3), (2, 4)]  (transpose)
 ```
 
----
-
 <details><summary>Show solutions</summary>
-
-### Part A — Control Flow: Conditionals & Loops
-
-```python
-# 1
-def letter_grade(score):
-    if not 0 <= score <= 100: return "Invalid"
-    for cutoff, g in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
-        if score >= cutoff: return g
-    return "F"
-# 90->A, 89.999->B, 0->F, 100->A, -5->Invalid, 101->Invalid
-
-# 2
-# 5 and 0 -> 0 ; "" or "N/A" -> "N/A"  (and/or return an operand, not a bool)
-result = "pass" if attended else "absent"     # and just `if attended:`
-
-# 3
-total = 0
-for s in scores: total += s
-print(total / len(scores))                    # 71.5
-for name, score in zip(names, scores):
-    print(f"{name}: {'PASS' if score >= 60 else 'FAIL'}")
-print("passes:", sum(s >= 60 for s in scores))   # 3
-
-# 4
-while True:
-    raw = input("Score 0–100: ")
-    if raw.isdigit() and 0 <= int(raw) <= 100:
-        print("Got", int(raw)); break
-    print("Try again.")
-
-# 5  Removing while iterating shifts indices, so elements get skipped.
-xs = [x for x in xs if x % 2 != 0]            # build a new list instead -> [1, 3]
-```
-
-### Part B — Data Structures: list, tuple, dict, set
 
 ```python
 # 1
@@ -457,7 +454,6 @@ roster.append({"name": "Eve", "score": 80})
 # b now also has Eve. To stay independent:
 b = copy.deepcopy(roster)        # changes to roster no longer touch b
 ```
-
 
 </details>
 

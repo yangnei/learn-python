@@ -87,21 +87,34 @@ def patch_demo(n: int, src: str) -> str:
     return src
 
 
-def practice_cells(n: int) -> list[dict]:
-    """Tasks as markdown, a scratch code cell to work in, then collapsed solutions."""
-    path = EXAMPLES / f"session-{n:02d}" / "practice.md"
-    if not path.exists():
-        return []
-    text = path.read_text()
-    m = re.search(r"(?m)^#{2,4}\s+Solutions?\b.*$", text)
-    tasks = (text[:m.start()] if m else text).rstrip()
-    cells = [md(tasks)]
-    cells.append(code("# Your practice work — type here. Predict before you run.\n"))
-    if m:
-        sols = text[m.end():].lstrip("\n").rstrip()
+def banner_topic(src: str, ab: str) -> str:
+    """Pull the topic name out of a `# PART A — ...` / `# PART B — ...` banner."""
+    m = re.search(rf"^# PART {ab} — (.+)$", src, re.M)
+    return m.group(1).strip() if m else ""
+
+
+def split_demo_halves(src: str) -> tuple[str, str]:
+    """Split demo source at the PART B banner; strip both banners from the halves."""
+    parts = re.split(r"(?m)^# ={3,}\n# PART B — .*\n# ={3,}\n?", src, maxsplit=1)
+
+    def strip_banners(s: str) -> str:
+        return re.sub(r"(?m)^# ={3,}\n# PART [AB] — .*\n# ={3,}\n?", "", s)
+
+    a = strip_banners(parts[0])
+    b = strip_banners(parts[1]) if len(parts) == 2 else ""
+    return a, b
+
+
+def practice_cells_for(label: str, tasks: str, solution: str) -> list[dict]:
+    """A practice block for one half: tasks, a scratch cell, then collapsed solutions."""
+    cells = [
+        md(f"## Now you try — {label}\n\n{tasks}"),
+        code("# Your practice work — type here. Predict before you run.\n"),
+    ]
+    if solution:
         cells.append(md(
-            "<details>\n<summary><strong>Show solutions</strong></summary>\n\n"
-            + sols + "\n\n</details>"
+            f"<details>\n<summary><strong>Show {label} solutions</strong></summary>\n\n"
+            + solution + "\n\n</details>"
         ))
     return cells
 
@@ -132,7 +145,8 @@ def build_notebook(n: int, title: str, desc: str) -> dict:
         f"> {desc}\n\n"
         "**How to use this notebook:** read each cell, **predict** what it prints, "
         "then run it with **Shift + Enter**. Change one thing and predict again — the "
-        "surprise is the lesson. Practice tasks (with collapsed solutions) are at the bottom.\n\n"
+        "surprise is the lesson. This session has two halves (**Part A**, **Part B**); each "
+        "ends with its own practice (solutions collapsed).\n\n"
         "**Tips:** press **Tab** to autocomplete a name, and **Shift + Tab** for a function's "
         "help. Need a library? Run `%pip install <name>` in a cell (e.g. `%pip install pandas`) — "
         "in the browser (JupyterLite) that fetches a Pyodide build and lasts for the session."
@@ -145,11 +159,18 @@ def build_notebook(n: int, title: str, desc: str) -> dict:
 
     demo_src = (EXAMPLES / f"session-{n:02d}" / DEMO_NAME.get(n, "demo.py")).read_text()
     demo_src = patch_demo(n, strip_module_docstring(demo_src))
-    for chunk in split_code_cells(demo_src):
-        cells.append(code(chunk))
+    src_a, src_b = split_demo_halves(demo_src)
+    topic_a, topic_b = banner_topic(demo_src, "A"), banner_topic(demo_src, "B")
+    ta, sa, tb, sb = _bs.split_practice((EXAMPLES / f"session-{n:02d}" / "practice.md").read_text())
 
-    cells.append(md("## Now you try — practice"))
-    cells.extend(practice_cells(n))
+    # Part A: teach, then practise; then Part B: teach, then practise.
+    cells.append(md(f"## Part A — {topic_a}"))
+    cells.extend(code(c) for c in split_code_cells(src_a))
+    cells.extend(practice_cells_for("Part A", ta, sa))
+
+    cells.append(md(f"## Part B — {topic_b}"))
+    cells.extend(code(c) for c in split_code_cells(src_b))
+    cells.extend(practice_cells_for("Part B", tb, sb))
 
     return {
         "cells": cells,

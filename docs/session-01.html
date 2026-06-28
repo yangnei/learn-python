@@ -23,10 +23,12 @@
   <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-01.ipynb" target="_blank" rel="noopener">Open in Colab</a>
   <a class="nb-btn" href="notebooks/session-01.ipynb" download>Download .ipynb</a>
 </aside>
-  <div id="lesson" class="md"></div>
+  <div id="lesson-a" class="md"></div>
+  <div id="practice-a" class="md practice-block"></div>
+  <div id="lesson-b" class="md"></div>
+  <div id="practice-b" class="md practice-block"></div>
+  <h2>Try it live</h2>
   <section id="playgrounds"></section>
-  <h2>Practice</h2>
-<div id="practice" class="md"></div>
   <h2>Check yourself</h2>
 <div id="quiz" class="md"></div>
   <div class="page-foot">
@@ -40,7 +42,7 @@
 </article>
 
 </main>
-<script type="text/markdown" id="lesson-md">
+<script type="text/markdown" id="lesson-a-md">
 # Session 1
 ## Running Python, Types & the Type Traps
 
@@ -177,9 +179,62 @@ ValueError: invalid literal for int() with base 10: 'thirty'
 ## Summary
 You can run code, name values, convert types, format output, and read an error.
 **Next:** *Part B of this session* — the dynamic-typing traps.
+</script>
+<script type="text/markdown" id="practice-a-md">
+## Practice — Part A
 
----
+Type each solution yourself. Predict output before running. Solutions at the bottom.
 
+### Task 1 — Warm-up REPL
+In the REPL (`python3`), check the type of: `42`, `42.0`, `"42"`, `True`, `None`, `7/2`, `7//2`.
+*What surprises you?* (Hint: `7/2`.)
+
+### Task 2 — GPA reporter (`gpa.py`)
+Ask for a name and a GPA (a decimal). Print:
+`"<name>'s GPA is <gpa to 2 decimals>, which is <87.5%> of a 4.0 scale."`
+
+### Task 3 — Survey age bucket (`age.py`)
+Ask for an age (integer). Print the age, and the age in "months lived" (age × 12).
+Then deliberately type `twenty` instead of a number and **read the traceback's last line.**
+
+### Task 4 — Stretch: the string trap
+Without converting, what does `input("a: ") + input("b: ")` print if you type `2` then `3`?
+Now fix it so it prints `5`.
+
+### Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+a, b = 1, 2
+a, b = b, a;          print(a, b)        # -> 2 1   (swap, no temp variable)
+print(f"{a + b = }")                     # -> a + b = 3   (self-documenting f-string)
+print("CS50".lower(), "  hi ".strip())   # -> cs50 hi
+print("@" in "ana@uni.edu", len("data")) # -> True 4   (membership + length)
+```
+
+<details><summary>Show solutions</summary>
+
+```python
+# Task 2 — gpa.py
+name = input("Name: ")
+gpa = float(input("GPA: "))
+print(f"{name}'s GPA is {gpa:.2f}, which is {gpa/4:.1%} of a 4.0 scale.")
+
+# Task 3 — age.py
+age = int(input("Age: "))
+print(f"You are {age} years old, about {age*12} months.")
+# Typing "twenty" -> ValueError: invalid literal for int() with base 10: 'twenty'
+
+# Task 4
+# "2" + "3" -> "23"  (string concatenation)
+a = int(input("a: ")); b = int(input("b: "))
+print(a + b)          # 5
+```
+
+</details>
+
+</script>
+<script type="text/markdown" id="lesson-b-md">
 # Part B
 ## The Dynamic-Typing Traps
 
@@ -374,43 +429,8 @@ x=[1]; y=x; x.append(2); y   # ?
 **Next:** Control flow & data structures.
 
 </script>
-<script type="text/markdown" id="practice-md">
-# Session 1 — Practice: Types & the Type Traps
-
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
-
-## Part A — Running Python, Variables & Types
-
-Type each solution yourself. Predict output before running. Solutions at the bottom.
-
-### Task 1 — Warm-up REPL
-In the REPL (`python3`), check the type of: `42`, `42.0`, `"42"`, `True`, `None`, `7/2`, `7//2`.
-*What surprises you?* (Hint: `7/2`.)
-
-### Task 2 — GPA reporter (`gpa.py`)
-Ask for a name and a GPA (a decimal). Print:
-`"<name>'s GPA is <gpa to 2 decimals>, which is <87.5%> of a 4.0 scale."`
-
-### Task 3 — Survey age bucket (`age.py`)
-Ask for an age (integer). Print the age, and the age in "months lived" (age × 12).
-Then deliberately type `twenty` instead of a number and **read the traceback's last line.**
-
-### Task 4 — Stretch: the string trap
-Without converting, what does `input("a: ") + input("b: ")` print if you type `2` then `3`?
-Now fix it so it prints `5`.
-
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-a, b = 1, 2
-a, b = b, a;          print(a, b)        # -> 2 1   (swap, no temp variable)
-print(f"{a + b = }")                     # -> a + b = 3   (self-documenting f-string)
-print("CS50".lower(), "  hi ".strip())   # -> cs50 hi
-print("@" in "ana@uni.edu", len("data")) # -> True 4   (membership + length)
-```
-
-## Part B — The Dynamic-Typing Traps
+<script type="text/markdown" id="practice-b-md">
+## Practice — Part B
 
 ### Predict-the-output gauntlet
 For each line, write *why* (one sentence). Predict, then run to check.
@@ -449,30 +469,7 @@ print(x == y, x is y)                # -> True False   (equal value, different o
 print(float("nan") == float("nan"))  # -> False        (NaN equals nothing, not even itself)
 ```
 
----
-
 <details><summary>Show solutions</summary>
-
-### Part A — Running Python, Variables & Types
-
-```python
-# Task 2 — gpa.py
-name = input("Name: ")
-gpa = float(input("GPA: "))
-print(f"{name}'s GPA is {gpa:.2f}, which is {gpa/4:.1%} of a 4.0 scale.")
-
-# Task 3 — age.py
-age = int(input("Age: "))
-print(f"You are {age} years old, about {age*12} months.")
-# Typing "twenty" -> ValueError: invalid literal for int() with base 10: 'twenty'
-
-# Task 4
-# "2" + "3" -> "23"  (string concatenation)
-a = int(input("a: ")); b = int(input("b: "))
-print(a + b)          # 5
-```
-
-### Part B — The Dynamic-Typing Traps
 
 ```python
 import math
@@ -498,7 +495,6 @@ for v in [87, 87.0, "87", "eighty", 120, True]:
 ```
 Key lesson: `float(True)` is `1.0`, so without the explicit bool check a flag would
 pass as a valid score. This is the `bool ⊂ int` trap in a real function.
-
 
 </details>
 

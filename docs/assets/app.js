@@ -172,10 +172,11 @@ function setupTheme(){
 
 /* ---------- boot ---------- */
 document.addEventListener("DOMContentLoaded", ()=>{
-  renderMarkdownInto("lesson-md","lesson");
-  renderMarkdownInto("practice-md","practice");
-  renderMarkdownInto("quiz-md","quiz");
-  renderMarkdownInto("cheats-md","cheats");
+  // Render every embedded markdown block into the div whose id is the script id
+  // minus "-md" (e.g. lesson-a-md -> #lesson-a, practice-b-md -> #practice-b).
+  document.querySelectorAll('script[type="text/markdown"]').forEach(s=>{
+    if(s.id && s.id.endsWith("-md")) renderMarkdownInto(s.id, s.id.slice(0, -3));
+  });
   buildPlaygrounds();
   setupCompletion();
   setupTheme();
