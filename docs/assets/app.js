@@ -171,6 +171,33 @@ function setupTheme(){
 }
 
 /* ---------- boot ---------- */
+/* ---------- embedded JupyterLite notebook (lazy) ---------- */
+function setupNotebookEmbed(){
+  document.querySelectorAll("[data-nb-embed]").forEach(btn=>{
+    const bar = btn.closest(".nb-bar");
+    const holder = bar && bar.nextElementSibling;
+    if(!bar || !holder || !holder.classList.contains("nb-embed")) return;
+    const src = bar.getAttribute("data-nb-src");
+    btn.addEventListener("click", ()=>{
+      const opening = holder.hasAttribute("hidden");
+      if(opening){
+        if(!holder.querySelector("iframe")){
+          const f = document.createElement("iframe");
+          f.src = src; f.loading = "lazy"; f.title = "Notebook (runs in your browser)";
+          holder.appendChild(f);
+        }
+        holder.removeAttribute("hidden");
+        btn.setAttribute("aria-expanded","true");
+        btn.textContent = "▾ Hide notebook";
+      } else {
+        holder.setAttribute("hidden","");
+        btn.setAttribute("aria-expanded","false");
+        btn.textContent = "▸ Run as a notebook";
+      }
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", ()=>{
   // Render every embedded markdown block into the div whose id is the script id
   // minus "-md" (e.g. lesson-a-md -> #lesson-a, practice-b-md -> #practice-b).
@@ -178,6 +205,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     if(s.id && s.id.endsWith("-md")) renderMarkdownInto(s.id, s.id.slice(0, -3));
   });
   buildPlaygrounds();
+  setupNotebookEmbed();
   setupCompletion();
   setupTheme();
 });

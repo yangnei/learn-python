@@ -342,12 +342,13 @@ def notebook_bar(n: int) -> str:
              f"/blob/{GH_BRANCH}/docs/{NB_DIR}/{stem}")
     download = f"{NB_DIR}/{stem}"
     return f"""
-<aside class="nb-bar">
-  <span class="nb-label"><span class="nb-mark">▦</span> Prefer a notebook?</span>
-  <a class="nb-btn nb-primary" href="{lite}" target="_blank" rel="noopener">Run in browser</a>
+<aside class="nb-bar" data-nb-src="{lite}">
+  <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">▸ Run as a notebook</button>
   <a class="nb-btn" href="{colab}" target="_blank" rel="noopener">Open in Colab</a>
   <a class="nb-btn" href="{download}" download>Download .ipynb</a>
-</aside>"""
+  <a class="nb-btn nb-icon" href="{lite}" target="_blank" rel="noopener" title="Open the notebook in a new tab" aria-label="Open the notebook in a new tab">&#8599;</a>
+</aside>
+<div class="nb-embed" hidden></div>"""
 
 # Set the theme on <html> before first paint (no flash). Uses the saved choice if any,
 # otherwise defaults to light — the OS preference is intentionally not auto-applied.
