@@ -104,63 +104,64 @@ print(add_ok("Ben"))                # ['Ben']  <- fresh each call
 # PART B — Recursion & Recursive Thinking
 # ======================================================================
 
-import sys
 import functools
+import sys
+
+# 1) The shape of EVERY recursion: a BASE CASE that stops + a RECURSIVE CASE
+#    that moves toward it. Real example: how many prerequisites deep is a course?
+prereq_of = {
+    "ED700": "ED600",    # to take ED700 you must first pass ED600,
+    "ED600": "ED500",    #   which needs ED500,
+    "ED500": "ED400",    #   which needs ED400,
+    "ED400": None,       #   which has no prerequisite — the base case
+}
+
+def prereqs_deep(course):
+    earlier = prereq_of[course]
+    if earlier is None:                 # BASE CASE — nothing comes before it
+        return 0
+    return 1 + prereqs_deep(earlier)    # RECURSIVE CASE — step back one course
+
+print("ED700 prerequisite depth:", prereqs_deep("ED700"))   # 3
 
 
-# 1) The shape of EVERY recursive function: a base case + a recursive case.
-def countdown(n):
-    if n <= 0:                 # BASE CASE — the stop condition
-        print("liftoff!")
-        return
-    print(n)
-    countdown(n - 1)           # RECURSIVE CASE — same problem, smaller input
+# 2) Recursion vs iteration: how many distinct ways can n students finish a
+#    race? That is n! (n factorial). Same answer two ways; the loop is clearer.
+def orderings(n):
+    if n <= 1:                          # base case: 0 or 1 student -> one order
+        return 1
+    return n * orderings(n - 1)         # <- you MUST return the recursive call
 
-print("countdown:")
-countdown(3)
-
-
-# 2) Recursion vs iteration: same answer, two styles. Each call adds a stack frame.
-def factorial(n):
-    if n <= 1:
-        return 1               # base case
-    return n * factorial(n - 1)   # remember to RETURN the recursive call
-
-def factorial_loop(n):
+def orderings_loop(n):
     total = 1
     for k in range(2, n + 1):
         total *= k
     return total
 
-print("\nfactorial(5):", factorial(5), "==", factorial_loop(5))
+print("\nways to rank 5 students:", orderings(5), "==", orderings_loop(5))   # 120
 
 
-# 3) Memoization: @lru_cache remembers past calls so each input is computed once.
-#    Naive fibonacci recomputes the same values exponentially; the cache makes it linear.
+# 3) Memoization: @lru_cache remembers past results so each input is computed
+#    once. A value built from smaller copies of itself — here a growth model,
+#    the Fibonacci sequence — otherwise recomputes the same subtotals exponentially.
 calls = 0
-def fib_naive(n):
+def growth_naive(week):
     global calls
     calls += 1
-    return n if n < 2 else fib_naive(n - 1) + fib_naive(n - 2)
+    return week if week < 2 else growth_naive(week - 1) + growth_naive(week - 2)
 
-@functools.lru_cache(maxsize=None)     # one decorator turns the slow version fast
-def fib_fast(n):
-    return n if n < 2 else fib_fast(n - 1) + fib_fast(n - 2)
+@functools.lru_cache(maxsize=None)      # one line turns the slow version fast
+def growth_fast(week):
+    return week if week < 2 else growth_fast(week - 1) + growth_fast(week - 2)
 
-print("\nfib_naive(30):", fib_naive(30), "in", calls, "calls")
-print("fib_fast(30): ", fib_fast(30), "->", fib_fast.cache_info())   # far fewer hits
-
-
-# 4) Mutual recursion: two functions that call each other toward a shared base case.
-def is_even(n):
-    return True if n == 0 else is_odd(n - 1)
-def is_odd(n):
-    return False if n == 0 else is_even(n - 1)
-print("\nis_even(10):", is_even(10), "| is_odd(7):", is_odd(7))
+print("\ngrowth_naive(30):", growth_naive(30), "in", calls, "calls")
+print("growth_fast(30): ", growth_fast(30), "->", growth_fast.cache_info())
+# The same @lru_cache speeds up ANY expensive repeated call — a slow file
+# parse, a web lookup, a database query.
 
 
-# 5) Where recursion SHINES: naturally NESTED data, where one loop can't reach
-#    all the way down. This is shaped like a real nested-JSON export.
+# 4) Where recursion SHINES: naturally NESTED data, where one loop can't reach
+#    all the way down. This is shaped like a real nested-JSON survey export.
 export = {
     "cohort": "2026",
     "students": [
@@ -171,7 +172,7 @@ export = {
 
 def deep_sum(obj):
     """Add up every number found anywhere inside nested lists/dicts."""
-    if isinstance(obj, bool):                 # bool is an int subclass (Session 2!)
+    if isinstance(obj, bool):                 # bool is an int subclass (Session 1!)
         return 0
     if isinstance(obj, (int, float)):
         return obj
@@ -184,7 +185,7 @@ def deep_sum(obj):
 print("\ndeep_sum of nested export:", deep_sum(export))   # 91+88+58+60+64 = 361
 
 
-# 6) The trap: with no reachable base case, recursion never stops. Python has no
+# 5) The trap: with no reachable base case, recursion never stops. Python has no
 #    tail-call optimization, so it just piles up stack frames until it gives up.
 print("\nPython's recursion limit:", sys.getrecursionlimit())
 

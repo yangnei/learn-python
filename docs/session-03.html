@@ -224,13 +224,17 @@ You can write reusable, documented, reproducible functions.
 
 ## The shape of every recursion
 
+Real example: how many prerequisites deep is a course?
+
 ```python
-def countdown(n):
-    if n <= 0:          # BASE CASE — when to stop
-        print("liftoff!")
-        return
-    print(n)
-    countdown(n - 1)    # RECURSIVE CASE — same problem, smaller input
+prereq_of = {"ED700": "ED600", "ED600": "ED500",
+             "ED500": "ED400", "ED400": None}   # ED400 has none
+
+def prereqs_deep(course):
+    earlier = prereq_of[course]
+    if earlier is None:               # BASE CASE — stop here
+        return 0
+    return 1 + prereqs_deep(earlier)  # RECURSIVE CASE — step back one
 ```
 
 Two parts, always:
@@ -241,11 +245,13 @@ Two parts, always:
 
 ## Trace the call stack
 
+`orderings(n)` = ways to rank *n* students = n!
+
 ```python
-factorial(3)
-= 3 * factorial(2)
-=     3 * (2 * factorial(1))
-=         3 * (2 * 1)        # base case returns 1
+orderings(3)
+= 3 * orderings(2)
+=     3 * (2 * orderings(1))
+=         3 * (2 * 1)          # base case returns 1
 = 6
 ```
 
@@ -258,12 +264,12 @@ Each call waits on the one inside it. The calls stack up, then unwind.
 ## Recursion vs iteration
 
 ```python
-def factorial(n):
+def orderings(n):                 # ways to rank n students (n!)
     if n <= 1:
         return 1
-    return n * factorial(n - 1)   # ← must RETURN the call
+    return n * orderings(n - 1)   # ← must RETURN the call
 
-def factorial_loop(n):
+def orderings_loop(n):
     total = 1
     for k in range(2, n + 1):
         total *= k
@@ -312,7 +318,7 @@ Python has **no tail-call optimization** — every call keeps its frame
 ## Your turn
 
 `examples/session-03/practice.md`:
-1. Recursive `rsum(n)` — name the base case first.
+1. Recursive `total(scores)` — sum a list of scores; name the base case first.
 2. `flatten([1, [2, [3, 4]], 5])` → one flat list.
 3. `depth(...)` — how deeply is a list nested?
 

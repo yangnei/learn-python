@@ -32,9 +32,10 @@ print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into argum
 
 ## Part B — Recursion & Recursive Thinking
 
-### Task 1 — Recursive sum
-Write `rsum(n)` that adds `1 + 2 + ... + n` **with recursion** (no loop).
-Name the base case out loud before you write it. Test `rsum(5)` and `rsum(0)`.
+### Task 1 — Recursive total
+Write `total(scores)` that sums a list of scores **with recursion** (no loop):
+`scores[0] + total(rest)`, with the empty list as the base case. Name the base
+case out loud first. Test `total([91, 58, 73])` and `total([])`.
 
 ### Task 2 — Recursion vs iteration
 Write `reverse(s)` that reverses a string recursively. Then write the loop version.
@@ -56,10 +57,10 @@ Write `depth(xs)` returning how deeply a list is nested:
    ```
 2. This returns `None` instead of a number — why?
    ```python
-   def fact(n):
+   def orderings(n):
        if n <= 1:
            return 1
-       n * fact(n - 1)
+       n * orderings(n - 1)
    ```
 3. Name one case where a plain loop is the better choice over recursion.
 
@@ -116,11 +117,11 @@ print(summary(*[91, 58, 73]))
 
 ```python
 # 1
-def rsum(n):
-    if n == 0:                      # base case
+def total(scores):
+    if not scores:                  # base case: empty list sums to 0
         return 0
-    return n + rsum(n - 1)
-print(rsum(5), rsum(0))             # 15 0
+    return scores[0] + total(scores[1:])   # first score + total of the rest
+print(total([91, 58, 73]), total([]))      # 222 0
 
 # 2
 def reverse(s):
