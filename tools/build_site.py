@@ -568,7 +568,6 @@ def traps_section_md(n: int) -> str:
            "just below.\n"]
     for i, t in enumerate(entries, 1):
         out.append(f'<div class="trap">\n\n**{i}.**\n\n```python\n{traps.display_code(t)}\n```\n')
-        out.append(f"Most people expect `{t['expect']}`.\n")
         out.append("<details><summary>Reveal the result</summary>\n\n"
                    f"&rarr; `{traps.reveal(t)}`\n\n{t['why']}\n\n</details>\n\n</div>\n")
     return "\n".join(out)

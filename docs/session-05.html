@@ -370,8 +370,6 @@ first_pass = list(gpas)
 list(gpas)
 ```
 
-Most people expect `the same GPAs again`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `[]`
@@ -399,8 +397,6 @@ g2 = Grade('ED101', 91)
 g1 == g2
 ```
 
-Most people expect `False — two different objects`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `True`
@@ -421,8 +417,6 @@ m = re.match(r'\[(.+)\]', '[ED101][ED102]')
 m.group(1)
 ```
 
-Most people expect `'ED101'`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `'ED101][ED102'`
@@ -441,8 +435,6 @@ Most people expect `'ED101'`.
 import re
 bool(re.match(r'\d+', 'cohort2026'))
 ```
-
-Most people expect `True — there's a number in there`.
 
 <details><summary>Reveal the result</summary>
 
@@ -469,8 +461,6 @@ math = Course()
 art.enroll('Ana')
 math.students
 ```
-
-Most people expect `[] — math is a different course`.
 
 <details><summary>Reveal the result</summary>
 

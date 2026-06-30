@@ -302,8 +302,6 @@ ben_scores = [88, 91]
 ana_scores is ben_scores
 ```
 
-Most people expect `True — the two lists are identical`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `False`
@@ -325,8 +323,6 @@ roster.append('Cara')
 backup
 ```
 
-Most people expect `['Ana', 'Ben'] — backup was taken before Cara`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `['Ana', 'Ben', 'Cara']`
@@ -346,8 +342,6 @@ attended = True
 attended == 1
 ```
 
-Most people expect `False — a yes/no flag isn't a number`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `True`
@@ -363,12 +357,10 @@ Most people expect `False — a yes/no flag isn't a number`.
 **4.**
 
 ```python
-base_score = 5
-bonus = True
-base_score + bonus
+score = 5
+bonus = True   # earned a bonus point?
+score + bonus
 ```
-
-Most people expect `TypeError — you can't add a flag to a number`.
 
 <details><summary>Reveal the result</summary>
 
@@ -385,11 +377,9 @@ Most people expect `TypeError — you can't add a flag to a number`.
 **5.**
 
 ```python
-passed = [True, False, True, True]
+passed = [True, False, True, True]   # did each student pass?
 sum(passed)
 ```
-
-Most people expect `an error, or 0`.
 
 <details><summary>Reveal the result</summary>
 
@@ -406,12 +396,10 @@ Summing booleans counts the `True`s — a handy way to count how many students p
 **6.**
 
 ```python
-reading_a = 0.1
-reading_b = 0.2
-reading_a + reading_b
+homework = 0.1
+exam = 0.2   # their weights in the final grade
+homework + exam
 ```
-
-Most people expect `0.3`.
 
 <details><summary>Reveal the result</summary>
 
@@ -428,17 +416,15 @@ Floats are stored in binary, where 0.1 and 0.2 have no exact representation, so 
 **7.**
 
 ```python
-total = 0.1 + 0.2
-total == 0.3
+weight = 0.1 + 0.2   # homework + exam
+weight == 0.3
 ```
-
-Most people expect `True`.
 
 <details><summary>Reveal the result</summary>
 
 &rarr; `False`
 
-Because `0.1 + 0.2` is `0.30000000000000004`. Never test measured values with `==`; use `math.isclose(a, b)`.
+Because `0.1 + 0.2` is `0.30000000000000004`. Never test computed scores with `==`; use `math.isclose(a, b)`.
 
 </details>
 
@@ -453,13 +439,11 @@ missing_score = float('nan')
 missing_score == missing_score
 ```
 
-Most people expect `True — it is the very same value`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `False`
 
-`NaN` (a missing/invalid number) is defined to equal nothing, not even itself. Test it with `math.isnan(x)`.
+`NaN` (a missing/invalid score) is defined to equal nothing, not even itself. Test it with `math.isnan(x)`.
 
 </details>
 
@@ -470,17 +454,15 @@ Most people expect `True — it is the very same value`.
 **9.**
 
 ```python
-points = 7
-points / 2
+total = 7   # two students' scores added up
+total / 2
 ```
-
-Most people expect `3`.
 
 <details><summary>Reveal the result</summary>
 
 &rarr; `3.5`
 
-`/` is always float (true) division. Use `//` when you want a whole number.
+`/` is always float (true) division, so the mean comes out as `3.5`. Use `//` when you want a whole number.
 
 </details>
 
@@ -491,17 +473,15 @@ Most people expect `3`.
 **10.**
 
 ```python
-net = -7
-net // 2
+penalty = -7   # points to spread over 2 assignments
+penalty // 2
 ```
-
-Most people expect `-3 (just chop off the decimal)`.
 
 <details><summary>Reveal the result</summary>
 
 &rarr; `-4`
 
-`//` floors toward negative infinity, not toward zero, so `-7 // 2 == -4`.
+`//` floors toward negative infinity, not toward zero, so `-7 // 2 == -4` (it deducts 4 from each, not 3).
 
 </details>
 
@@ -512,17 +492,15 @@ Most people expect `-3 (just chop off the decimal)`.
 **11.**
 
 ```python
-cell = '5'   # a value read from a CSV
-cell == 5
+score = '5'   # read from a CSV
+score == 5
 ```
-
-Most people expect `True — same digit`.
 
 <details><summary>Reveal the result</summary>
 
 &rarr; `False`
 
-Python does no automatic text/number conversion, so a CSV string and a number are simply unequal (no error). Convert first: `int(cell) == 5`.
+Python does no automatic text/number conversion, so a CSV string and a number are simply unequal (no error). Convert first: `int(score) == 5`.
 
 </details>
 
@@ -533,17 +511,15 @@ Python does no automatic text/number conversion, so a CSV string and a number ar
 **12.**
 
 ```python
-cell = '5'
-5 > cell
+score = '5'
+5 > score
 ```
-
-Most people expect `False (or maybe True)`.
 
 <details><summary>Reveal the result</summary>
 
 &rarr; `TypeError: '>' not supported between instances of 'int' and 'str'`
 
-Ordering a number against text raises TypeError — there is no sensible order. Convert first: `5 > int(cell)`.
+Ordering a number against text raises TypeError — there is no sensible order. Convert first: `5 > int(score)`.
 
 </details>
 
@@ -554,12 +530,10 @@ Ordering a number against text raises TypeError — there is no sensible order. 
 **13.**
 
 ```python
-as_list = [88, 91]
-as_tuple = (88, 91)
-as_list == as_tuple
+scores_list = [88, 91]
+scores_tuple = (88, 91)
+scores_list == scores_tuple
 ```
-
-Most people expect `True — same numbers`.
 
 <details><summary>Reveal the result</summary>
 
@@ -576,17 +550,15 @@ A list never equals a tuple, whatever the contents.
 **14.**
 
 ```python
-flag = True
-type(flag) is int
+passed = True
+type(passed) is int
 ```
-
-Most people expect `True — bools are ints`.
 
 <details><summary>Reveal the result</summary>
 
 &rarr; `False`
 
-`type()` is exact, and `flag`'s type is `bool`, not `int`. Use `isinstance` when you want subclass-aware checks.
+`type()` is exact, and `passed`'s type is `bool`, not `int`. Use `isinstance` when you want subclass-aware checks.
 
 </details>
 
@@ -597,11 +569,9 @@ Most people expect `True — bools are ints`.
 **15.**
 
 ```python
-flag = True
-isinstance(flag, int)
+passed = True
+isinstance(passed, int)
 ```
-
-Most people expect `False — it's a bool, not an int`.
 
 <details><summary>Reveal the result</summary>
 
@@ -618,11 +588,9 @@ Most people expect `False — it's a bool, not an int`.
 **16.**
 
 ```python
-response = '0'   # what a respondent typed
-bool(response)
+answer = '0'   # what a student typed on the survey
+bool(answer)
 ```
-
-Most people expect `False — it's zero`.
 
 <details><summary>Reveal the result</summary>
 
@@ -643,8 +611,6 @@ submissions = []
 bool(submissions)
 ```
 
-Most people expect `True — the list exists`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `False`
@@ -660,12 +626,10 @@ Empty containers (`[]`, `{}`, `''`, `0`, `None`) are all falsy, which is why `if
 **18.**
 
 ```python
-id_a = int('257')
-id_b = int('257')   # two IDs parsed from text
-id_a is id_b
+id_from_csv = int('257')
+id_from_form = int('257')   # the same student ID, parsed twice
+id_from_csv is id_from_form
 ```
-
-Most people expect `True — same number`.
 
 <details><summary>Reveal the result</summary>
 

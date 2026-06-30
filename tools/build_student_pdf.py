@@ -44,8 +44,7 @@ def pdf_traps(n: int) -> str:
            "Cover the result, predict each one, then check yourself.\n"]
     for i, t in enumerate(entries, 1):
         out.append(f"**{i}.**\n\n```python\n{_traps.display_code(t)}\n```\n")
-        out.append(f"Most people expect `{t['expect']}` — the result is `{_traps.reveal(t)}`. "
-                   f"{t['why']}\n")
+        out.append(f"Result: `{_traps.reveal(t)}`. {t['why']}\n")
     return "\n".join(out)
 
 

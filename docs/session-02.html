@@ -354,8 +354,6 @@ typed_name = ''   # the user left the box blank
 typed_name or 'Anonymous'
 ```
 
-Most people expect `True or False`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `'Anonymous'`
@@ -374,8 +372,6 @@ Most people expect `True or False`.
 weeks = range(1, 5)
 list(weeks)
 ```
-
-Most people expect `[1, 2, 3, 4, 5]`.
 
 <details><summary>Reveal the result</summary>
 
@@ -397,8 +393,6 @@ gradebook[0][0] = 9
 gradebook
 ```
 
-Most people expect `only the first student's first score changes`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `[[9, 0, 0], [9, 0, 0], [9, 0, 0]]`
@@ -417,8 +411,6 @@ Most people expect `only the first student's first score changes`.
 scores = [55, 92, 78]
 all(s >= 60 for s in scores)
 ```
-
-Most people expect `True`.
 
 <details><summary>Reveal the result</summary>
 
@@ -439,8 +431,6 @@ gpa = {'Ana': 3.9}
 gpa.get('Ben')
 ```
 
-Most people expect `KeyError`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `None`
@@ -459,8 +449,6 @@ Most people expect `KeyError`.
 ranking = ['Ana', 'Ben', 'Cara']
 ranking[::-1]
 ```
-
-Most people expect `an error, or the same list`.
 
 <details><summary>Reveal the result</summary>
 

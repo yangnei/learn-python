@@ -3,11 +3,14 @@
 Each trap is a tiny piece of code whose result contradicts a beginner's
 expectation. The same dataset is rendered three ways by the build tools:
 
-  * the website     -> the code, the common (wrong) expectation, and a
-                       click-to-reveal <details> with the real result + why;
+  * the website     -> the code and a click-to-reveal <details> with the real
+                       result + why;
   * the notebooks   -> the code in a runnable cell (run it to reveal the
                        result) with a collapsed "why";
   * the student PDF -> the code, result, and why shown inline (printed ref).
+
+The "expect" field records the common misconception each trap targets; it is
+kept as documentation but no longer shown (you predict before revealing).
 
 The examples are grounded in the learner's world (students, scores, rosters,
 survey cells, gradebooks) so the surprise lands on something concrete. The
@@ -45,64 +48,66 @@ TRAPS: dict[int, list[dict]] = {
          "expect": "False — a yes/no flag isn't a number",
          "why": "`bool` is a subclass of `int`: `True == 1` and `False == 0`, which is why a "
                 "spreadsheet's 1/0 lines up with Python's True/False."},
-        {"setup": "base_score = 5\nbonus = True",
-         "code": "base_score + bonus",
+        {"setup": "score = 5\nbonus = True   # earned a bonus point?",
+         "code": "score + bonus",
          "expect": "TypeError — you can't add a flag to a number",
          "why": "`True` acts as `1` (and `False` as `0`) in arithmetic — a quick way to add a "
                 "bonus point for a flag."},
-        {"setup": "passed = [True, False, True, True]",
+        {"setup": "passed = [True, False, True, True]   # did each student pass?",
          "code": "sum(passed)",
          "expect": "an error, or 0",
          "why": "Summing booleans counts the `True`s — a handy way to count how many students "
                 "passed."},
-        {"setup": "reading_a = 0.1\nreading_b = 0.2",
-         "code": "reading_a + reading_b",
+        {"setup": "homework = 0.1\nexam = 0.2   # their weights in the final grade",
+         "code": "homework + exam",
          "expect": "0.3",
          "why": "Floats are stored in binary, where 0.1 and 0.2 have no exact representation, "
                 "so the tiny errors add up."},
-        {"setup": "total = 0.1 + 0.2",
-         "code": "total == 0.3",
-         "expect": "True",
-         "why": "Because `0.1 + 0.2` is `0.30000000000000004`. Never test measured values with "
+        {"setup": "weight = 0.1 + 0.2   # homework + exam",
+         "code": "weight == 0.3",
+         "expect": "True — they make up 30%",
+         "why": "Because `0.1 + 0.2` is `0.30000000000000004`. Never test computed scores with "
                 "`==`; use `math.isclose(a, b)`."},
         {"setup": "missing_score = float('nan')",
          "code": "missing_score == missing_score",
          "expect": "True — it is the very same value",
-         "why": "`NaN` (a missing/invalid number) is defined to equal nothing, not even itself. "
+         "why": "`NaN` (a missing/invalid score) is defined to equal nothing, not even itself. "
                 "Test it with `math.isnan(x)`."},
-        {"setup": "points = 7",
-         "code": "points / 2",
-         "expect": "3",
-         "why": "`/` is always float (true) division. Use `//` when you want a whole number."},
-        {"setup": "net = -7",
-         "code": "net // 2",
+        {"setup": "total = 7   # two students' scores added up",
+         "code": "total / 2",
+         "expect": "3 — half of 7",
+         "why": "`/` is always float (true) division, so the mean comes out as `3.5`. Use `//` "
+                "when you want a whole number."},
+        {"setup": "penalty = -7   # points to spread over 2 assignments",
+         "code": "penalty // 2",
          "expect": "-3 (just chop off the decimal)",
-         "why": "`//` floors toward negative infinity, not toward zero, so `-7 // 2 == -4`."},
-        {"setup": "cell = '5'   # a value read from a CSV",
-         "code": "cell == 5",
+         "why": "`//` floors toward negative infinity, not toward zero, so `-7 // 2 == -4` "
+                "(it deducts 4 from each, not 3)."},
+        {"setup": "score = '5'   # read from a CSV",
+         "code": "score == 5",
          "expect": "True — same digit",
          "why": "Python does no automatic text/number conversion, so a CSV string and a number "
-                "are simply unequal (no error). Convert first: `int(cell) == 5`."},
-        {"setup": "cell = '5'",
-         "code": "5 > cell",
+                "are simply unequal (no error). Convert first: `int(score) == 5`."},
+        {"setup": "score = '5'",
+         "code": "5 > score",
          "expect": "False (or maybe True)",
          "why": "Ordering a number against text raises TypeError — there is no sensible order. "
-                "Convert first: `5 > int(cell)`."},
-        {"setup": "as_list = [88, 91]\nas_tuple = (88, 91)",
-         "code": "as_list == as_tuple",
+                "Convert first: `5 > int(score)`."},
+        {"setup": "scores_list = [88, 91]\nscores_tuple = (88, 91)",
+         "code": "scores_list == scores_tuple",
          "expect": "True — same numbers",
          "why": "A list never equals a tuple, whatever the contents."},
-        {"setup": "flag = True",
-         "code": "type(flag) is int",
+        {"setup": "passed = True",
+         "code": "type(passed) is int",
          "expect": "True — bools are ints",
-         "why": "`type()` is exact, and `flag`'s type is `bool`, not `int`. Use `isinstance` when "
-                "you want subclass-aware checks."},
-        {"setup": "flag = True",
-         "code": "isinstance(flag, int)",
+         "why": "`type()` is exact, and `passed`'s type is `bool`, not `int`. Use `isinstance` "
+                "when you want subclass-aware checks."},
+        {"setup": "passed = True",
+         "code": "isinstance(passed, int)",
          "expect": "False — it's a bool, not an int",
          "why": "`isinstance` respects subclassing, and `bool` IS a kind of `int`."},
-        {"setup": "response = '0'   # what a respondent typed",
-         "code": "bool(response)",
+        {"setup": "answer = '0'   # what a student typed on the survey",
+         "code": "bool(answer)",
          "expect": "False — it's zero",
          "why": "Any NON-EMPTY string is truthy, including '0' and 'False'. Only the empty "
                 "string is falsy — so convert survey text before testing it."},
@@ -111,8 +116,8 @@ TRAPS: dict[int, list[dict]] = {
          "expect": "True — the list exists",
          "why": "Empty containers (`[]`, `{}`, `''`, `0`, `None`) are all falsy, which is why "
                 "`if submissions:` reads as 'are there any?'."},
-        {"setup": "id_a = int('257')\nid_b = int('257')   # two IDs parsed from text",
-         "code": "id_a is id_b",
+        {"setup": "id_from_csv = int('257')\nid_from_form = int('257')   # the same student ID, parsed twice",
+         "code": "id_from_csv is id_from_form",
          "expect": "True — same number",
          "why": "CPython pre-caches small ints (-5..256), so `is` accidentally looks True there; "
                 "257 built at runtime are separate objects. Compare values with `==`, never "
@@ -159,33 +164,33 @@ TRAPS: dict[int, list[dict]] = {
          "code": "show_score(91) is None",
          "expect": "False — it clearly produced 91",
          "why": "Printing is not returning. A function with no `return` gives `None`."},
-        {"setup": "makers = [lambda: week for week in range(3)]",
+        {"setup": "makers = [lambda: score for score in [88, 91, 73]]",
          "code": "[make() for make in makers]",
-         "expect": "[0, 1, 2]",
-         "why": "Closures capture the VARIABLE `week`, not its value; by call time the loop has "
-                "left `week = 2`. Fix by binding it: `lambda week=week: week`."},
-        {"setup": "def countdown(n):\n    return countdown(n - 1)   # no base case!",
-         "code": "countdown(3)",
+         "expect": "[88, 91, 73]",
+         "why": "Closures capture the VARIABLE `score`, not its value; by call time the loop has "
+                "left `score = 73`. Fix by binding it: `lambda score=score: score`."},
+        {"setup": "def grade(n):\n    return grade(n - 1)   # forgot the base case",
+         "code": "grade(3)",
          "expect": "runs forever, or 0",
          "why": "Every recursive function needs a base case. Without one Python stops at its "
                 "recursion limit (~1000 deep) with RecursionError."},
     ],
     # ---- Session 4 — Exceptions, files & research data ------------------
     4: [
-        {"setup": "cell = '3.0'   # a value from a CSV",
-         "code": "int(cell)",
+        {"setup": "score = '3.0'   # a value from a CSV",
+         "code": "int(score)",
          "expect": "3",
          "why": "`int()` parses INTEGER text only; '3.0' is not a valid int literal. "
-                "Use `int(float(cell))`."},
-        {"setup": "measurement = 2.5",
-         "code": "round(measurement)",
+                "Use `int(float(score))`."},
+        {"setup": "score = 2.5",
+         "code": "round(score)",
          "expect": "3",
          "why": "Python uses banker's rounding (round half to EVEN): `round(2.5) == 2` but "
                 "`round(3.5) == 4`. Watch this when summarising data."},
-        {"setup": "total = 0.1 + 0.2 + 0.3   # three measured values",
-         "code": "total == 0.6",
+        {"setup": "weight = 0.1 + 0.2 + 0.3   # three grade components",
+         "code": "weight == 0.6",
          "expect": "True",
-         "why": "Float error accumulates when you total measurements: 0.1+0.2+0.3 is "
+         "why": "Float error accumulates when you total components: 0.1+0.2+0.3 is "
                 "0.6000000000000001. Compare sums with `math.isclose`, or round for display."},
         {"setup": "enrolment = '1_000'",
          "code": "int(enrolment)",

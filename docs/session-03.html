@@ -352,8 +352,6 @@ enroll('Ana')
 enroll('Ben')
 ```
 
-Most people expect `['Ben'] — a fresh empty roster each call`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `['Ana', 'Ben']`
@@ -374,8 +372,6 @@ def show_score(s):
 show_score(91) is None
 ```
 
-Most people expect `False — it clearly produced 91`.
-
 <details><summary>Reveal the result</summary>
 
 &rarr; `True`
@@ -391,17 +387,15 @@ Printing is not returning. A function with no `return` gives `None`.
 **3.**
 
 ```python
-makers = [lambda: week for week in range(3)]
+makers = [lambda: score for score in [88, 91, 73]]
 [make() for make in makers]
 ```
 
-Most people expect `[0, 1, 2]`.
-
 <details><summary>Reveal the result</summary>
 
-&rarr; `[2, 2, 2]`
+&rarr; `[73, 73, 73]`
 
-Closures capture the VARIABLE `week`, not its value; by call time the loop has left `week = 2`. Fix by binding it: `lambda week=week: week`.
+Closures capture the VARIABLE `score`, not its value; by call time the loop has left `score = 73`. Fix by binding it: `lambda score=score: score`.
 
 </details>
 
@@ -412,12 +406,10 @@ Closures capture the VARIABLE `week`, not its value; by call time the loop has l
 **4.**
 
 ```python
-def countdown(n):
-    return countdown(n - 1)   # no base case!
-countdown(3)
+def grade(n):
+    return grade(n - 1)   # forgot the base case
+grade(3)
 ```
-
-Most people expect `runs forever, or 0`.
 
 <details><summary>Reveal the result</summary>
 

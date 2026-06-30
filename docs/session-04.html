@@ -343,17 +343,15 @@ Read each snippet and decide what it does **before** you reveal the answer. To r
 **1.**
 
 ```python
-cell = '3.0'   # a value from a CSV
-int(cell)
+score = '3.0'   # a value from a CSV
+int(score)
 ```
-
-Most people expect `3`.
 
 <details><summary>Reveal the result</summary>
 
 &rarr; `ValueError: invalid literal for int() with base 10: '3.0'`
 
-`int()` parses INTEGER text only; '3.0' is not a valid int literal. Use `int(float(cell))`.
+`int()` parses INTEGER text only; '3.0' is not a valid int literal. Use `int(float(score))`.
 
 </details>
 
@@ -364,11 +362,9 @@ Most people expect `3`.
 **2.**
 
 ```python
-measurement = 2.5
-round(measurement)
+score = 2.5
+round(score)
 ```
-
-Most people expect `3`.
 
 <details><summary>Reveal the result</summary>
 
@@ -385,17 +381,15 @@ Python uses banker's rounding (round half to EVEN): `round(2.5) == 2` but `round
 **3.**
 
 ```python
-total = 0.1 + 0.2 + 0.3   # three measured values
-total == 0.6
+weight = 0.1 + 0.2 + 0.3   # three grade components
+weight == 0.6
 ```
-
-Most people expect `True`.
 
 <details><summary>Reveal the result</summary>
 
 &rarr; `False`
 
-Float error accumulates when you total measurements: 0.1+0.2+0.3 is 0.6000000000000001. Compare sums with `math.isclose`, or round for display.
+Float error accumulates when you total components: 0.1+0.2+0.3 is 0.6000000000000001. Compare sums with `math.isclose`, or round for display.
 
 </details>
 
@@ -409,8 +403,6 @@ Float error accumulates when you total measurements: 0.1+0.2+0.3 is 0.6000000000
 enrolment = '1_000'
 int(enrolment)
 ```
-
-Most people expect `ValueError`.
 
 <details><summary>Reveal the result</summary>
 

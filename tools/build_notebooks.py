@@ -239,7 +239,7 @@ def build_traps(n: int) -> dict:
              "new understanding.\n\n" + TIPS)
     cells = [md(intro)]
     for i, t in enumerate(entries, 1):
-        cells.append(md(f"### Trap {i} — predict, then run\n\nMany people expect: **{t['expect']}**."))
+        cells.append(md(f"### Trap {i} — predict, then run"))
         cells.append(code(traps.display_code(t)))
         cells.append(md(f"<details>\n<summary><strong>What really happens — and why</strong></summary>\n\n"
                         f"Result: `{traps.reveal(t)}`\n\n{t['why']}\n\n</details>"))
