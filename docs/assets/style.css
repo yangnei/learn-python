@@ -119,6 +119,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:34px 20px 110px}
 .md li::marker{color:var(--gold)}
 .md strong{font-weight:600}
 .md hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+/* A slide-break "---" right after a heading is redundant with the heading's own
+   underline (it reads as a second, empty separator). Drop it. */
+.md h1 + hr,.md h2 + hr,.md h3 + hr{display:none}
 .md blockquote{margin:1.1em 0;padding:.5em 1.1em;border-left:3px solid var(--gold);
   background:var(--gold-wash);border-radius:0 8px 8px 0;color:var(--quote-fg);font-style:italic}
 .md a code{color:inherit}
