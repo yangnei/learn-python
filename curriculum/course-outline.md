@@ -56,7 +56,8 @@ into the sessions where they naturally belong, not saved for the end.
    and remember `input()` is *always* a `str`.
 
 **Going deeper (second hour):** the full operator set (`// % **`), string methods,
-aligned f-strings, `import math`, `help()`/`dir()`, naming conventions.
+aligned f-strings, `print(sep=, end=)` & escape sequences, `import math`,
+`help()`/`dir()`, naming conventions.
 **Trap focus:** `input()` returns text (`"5" + "3"` is `"53"`); `int(3.9)` truncates;
 `print(a, b)` vs `print(a + b)`.
 **Homework:** unit converter; traceback drill; type-prediction table.
@@ -181,7 +182,8 @@ exceptions that carry data, `raise ... from`, `logging`, parametrized tests.
    `pip install` a package, and meet `pandas` in a guided teaser.
 
 **Going deeper (second hour):** `pathlib`, encodings, `csv.reader` vs `DictReader`,
-JSON for nested data, `datetime`, seeded `random`, the extended pandas teaser.
+JSON for nested data, `datetime`, seeded `random`, scripts with `sys.argv`/`sys.exit`
+(+ the `argparse` pointer), a `requests` API glimpse, the extended pandas teaser.
 **Trap focus:** `"w"` silently overwrites; forgotten `newline=""`; reading a file twice;
 CSV values are strings.
 **Homework:** attendance-report pipeline; JSON round-trip; run the pipeline on your own
@@ -214,9 +216,9 @@ guard before `.group()`.
 3. Apply the **Pythonic toolkit**: comprehensions, `map`/`filter`, generators/`yield`,
    the walrus `:=`.
 
-**Going deeper (second hour):** `__repr__`/`__eq__`/`__lt__`, dataclasses with
-`default_factory`, `@classmethod` constructors, composition vs inheritance,
-generator pipelines, project layout.
+**Going deeper (second hour):** `__repr__`/`__eq__`/`__lt__` and `__add__`, dataclasses
+with `default_factory`, `@classmethod` constructors, composition vs inheritance,
+generator pipelines, project layout with `def main()`.
 **Trap focus:** `self` confusion; a generator exhausts after one pass; the shared class
 variable; over-using a class where a function/dict fits.
 **Homework:** `Student` with computed GPA; a `Cohort` class; Pythonic rewrite of three

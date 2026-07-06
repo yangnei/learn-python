@@ -33,6 +33,13 @@ Always prefer it to a bare `open()`/`close()`.
 
 ⚠️ Open the wrong file with `"w"` → its contents are gone.
 
+```python
+with open("log.txt", "a") as f:       # append: adds to the end, never clobbers
+    f.write("cleaned survey.csv\n")   # \n is YOUR job when writing
+```
+
+(`"rb"`/`"wb"` read/write **binary** — images, PDFs. Text mode is the default.)
+
 ---
 
 ## Reading text
@@ -60,6 +67,9 @@ with open("students.csv", newline="") as f:
 
 `csv.DictReader` turns each row into a dict — your "list of dicts" dataset from Session 4.
 (`newline=""` avoids blank rows on Windows.)
+
+You *could* split each line yourself with `.split(",")` — until a field contains a
+comma. That, plus quoting and headers, is why `csv` exists.
 
 ---
 
@@ -172,6 +182,10 @@ back = json.loads(Path("snapshot.json").read_text())
 CSV is a rectangle; JSON nests. `True/None` become `true/null` — JSON is its own language,
 `json.load` translates back.
 
+The same JSON arrives from the **web**: `requests.get(url).json()` after a
+`pip install requests` — that's all an "API call" is. (A taste; offline files stay
+our home turf.)
+
 ---
 
 ## `datetime` — dates are data too
@@ -200,6 +214,25 @@ random.shuffle(order)           # in place — random assignment
 
 Seeding makes stochastic analysis **reproducible** — rerunning your script re-draws the
 same sample.
+
+---
+
+## Scripts that take arguments: `sys.argv`
+
+```python
+# report.py — run as:  python3 report.py survey.csv
+import sys
+
+if len(sys.argv) != 2:                    # argv[0] is the script's own name
+    sys.exit("Usage: python3 report.py <file.csv>")
+filename = sys.argv[1]
+```
+
+- `sys.argv` is a plain **list of strings** from the command line — `len()` it, slice it
+  (`sys.argv[1:]` = just the real arguments).
+- Guard first, then trust: a missing argument is an `IndexError` waiting to happen;
+  `sys.exit("message")` stops the program and prints the usage line.
+- When flags multiply (`--top 5 --verbose`), graduate to the stdlib's `argparse`.
 
 ---
 

@@ -61,6 +61,11 @@ Seed with `random.seed(42)`, then `random.sample` 3 names from the students in
 Read `students.csv` into a list of dicts with **int** scores, and write it to
 `students.json` with `indent=2`. Open the file: what happened to the quotes and numbers?
 
+### D5 — Take the filename from the command line
+Turn Task 1 into `report.py`: read the CSV named on the command line
+(`python3 report.py students.csv`), print the class mean, and exit with a usage
+message when the argument is missing or extra. (`sys.argv`, `sys.exit`.)
+
 ## Homework (before Session 9)
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
@@ -152,6 +157,18 @@ with open("students.csv", newline="", encoding="utf-8") as f:
     rows = [{**r, "score": int(r["score"])} for r in csv.DictReader(f)]
 Path("students.json").write_text(json.dumps(rows, indent=2))
 # In the file: keys/strings get double quotes, scores sit bare (real JSON numbers).
+```
+
+```python
+# D5 — report.py
+import csv, statistics, sys
+
+if len(sys.argv) != 2:                     # argv[0] is report.py itself
+    sys.exit("Usage: python3 report.py <file.csv>")
+
+with open(sys.argv[1], newline="", encoding="utf-8") as f:
+    scores = [int(r["score"]) for r in csv.DictReader(f)]
+print(f"n={len(scores)}  mean={statistics.mean(scores):.1f}")
 ```
 
 ### Homework

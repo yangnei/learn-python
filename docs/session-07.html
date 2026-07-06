@@ -76,6 +76,8 @@ except ValueError:
 ```
 
 When code might fail at runtime, wrap it. The `except` catches the named error.
+Keep the `try` block **small** — only the line that can fail — so a catch can't
+accidentally cover code you never meant to forgive.
 
 ---
 
@@ -278,6 +280,9 @@ def test_rejects(bad):
 
 One test, five inputs, five reported results. Pattern: **arrange, act, assert** — and test the
 *edges* (boundaries, wrong types), not the happy middle.
+
+A function that only `print`s can't be asserted. **Return** the value, print at the
+edge — that's what makes code testable (Session 5's `return` vs `print`, cashing in).
 
 ---
 

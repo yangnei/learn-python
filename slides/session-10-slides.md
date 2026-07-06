@@ -146,7 +146,9 @@ class Student:
 sorted(roster)                              # no key= needed anymore
 ```
 
-Dunders make your objects behave like built-ins: printable, comparable, sortable.
+Dunders make your objects behave like built-ins: printable, comparable, sortable —
+even **addable**: define `__add__(self, other)` and `total = quiz + final` just works.
+That's all "operator overloading" is.
 
 ---
 
@@ -183,6 +185,8 @@ roster = [Student.from_row(r) for r in csv.DictReader(f)]
 ```
 
 `cls` is the class itself. Pattern: **file format at the edge, objects inside**.
+(`@staticmethod` is the third flavor: a plain helper that lives in the class's
+namespace — no `self`, no `cls`.)
 
 ---
 
@@ -246,8 +250,18 @@ survey_tool/
 └── tests/test_clean.py
 ```
 
-One module per concern; `report.py` imports the rest; tests alongside. You already know
-every ingredient — this is just arranging them.
+One module per concern; `report.py` imports the rest; tests alongside. Inside
+`report.py`, the convention:
+
+```python
+def main():                     # the program's real work, in one place
+    ...
+
+if __name__ == "__main__":
+    main()
+```
+
+You already know every ingredient — this is just arranging them.
 
 ---
 

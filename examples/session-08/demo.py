@@ -103,3 +103,20 @@ names = ["Ana", "Ben", "Cara", "Dev", "Eve"]
 print("reproducible sample of 2:", random.sample(names, 2))
 random.seed(42)
 print("run it again, same seed :", random.sample(names, 2))
+
+# --- deeper 4: scripts that take arguments (sys.argv) ------------------------
+import sys
+print("this run saw sys.argv =", sys.argv[:2], "...")   # [0] is always the script itself
+
+def pick_input(argv, default="survey.csv"):
+    """The filename from the command line, a default if none, a usage exit if garbage."""
+    if len(argv) > 2:
+        sys.exit("Usage: python3 report.py [file.csv]")
+    return argv[1] if len(argv) == 2 else default
+
+for fake in (["report.py"], ["report.py", "grades.csv"]):
+    print(fake, "->", pick_input(fake))       # a plain function -> easy to test (S7!)
+try:
+    pick_input(["report.py", "a", "b"])
+except SystemExit as e:
+    print("too many args ->", e)              # sys.exit raises SystemExit with the message

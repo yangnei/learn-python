@@ -55,7 +55,7 @@ Each session has:
 - **0:30–0:42 — Live I.** Build `greet.py`, then "years to graduation"; trigger and *read* one traceback (last line first).
 - **0:42–1:00 — Practice I.** GPA reporter, age bucket, the string-concatenation trap.
 - **1:00–1:08 — Break.**
-- **1:08–1:30 — Deeper concept.** Arithmetic fully (`/ // % **`, precedence, `+=`); `%`-as-remainder uses; string methods (chaining, immutability); alignment f-strings; `import math` ("borrowing a toolbox — full story in S8"); `help()`/`dir()`; naming conventions & constants.
+- **1:08–1:30 — Deeper concept.** Arithmetic fully (`/ // % **`, precedence, `+=`); `%`-as-remainder uses; string methods (chaining, immutability, repetition); alignment f-strings; `print(sep=, end=)` and escape sequences; `import math` ("borrowing a toolbox — full story in S8"); `help()`/`dir()`; naming conventions & constants.
 - **1:30–1:40 — Live II.** The demo's deeper sections: minutes→h/min, `% 3` groups, `.strip().title()` chain, the aligned report.
 - **1:40–1:53 — Practice II.** Aligned gradebook lines; name normalizer; whole-units-and-remainder.
 - **1:53–2:00 — Recap + quiz + homework.** `input()` → string; `int()` truncates; methods return new strings. Quiz S1.
@@ -267,7 +267,7 @@ Each session has:
 
 **The clock (120 min)**
 - **0:00–0:05 — Warm-up.** S6 homework: trace `sum_digits(4823)`; why did `deep_count` need the bool check? (S2 pays rent.)
-- **0:05–0:30 — Core concept.** Errors vs exceptions; `try/except/else/finally`; common types on sight; `raise`; EAFP vs LBYL; `assert` (developer check, not validation).
+- **0:05–0:30 — Core concept.** Errors vs exceptions; `try/except/else/finally` — and keep the `try` block minimal; common types on sight; `raise`; EAFP vs LBYL; `assert` (developer check, not validation).
 - **0:30–0:42 — Live I.** Harden `safe_int()`/`clean_likert()`; a first `pytest.raises` test, run it green.
 - **0:42–1:00 — Practice I.** Clean the raw list into values + a rejection log; add a `raise`; one pytest test.
 - **1:00–1:08 — Break.**
@@ -306,9 +306,9 @@ Each session has:
 - **0:30–0:42 — Live I.** Read `students.csv` → list of dicts, class mean, write a summary CSV.
 - **0:42–1:00 — Practice I.** Per-item survey means skipping dirty values; write `survey_summary.csv`; mean by major.
 - **1:00–1:08 — Break.**
-- **1:08–1:30 — Deeper concept.** `pathlib` full tour (`/` joins, `glob`/`rglob`, `read_text`); encodings (`utf-8`, the Excel BOM → `utf-8-sig`, mojibake); `csv.reader` vs `DictReader`, `delimiter=";"`; JSON for nested data (`True`→`true`, `None`→`null`); `datetime` (`strptime`/`strftime`, date math); `random` with a **seed** (reproducible sampling — methods-section gold); the extended pandas teaser.
+- **1:08–1:30 — Deeper concept.** `pathlib` full tour (`/` joins, `glob`/`rglob`, `read_text`); encodings (`utf-8`, the Excel BOM → `utf-8-sig`, mojibake); `csv.reader` vs `DictReader`, `delimiter=";"`; JSON for nested data (`True`→`true`, `None`→`null`); `datetime` (`strptime`/`strftime`, date math); `random` with a **seed** (reproducible sampling — methods-section gold); scripts that take arguments (`sys.argv`, `sys.exit`, the `argparse` pointer) and the `requests` API glimpse; the extended pandas teaser.
 - **1:30–1:40 — Live II.** Demo deeper sections: `csv.reader` rows, date math, the seeded sample run twice.
-- **1:40–1:53 — Practice II.** pathlib inventory; days-between; seeded sample; CSV → JSON.
+- **1:40–1:53 — Practice II.** pathlib inventory; days-between; seeded sample; CSV → JSON; the argv-guarded `report.py`.
 - **1:53–2:00 — Recap + quiz + homework.** `"w"` destroys; CSV values are strings; seed your randomness; JSON is its own language. Quiz S8.
 
 **Transitions**
@@ -378,7 +378,7 @@ Each session has:
 - **0:30–0:42 — Live I.** Build the validating `Student`; `ana.gpa = 5.0` raises; the toolkit: comprehension, `map`/`filter`, generator exhaustion, walrus.
 - **0:42–1:00 — Practice I.** Import from `grades.py`; the validating `Student`; `GradStudent(super())`; toolkit drills.
 - **1:00–1:08 — Break.**
-- **1:08–1:30 — Deeper concept.** `__repr__`/`__eq__`/`__lt__` → `sorted()` just works; dataclasses round 2 (`default_factory` = the S5 rule in class form; `frozen=True`); `@classmethod` alternate constructors (`from_row`: file format at the edge, objects inside — S8 bridge); composition over inheritance; class vs instance attributes (the trap → the law); generator **pipelines** (lazy stages, constant memory); from script to project (folder layout, one module per concern).
+- **1:08–1:30 — Deeper concept.** `__repr__`/`__eq__`/`__lt__` → `sorted()` just works (and `__add__` — operator overloading in one line); dataclasses round 2 (`default_factory` = the S5 rule in class form; `frozen=True`); `@classmethod` alternate constructors (`from_row`: file format at the edge, objects inside — S8 bridge); composition over inheritance; class vs instance attributes (the trap → the law); generator **pipelines** (lazy stages, constant memory); from script to project (folder layout, the `def main()` convention, one module per concern).
 - **1:30–1:40 — Live II.** Demo deeper sections: sortable `Score`s, `default_factory`, `from_row`, the two-stage pipeline.
 - **1:40–1:53 — Practice II.** Sortable `Student`; the dataclass `Course`; `from_row`; the pipeline.
 - **1:53–2:00 — Recap + quiz + homework + course wrap.** Dunders make objects native; mutable data in `__init__`/`default_factory`, always; compose first. Quiz S10. Frame the capstone: *"Next time, you drive."*

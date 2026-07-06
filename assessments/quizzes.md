@@ -127,11 +127,12 @@ vs EAFP ("easier to ask forgiveness"): `try: n = int(value)` / `except ValueErro
 3. CSV values read from a file are what type — and what must you do with numbers?
 4. Your second loop over an open file object sees nothing — why, and what's the fix?
 5. What do `strptime` and `strftime` each do — and why seed `random` in an analysis script?
+6. Your script runs as `python3 report.py survey.csv` — what is `sys.argv`, and what sits at index 0?
 
 **Answers:** 1. Truncates it to empty *immediately*; `with` auto-closes the file even if
 the code crashes. 2. A `dict` keyed by the header row. 3. Strings; convert with
 `int()`/`float()`. 4. The file cursor is exhausted after one pass — re-open the file (or
-read it into a list first). 5. `strptime` parses text → datetime; `strftime` formats datetime → text; seeding makes the "random" sample reproducible for your methods section.
+read it into a list first). 5. `strptime` parses text → datetime; `strftime` formats datetime → text; seeding makes the "random" sample reproducible for your methods section. 6. A plain list of strings, `['report.py', 'survey.csv']`; index 0 is always the script's own name, so real arguments start at 1 — check `len(sys.argv)` and `sys.exit("usage...")` before trusting them.
 
 ---
 

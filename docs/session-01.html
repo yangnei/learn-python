@@ -227,6 +227,7 @@ len("data")           # 4
 ```
 
 Methods **return a new string** — the original never changes (strings are immutable).
+And strings multiply: `"ab" * 3` → `"ababab"` — `print("=" * 40)` draws a divider.
 
 ---
 
@@ -241,6 +242,21 @@ print(f"{name:<10}{score:>8.1f}{rate:>8.1%}")
 - `:<10` pad left-aligned to 10 · `:>8` right-align to 8
 - `:.1f` one decimal · `:,` thousands · `:.1%` percent
 - `{score=}` prints `score=91.456` — debugging gold.
+
+---
+
+## `print()`, fine-tuned
+
+```python
+print("Ana", "Ben", "Cara", sep=" | ")   # Ana | Ben | Cara
+print("Loading", end="...")              # no newline — the next print continues
+print('She said "wow"')                  # swap quote styles...
+print("She said \"wow\"")               # ...or escape with a backslash
+print("line one\nline two")              # \n = a newline inside a string
+```
+
+- `sep=` joins the arguments (default: a space); `end=` closes the line (default: `"\n"`).
+- `\n` and `\"` are **escape sequences** — one character wearing a backslash.
 
 ---
 
@@ -275,6 +291,7 @@ In the REPL, `_` holds the last result. These three habits replace half your web
 - Names say **what it is**: `n_students`, not `x`.
 - Constants by convention: `MAX_SCORE = 100` (Python won't enforce it — the capitals warn humans).
 - Comments explain **why**, not what: the code already says what.
+- Before typing, sketch the steps in plain English (**pseudocode**) — then translate.
 
 ---
 

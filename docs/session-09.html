@@ -99,7 +99,7 @@ Without `r"..."`, Python eats the backslashes (`\d` → error/garbage).
 | `+ * ?` | 1+, 0+, 0-or-1 |
 | `{m}` `{m,n}` | exactly m / between m and n |
 | `^ $` | start / end of string |
-| `[abc]` `[^abc]` | any in set / none in set |
+| `[abc]` `[a-z]` `[^abc]` | any in set / in range / none in set |
 | `(...)` | capture group |
 | `a\|b` | a or b |
 
@@ -151,6 +151,7 @@ m.group(1)   # "ED"      dept
 m.group(2)   # "1234"    number
 ```
 
+`m.groups()` hands back every capture at once: `('ED', '1234')`.
 `m` is `None` if nothing matched — check before `.group()`.
 
 ---
@@ -175,6 +176,7 @@ Reformat with groups: `re.sub(r"^(.+),\s*(.+)$", r"\2 \1", "Curie, Marie")` → 
 "a,b,c".split(",")     # simple split — no regex needed
 "  hi  ".strip()       # trim — no regex needed
 text.replace("X", "Y") # fixed substring — no regex needed
+url.removeprefix("https://")   # trim a known prefix — no regex needed (3.9+)
 ```
 
 Regex shines for *variable* patterns. For fixed strings, plain methods read better.
@@ -200,6 +202,7 @@ Regex shines for *variable* patterns. For fixed strings, plain methods read bett
 re.findall(r"stress", corpus, re.IGNORECASE)   # Stress, STRESS, stress
 re.findall(r"^\d+", text, re.MULTILINE)        # ^ and $ match per LINE
 re.search(p, s, re.IGNORECASE | re.MULTILINE)  # combine with |
+re.search(r"a.b", text, re.DOTALL)             # . crosses newlines too
 ```
 
 ---
