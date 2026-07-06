@@ -306,9 +306,9 @@ Each session has:
 - **0:30–0:42 — Live I.** Read `students.csv` → list of dicts, class mean, write a summary CSV.
 - **0:42–1:00 — Practice I.** Per-item survey means skipping dirty values; write `survey_summary.csv`; mean by major.
 - **1:00–1:08 — Break.**
-- **1:08–1:30 — Deeper concept.** `pathlib` full tour (`/` joins, `glob`/`rglob`, `read_text`); encodings (`utf-8`, the Excel BOM → `utf-8-sig`, mojibake); `csv.reader` vs `DictReader`, `delimiter=";"`; JSON for nested data (`True`→`true`, `None`→`null`); `datetime` (`strptime`/`strftime`, date math); `random` with a **seed** (reproducible sampling — methods-section gold); scripts that take arguments (`sys.argv`, `sys.exit`, the `argparse` pointer) and the `requests` API glimpse; the extended pandas teaser.
+- **1:08–1:30 — Deeper concept.** `pathlib` full tour (`/` joins, `glob`/`rglob`, `read_text`); encodings (`utf-8`, the Excel BOM → `utf-8-sig`, mojibake); `csv.reader` vs `DictReader`, `delimiter=";"`; JSON for nested data (`True`→`true`, `None`→`null`); `datetime` (`strptime`/`strftime`, date math); `random` with a **seed** (reproducible sampling — methods-section gold); scripts that take arguments (`sys.argv`, `sys.exit`, the `argparse` pointer); pip & PyPI via `cowsay` (the point in one moo: installing is trivial); the `requests` API taste; binary files → a Pillow GIF; the extended pandas teaser.
 - **1:30–1:40 — Live II.** Demo deeper sections: `csv.reader` rows, date math, the seeded sample run twice.
-- **1:40–1:53 — Practice II.** pathlib inventory; days-between; seeded sample; CSV → JSON; the argv-guarded `report.py`.
+- **1:40–1:53 — Practice II.** pathlib inventory; days-between; seeded sample; CSV → JSON; the argv-guarded `report.py`; the Pillow GIF.
 - **1:53–2:00 — Recap + quiz + homework.** `"w"` destroys; CSV values are strings; seed your randomness; JSON is its own language. Quiz S8.
 
 **Transitions**
@@ -328,14 +328,14 @@ Each session has:
 - "Your co-author reruns the sampling script. What guarantees they get the same participants?"
 - "Nested per-item stats — why does CSV fight you and JSON doesn't?"
 
-**Cut line:** drop encodings and `csv.reader` (leave the slide as reference) and shrink the pandas teaser; keep pathlib, datetime, and the seeded sample.
+**Cut line:** drop cowsay, the Pillow GIF, encodings, and `csv.reader` (leave the slides as reference); shrink the pandas/API teasers; keep pathlib, datetime, argv scripts, and the seeded sample.
 **Homework:** attendance-report pipeline · JSON round-trip · your own CSV.
 
 ---
 
 ## SESSION 9 — Regular Expressions & Text Cleaning
 **Covers:** raw strings, the survival tokens, `search`/`fullmatch`/`findall`/`sub`, capture groups, when NOT to use regex · **deeper:** flags, `re.compile`, `VERBOSE`, named/non-capturing groups, greedy vs lazy, `sub` with a function, regex + files.
-**Pre-flight:** `examples/session-09/`; messy text, emails, "Last, First" names staged; regex101.com open (flavor: Python).
+**Pre-flight:** `examples/session-09/`; messy text, emails, "Last, First" names staged; regex101.com open (flavor: Python); a whiteboard for state-machine sketches — drawing a pattern as a chain of hops makes greedy vs lazy visible.
 
 **The clock (120 min)**
 - **0:00–0:05 — Warm-up.** S8 homework: what did JSON do to `True`? What dirty value did his own CSV throw?

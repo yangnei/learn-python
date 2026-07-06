@@ -120,3 +120,21 @@ try:
     pick_input(["report.py", "a", "b"])
 except SystemExit as e:
     print("too many args ->", e)              # sys.exit raises SystemExit with the message
+
+# --- deeper 5: binary files — a tiny animated GIF with Pillow -----------------
+try:
+    from PIL import Image
+    frame_a = Image.new("RGB", (60, 60), "steelblue")   # two frames, generated in memory
+    frame_b = Image.new("RGB", (60, 60), "goldenrod")
+    frame_a.save(HERE / "pulse.gif", save_all=True, append_images=[frame_b],
+                 duration=400, loop=0)
+    print("wrote pulse.gif:", (HERE / "pulse.gif").stat().st_size, "bytes of pure binary")
+except ImportError:
+    print("Pillow not installed — `pip install pillow` to run the GIF demo")
+
+# --- deeper 6: pip's half-million packages, e.g. cowsay ------------------------
+try:
+    import cowsay
+    cowsay.cow("pip install anything")
+except ImportError:
+    print("cowsay not installed — `pip install cowsay` for the full moo")

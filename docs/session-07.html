@@ -79,6 +79,9 @@ When code might fail at runtime, wrap it. The `except` catches the named error.
 Keep the `try` block **small** — only the line that can fail — so a catch can't
 accidentally cover code you never meant to forgive.
 
+`except ValueError: pass` is the minimal handler — a *visible, deliberate* "skip it."
+Fine when skipping truly is the plan; if you might ever ask "what got skipped?", log it.
+
 ---
 
 ## Common exception types

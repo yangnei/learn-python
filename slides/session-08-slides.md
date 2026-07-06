@@ -100,7 +100,14 @@ from pathlib import Path
 Path("students.csv").exists()
 ```
 
-`pip install <package>` for third-party libs.
+```python
+# pip install cowsay          # PyPI hosts ~half a million packages
+import cowsay
+cowsay.cow("pip install anything")
+```
+
+`pip install <name>`, then `import` — that's the whole third-party story. (Yes,
+even silly ones: the point is that installing is trivial.)
 
 ---
 
@@ -182,9 +189,23 @@ back = json.loads(Path("snapshot.json").read_text())
 CSV is a rectangle; JSON nests. `True/None` become `true/null` — JSON is its own language,
 `json.load` translates back.
 
-The same JSON arrives from the **web**: `requests.get(url).json()` after a
-`pip install requests` — that's all an "API call" is. (A taste; offline files stay
-our home turf.)
+---
+
+## APIs: the same JSON, from the web *(a taste)*
+
+```python
+# pip install requests
+import requests
+
+r = requests.get("https://itunes.apple.com/search",
+                 params={"term": "python", "media": "ebook", "limit": 3})
+data = r.json()                     # the response body, parsed into dicts/lists
+for item in data["results"]:
+    print(item["trackName"])
+```
+
+An "API call" is just: fetch a URL, parse the JSON — the same `json` skills, new
+source. (Needs internet; this course stays with offline files.)
 
 ---
 
@@ -233,6 +254,25 @@ filename = sys.argv[1]
 - Guard first, then trust: a missing argument is an `IndexError` waiting to happen;
   `sys.exit("message")` stops the program and prints the usage line.
 - When flags multiply (`--top 5 --verbose`), graduate to the stdlib's `argparse`.
+
+---
+
+## Binary files in practice: images with Pillow
+
+```python
+# pip install pillow
+from PIL import Image
+
+before = Image.open("chart_2025.png")     # a binary file, decoded into pixels
+after = Image.open("chart_2026.png")
+before.save("growth.gif", save_all=True,
+            append_images=[after],        # more frames -> an animated GIF
+            duration=500, loop=0)         # ms per frame; 0 = loop forever
+```
+
+- Text mode decodes bytes into characters; **binary** formats (images, PDFs) need a
+  library that speaks them — for images, that's Pillow.
+- Three calls = an animated before/after of your results chart for a slide deck.
 
 ---
 

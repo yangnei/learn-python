@@ -118,6 +118,8 @@ def class_average(scores: list[float]) -> float:
 ```
 
 Type hints document intent. **They are NOT enforced at runtime** (`mypy` checks them).
+Bigger projects standardize docstring fields (`:param:`, `:return:`, `:raises:`) so
+tools like **Sphinx** can build a documentation website straight from the code.
 
 ---
 

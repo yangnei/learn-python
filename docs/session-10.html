@@ -129,6 +129,8 @@ class Student:
 ```
 
 `ana.gpa = 5.0` now raises — the object defends its own integrity.
+(`_gpa`'s leading underscore is the convention for "internal — hands off";
+Python trusts you rather than enforcing it.)
 
 ---
 
@@ -273,7 +275,8 @@ class Course:
 ```
 
 Mutable data goes in `__init__`, always. (You met the shared-list trap — this is the law it
-teaches.)
+teaches.) And when you're tempted by a `global`: state that outlives one function call
+belongs on an object instead.
 
 ---
 
@@ -294,6 +297,8 @@ clean = list(in_range(to_ints(raw)))    # nothing runs until consumed
 ```
 
 Each stage yields to the next — **lazy**, constant-memory, works on a million-row file.
+(Under the hood every `for` speaks one protocol: `iter()` to get an iterator, then
+`next()` until empty. A generator is an object born speaking it.)
 
 ---
 
@@ -318,7 +323,8 @@ if __name__ == "__main__":
     main()
 ```
 
-You already know every ingredient — this is just arranging them.
+You already know every ingredient — this is just arranging them. (If `pytest` can't
+discover `tests/`, drop an empty `__init__.py` inside — that marks it as a package.)
 
 ---
 

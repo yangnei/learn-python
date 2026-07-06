@@ -24,3 +24,4 @@ docs/learn-python-student.html
 __pycache__/
 examples/session-08/snapshot.json
 examples/session-08/*_summary.csv
+examples/session-08/pulse.gif

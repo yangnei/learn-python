@@ -66,6 +66,12 @@ Turn Task 1 into `report.py`: read the CSV named on the command line
 (`python3 report.py students.csv`), print the class mean, and exit with a usage
 message when the argument is missing or extra. (`sys.argv`, `sys.exit`.)
 
+### D6 — An animated before/after
+With Pillow (`pip install pillow`), generate two solid-color frames using
+`Image.new("RGB", (60, 60), color)` and save them as one looping GIF
+(`save_all=True`, `append_images=[...]`, `duration=400`, `loop=0`). Open the file —
+it pulses. How big is this binary file (`pathlib`)?
+
 ## Homework (before Session 9)
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
@@ -169,6 +175,17 @@ if len(sys.argv) != 2:                     # argv[0] is report.py itself
 with open(sys.argv[1], newline="", encoding="utf-8") as f:
     scores = [int(r["score"]) for r in csv.DictReader(f)]
 print(f"n={len(scores)}  mean={statistics.mean(scores):.1f}")
+```
+
+```python
+# D6
+from PIL import Image
+from pathlib import Path
+
+a = Image.new("RGB", (60, 60), "steelblue")
+b = Image.new("RGB", (60, 60), "goldenrod")
+a.save("pulse.gif", save_all=True, append_images=[b], duration=400, loop=0)
+print(Path("pulse.gif").stat().st_size, "bytes")   # a few hundred — tiny but real binary
 ```
 
 ### Homework

@@ -183,7 +183,8 @@ exceptions that carry data, `raise ... from`, `logging`, parametrized tests.
 
 **Going deeper (second hour):** `pathlib`, encodings, `csv.reader` vs `DictReader`,
 JSON for nested data, `datetime`, seeded `random`, scripts with `sys.argv`/`sys.exit`
-(+ the `argparse` pointer), a `requests` API glimpse, the extended pandas teaser.
+(+ the `argparse` pointer), pip & PyPI (`cowsay`), a `requests` API taste, binary
+files & animated GIFs with Pillow, the extended pandas teaser.
 **Trap focus:** `"w"` silently overwrites; forgotten `newline=""`; reading a file twice;
 CSV values are strings.
 **Homework:** attendance-report pipeline; JSON round-trip; run the pipeline on your own
