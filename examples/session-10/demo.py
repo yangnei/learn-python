@@ -124,3 +124,61 @@ print("second pass:", list(gen))   # [] — a generator is exhausted after one p
 # walrus := : assign and test in one step
 if (n := len(roster)) > 2:
     print(f"\n{n} students enrolled")
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: dunders make objects behave like built-ins -----------------------------
+print("\n=== GOING DEEPER ===")
+class Score:
+    def __init__(self, name, points):
+        self.name = name
+        self.points = points
+    def __repr__(self):                          # unambiguous, for developers
+        return f"Score({self.name!r}, {self.points})"
+    def __eq__(self, other):
+        return (self.name, self.points) == (other.name, other.points)
+    def __lt__(self, other):                     # sorted() now just works
+        return self.points < other.points
+
+board = [Score("Ana", 91), Score("Ben", 58), Score("Cara", 73)]
+print("sorted, no key= needed:", sorted(board))
+
+# --- deeper 2: dataclass with default_factory (the S5 rule, class form) ----------------
+from dataclasses import dataclass, field
+
+@dataclass
+class Enrollee:
+    name: str
+    courses: list = field(default_factory=list)   # a FRESH list per instance
+
+a, b = Enrollee("Ana"), Enrollee("Ben")
+a.courses.append("ED101")
+print("a:", a.courses, " b untouched:", b.courses)
+
+# --- deeper 3: @classmethod — an alternate constructor ---------------------------------
+@dataclass
+class Record:
+    name: str
+    score: int
+
+    @classmethod
+    def from_row(cls, row):                       # CSV row (strings!) -> object
+        return cls(row["name"], int(row["score"]))
+
+print(Record.from_row({"name": "Ana", "score": "91"}))
+
+# --- deeper 4: a generator pipeline ------------------------------------------------------
+raw = ["5", "3", "N/A", "7", "1"]
+
+def to_ints(cells):
+    for c in cells:
+        try:
+            yield int(c)
+        except ValueError:
+            pass
+
+def in_range(vals, lo=1, hi=5):
+    yield from (v for v in vals if lo <= v <= hi)
+
+print("pipeline result:", list(in_range(to_ints(raw))))   # lazy until this list() call

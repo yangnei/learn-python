@@ -93,3 +93,41 @@ print(add_ok("Ben"))                # ['Ben']  <- fresh each call
 # def bump():
 #     count = count + 1   # UnboundLocalError: assigning makes `count` local
 # Prefer returning a value (or use `nonlocal`/a closure, as in block 5).
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: functions are objects — dispatch by name ----------------------
+print("\n=== GOING DEEPER ===")
+def class_average(xs):
+    return sum(xs) / len(xs)
+
+stats = {"mean": class_average, "max": max, "min": min}   # functions as VALUES
+scores = [91, 58, 73]
+for name, fn in stats.items():
+    print(f"  {name}: {fn(scores)}")
+
+# --- deeper 2: a closure factory ---------------------------------------------
+def make_curver(bonus):
+    def curve(score):
+        return min(score + bonus, 100)
+    return curve                        # `bonus` rides along inside
+
+gentle = make_curver(5)
+harsh = make_curver(1)
+print("gentle(96):", gentle(96), "  harsh(96):", harsh(96))
+
+# --- deeper 3: doctests — documentation that checks itself --------------------
+def pass_rate(scores, passing=60):
+    """Fraction of scores at or above `passing`.
+
+    >>> pass_rate([70, 50, 90])
+    0.6666666666666666
+    >>> pass_rate([10, 20], passing=5)
+    1.0
+    """
+    return sum(s >= passing for s in scores) / len(scores)
+
+import doctest
+result = doctest.testmod(verbose=False)
+print(f"doctests: {result.attempted} run, {result.failed} failed")

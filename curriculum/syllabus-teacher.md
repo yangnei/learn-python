@@ -1,346 +1,401 @@
 # Learn Python — TEACHER Edition
 
 Everything in the student syllabus, **plus** the instructor scaffolding: a minute-by-minute
-clock for each one-hour session, transition scripts (how to move between blocks without dead
+clock for each two-hour session, transition scripts (how to move between blocks without dead
 air), predicted misconceptions for *this* learner, Socratic prompts (DeepTutor-style — ask,
 don't tell), and an explicit **"if you're behind, cut this"** line per session.
 
-The 10 sessions run in five natural pairs (types→traps, control flow→data structures,
-functions→recursion, exceptions→files, regex→modules/OOP). Each pair shares a through-line;
-**name it out loud** when you open the second session of a pair, so consecutive hours feel
-like one arc.
+Each two-hour session has two halves around a break: the **core** of the topic first, then a
+**Going deeper** block — genuinely new material (not stretched practice), with its own live
+demos and its own practice round. The 10 sessions run in five natural pairs (types→traps,
+control flow→data structures, functions→recursion, exceptions→files, regex→modules/OOP).
+Each pair shares a through-line; **name it out loud** when you open the second session of a
+pair, so consecutive sessions feel like one arc.
 
 ## How to read this document
 Each session has:
-- **Covers** — the one topic this hour owns.
+- **Covers** — core topic · going-deeper topics.
 - **Pre-flight** — what to have open/ready before the student arrives.
-- **The clock** — a 60-minute breakdown. Keep a timer visible. The numbers are targets, not law.
+- **The clock** — a 120-minute breakdown. Keep a timer visible. The numbers are targets, not law.
 - **Transitions** — short scripted lines to hand off cleanly between blocks.
 - **Predicted misconceptions** — where THIS learner (expert in research, novice in code) will stumble.
 - **Socratic prompts** — questions to ask instead of explaining; let him derive it.
 - **Cut line** — the first thing to drop if you're running over.
 - **Homework** — what to assign at the close (specs live in `examples/session-NN/practice.md` → *Homework*).
 
+## The standard clock (adapt per session below)
+- **0:00–0:05 — Warm-up.** Previous homework debrief + misconceptions log. Don't re-teach — quiz.
+- **0:05–0:30 — Core concept.**
+- **0:30–0:42 — Live demo I** (`demo.py`, predict-then-run; he types along).
+- **0:42–1:00 — Practice I** (`practice.md` → *In class*).
+- **1:00–1:08 — Break.** Honor it.
+- **1:08–1:30 — Going deeper concept** (the deck's *Going deeper* slides).
+- **1:30–1:40 — Live demo II** (the demo's *GOING DEEPER* sections).
+- **1:40–1:53 — Practice II** (*In class — going deeper*).
+- **1:53–2:00 — Recap + quiz + homework.**
+
 ## Universal pacing principles (this learner is fast)
 - **Talk less than you want to.** He reads fast and abstracts well. Default to "here's the rule, here's the trap, now you try."
-- **Protect the practice block.** ~18 minutes of hands-on in every hour, plus the live-coding he types along with. If concept overruns, steal from your own talking, never from his typing.
-- **Predict-then-run is the engine, especially the Session 2 traps.** Always have him *commit to an answer out loud* before running. The cognitive surprise is the teaching moment.
-- **The warm-up is homework-powered.** Every session (except S1) opens with 5 minutes on the previous homework + the misconception log. Don't re-teach — quiz. If homework wasn't done, do H1 together as the warm-up and move on.
-- **Fast finisher?** Send him to the session's **Extra practice** block, not more of your talking.
-- **Don't pad.** Each clock is tight by design. If a block ends early, bank the minutes for practice.
-- **Carry a running "misconceptions log"** (DeepTutor "learning memory"): note every trap he hit this session; re-surface it as the next warm-up.
+- **Protect both practice blocks** (~30 min total, plus the live coding he types along with). If concept overruns, steal from your own talking, never from his typing.
+- **The second hour is new material, not overflow.** If Practice I runs long, cut tasks, don't eat the Going-deeper block.
+- **Predict-then-run is the engine, especially the Session 2 traps.** Always have him *commit to an answer out loud* before running.
+- **The warm-up is homework-powered.** If homework wasn't done, do H1 together as the warm-up and move on.
+- **Don't pad.** If a block ends early, bank the minutes for practice.
+- **Carry a running "misconceptions log"** (DeepTutor "learning memory"): note every trap he hit; re-surface it as the next warm-up.
 
 ---
 
 ## SESSION 1 — Running Python, Variables & Types
-**Covers:** REPL vs script, variables as labels, the five core types, `input()`/`print()`, f-strings, casting, reading a traceback.
-**Pre-flight:** terminal + VS Code open; `examples/session-01/` ready; a deliberately broken line staged to show a traceback.
+**Covers:** REPL vs script, variables as labels, the five core types, `input()`/`print()`, f-strings, casting, tracebacks · **deeper:** the full operator set (`// % **`), string methods, aligned f-strings, `import math`, `help()`/`dir()`, naming.
+**Pre-flight:** terminal + VS Code open; `examples/session-01/` ready; a deliberately broken line staged for the traceback.
 
-**The clock (60 min)**
-- **0:00–0:05 — Orientation.** Why Python, why this re-ordered path, how the hour runs, what homework is for. Don't oversell; he wants to start.
-- **0:05–0:25 — Concept.** REPL vs script; `python3 file.py`. Variables as *labels on objects* (Connection Map #1). The five core types; `type(x)`. `input()` → always `str`. f-strings. `int()/float()/str()`; `int(3.9)` truncates.
-- **0:25–0:37 — Live (he types along).** Build `greet.py`, then "years to graduation"; trigger and *read* one traceback together (last line first).
-- **0:37–0:55 — Practice.** `examples/session-01/practice.md` (In class): GPA reporter, age bucket, the string-concatenation trap. Ahead? → Extra practice (f-string drill).
-- **0:55–1:00 — Recap + quiz + homework.** Traps recap: `input()` → string; `int(3.9)` truncates; `print(a, b)` vs `print(a + b)`. Quiz S1. Assign homework.
+**The clock (120 min)**
+- **0:00–0:05 — Orientation.** Why Python, why this re-ordered path, how a session runs (core → break → deeper), what homework is for.
+- **0:05–0:30 — Core concept.** REPL vs script. Variables as *labels on objects* (Connection Map #1). The five core types; `type(x)`. `input()` → always `str`. f-strings. Casting; `int(3.9)` truncates.
+- **0:30–0:42 — Live I.** Build `greet.py`, then "years to graduation"; trigger and *read* one traceback (last line first).
+- **0:42–1:00 — Practice I.** GPA reporter, age bucket, the string-concatenation trap.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** Arithmetic fully (`/ // % **`, precedence, `+=`); `%`-as-remainder uses; string methods (chaining, immutability); alignment f-strings; `import math` ("borrowing a toolbox — full story in S8"); `help()`/`dir()`; naming conventions & constants.
+- **1:30–1:40 — Live II.** The demo's deeper sections: minutes→h/min, `% 3` groups, `.strip().title()` chain, the aligned report.
+- **1:40–1:53 — Practice II.** Aligned gradebook lines; name normalizer; whole-units-and-remainder.
+- **1:53–2:00 — Recap + quiz + homework.** `input()` → string; `int()` truncates; methods return new strings. Quiz S1.
 
 **Transitions**
 - Concept→live: *"Enough theory — watch me make these mistakes so you don't have to."*
-- Live→practice: *"Your turn. Same moves, your fingers."*
-- Close: *"You now know the five types. Next hour is the whole reason this course exists: the ways Python lets those types surprise you."*
+- Break→deeper: *"You can run code. Now let's make the code worth running — the operators and string tools you'll touch every single day."*
+- Close: *"You know the five types. Next session is the whole reason this course exists: the ways Python lets those types surprise you."*
 
-**Predicted misconceptions (this learner)**
+**Predicted misconceptions**
 - Expects `input()` to give a number → `"5" + "3" == "53"`.
-- Thinks `=` asserts equality (math habit). Reinforce label-on-object now; it pays off in S2 and in S4's aliasing.
-- Expects `int(3.9)` to round.
+- Thinks `=` asserts equality (math habit). Label-on-object now; pays off in S2 and S4.
+- Expects `int(3.9)` to round; expects `.upper()` to change the string in place.
 
 **Socratic prompts**
-- "What type do you think `input()` hands back? How could we check?" (→ `type(...)`)
-- "Why did `'5' + '3'` not crash, and not give 8 either?"
-- "The traceback is nine lines. Which one pays rent?"
+- "What type do you think `input()` hands back? How could we check?"
+- "130 minutes. How do you get 2 and 10 out of it with two operators?"
+- "You cleaned the name but nothing changed. What did `.strip()` actually hand you?"
 
-**Cut line:** drop the years-to-graduation demo; never cut the traceback reading or the practice.
+**Cut line:** drop `help()`/`dir()` and the naming slide (point at the cheat sheet); never cut the traceback reading or either practice block.
 **Homework:** unit converter · traceback drill · type-prediction table.
 
 ---
 
-## SESSION 2 — The Dynamic-Typing Traps *(the most important hour)*
-**Covers:** `==` vs `is`, `bool ⊂ int`, float precision, cross-type comparison, truthiness, `isinstance` vs `type`.
-**Pre-flight:** `examples/session-02/`; the trap gauntlet open (site page or notebook); `cheatsheets/traps-and-gotchas.md` ready to hand over at the end.
+## SESSION 2 — The Dynamic-Typing Traps *(the most important session)*
+**Covers:** `==` vs `is`, `bool ⊂ int`, float precision, cross-type comparison, truthiness, `isinstance` vs `type` · **deeper:** `None` semantics, the conversion matrix, `nan`/`inf`, mutable vs immutable + `id()`, `Decimal`.
+**Pre-flight:** `examples/session-02/`; the trap gauntlet open; `cheatsheets/traps-and-gotchas.md` ready to hand over.
 
-**The clock (60 min)**
-- **0:00–0:05 — Warm-up.** S1 homework debrief: one traceback from his drill, one row of the type table. Log anything shaky.
-- **0:05–0:22 — Concept (compressed — the demos carry it).** This is the heart of the course; tell him so. `==` value vs `is` identity (Connection Map #3), `is None`; `bool ⊂ int` (`True == 1`, `sum(flags)`, Connection Map #4); floats are binary → `0.1 + 0.2` → `math.isclose` (Connection Map #5); `5 == "5"` False but `5 > "5"` raises; `isinstance` vs `type`; truthiness.
-- **0:22–0:40 — The gauntlet (predict-then-run).** ~18 one-line traps. He predicts every line *out loud* before you run it. This is live and practice fused — his hands on the keyboard, your questions in the air.
-- **0:40–0:55 — Practice.** `examples/session-02/practice.md` (In class): the predict-the-output gauntlet on paper, then `clean_score()` handling int/float/str and rejecting `bool`.
-- **0:55–1:00 — Recap + quiz + homework.** *"These traps are 80% of week-one bugs."* Hand over the trap cheat sheet as his permanent reference. Quiz S2. Assign homework (the trap journal seeds his bug log).
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S1 homework: one traceback from his drill, one type-table row.
+- **0:05–0:25 — Core concept.** This is the heart of the course; tell him so. `==` value vs `is` identity (Connection Map #3), `is None`; `bool ⊂ int` (Connection Map #4); floats are binary → `math.isclose` (Connection Map #5); `5 == "5"` vs `5 > "5"`; `isinstance` vs `type`; truthiness.
+- **0:25–0:45 — The gauntlet (live + practice fused).** ~18 one-line traps, his prediction *out loud* before every run.
+- **0:45–1:00 — Practice I.** The paper gauntlet, then start `clean_score()`.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** `None` properly (three kinds of "nothing"); the conversion matrix ("convert at the edge, once"); `nan`/`inf` and `math.isnan`; mutable vs immutable table + `id()` (*this explains every `is` surprise you just saw*); `Decimal` for exact arithmetic — and why you build it from strings.
+- **1:30–1:40 — Live II.** Demo deeper sections: conversion matrix, `nan == nan`, `id()` on alias vs equal, `Decimal("0.1") + Decimal("0.2")`.
+- **1:40–1:53 — Practice II.** Conversion predictions; the `Decimal` re-run; `describe(x)` (None vs `""` vs `0` vs `False` — his first real use of `isinstance(bool)` ordering).
+- **1:53–2:00 — Recap + quiz + homework.** Hand over the trap cheat sheet as his permanent reference. Quiz S2.
 
 **Transitions**
-- Warm-up→concept: *"You now know the five types. Here's the catch: Python lets them mix in ways that surprise everyone. Cover the right column and predict each line."*
-- Concept→gauntlet: *"Rule time is over. Eighteen traps. Say your answer out loud, then we run it."*
-- Close: *"Every one of these you predicted wrong goes in your journal tonight — that's the homework, and it becomes your personal cheat sheet."*
+- Warm-up→concept: *"You know the five types. Here's the catch: Python lets them mix in ways that surprise everyone."*
+- Break→deeper: *"You've seen WHAT surprises. Now the machinery underneath — what None really is, what `id()` shows, and the tool for when floats aren't good enough."*
+- Close: *"Every trap you predicted wrong goes in your journal tonight — that's the homework, and it becomes your personal cheat sheet."*
 
 **Predicted misconceptions**
-- Assumes `is` is a stylistic `==` — nail it with the mutable-list demo.
-- Trusts `==` on floats out of stats habit ("I round anyway") — stress the *cause* is binary storage, not data.
-- Over-generalizes the `TypeError` and thinks `5 == "5"` errors too. It returns `False` — show it.
-- Thinks `"0"` is falsy.
+- Assumes `is` is a stylistic `==` — nail it with the mutable-list demo, then `id()`.
+- Trusts `==` on floats ("I round anyway") — the *cause* is binary storage, not data.
+- Will write `Decimal(0.1)` and wonder why nothing improved — strings, not floats.
+- `describe(False)`: forgets `False == 0` and reports "zero" — that's the planned stumble.
 
 **Socratic prompts**
 - "Two students, same 3.7 GPA. `==`? `is`? Why?"
-- "If `0.1 + 0.2` isn't `0.3`, is the bug in the data or in the computer? How would you test 'close enough'?"
-- "`5 == '5'` is False, fine. So why does `5 > '5'` *crash*?"
-- "`sum([True, False, True])` — why is that even legal? And when is it useful?" (→ counting flags)
+- "`0.1 + 0.2` isn't `0.3` — is the bug in the data or in the computer? And when is `isclose` not good enough?" (→ money/bookkeeping → `Decimal`)
+- "What's the difference between a blank cell, a zero score, and a missing student?"
 
-**Cut line:** drop the small-int-cache and `nan` wrinkles; **never** cut `==`/`is`, floats, `isinstance`, or `clean_score()`.
+**Cut line:** drop `inf`, `Fraction`, and the small-int cache wrinkle; **never** cut `==`/`is`, floats, `isinstance`, the gauntlet, or `describe(x)`.
 **Homework:** trap journal · `approx_equal` · `is_missing`.
 
 ---
 
 ## SESSION 3 — Control Flow: Conditionals & Loops
-**Covers:** `if/elif/else`, chained comparisons, `and`/`or`/`not`, `for`/`while`, `range`, `break`/`continue`, `enumerate`/`zip`, the validation loop.
-**Pre-flight:** `examples/session-03/`; a messy nested-`if` staged for the refactor; `Ctrl+C` ready for the infinite-loop demo.
+**Covers:** `if/elif/else`, chained comparisons, `and`/`or`/`not`, `for`/`while`, `range`, `break`/`continue`, `enumerate`/`zip`, the validation loop · **deeper:** the ternary, `match/case`, `for/else`, nested loops, the named loop patterns.
+**Pre-flight:** `examples/session-03/`; a messy nested-`if` staged for refactor; `Ctrl+C` ready for the infinite loop.
 
-**The clock (60 min)**
-- **0:00–0:05 — Warm-up.** S2 homework debrief: two entries from his trap journal; quiz `approx_equal(0.1+0.2, 0.3)`.
-- **0:05–0:25 — Concept.** `if/elif/else`; **chained comparisons** (`90 <= x < 100` — reads like math); `and/or/not`, short-circuit, `and`/`or` return an *operand*; `while` (+ infinite-loop demo); `for ... in`; `range` (off-by-one!); `break`/`continue`; the `while True: … break` validation pattern; **`enumerate`/`zip`** as the antidote to `range(len(...))`.
-- **0:25–0:37 — Live.** A Likert→label classifier (chained comparison + early `return`); sum/average a roster two ways (index vs `enumerate`/`zip`); a robust "ask until valid" loop.
-- **0:37–0:55 — Practice.** `examples/session-03/practice.md` (In class): grade-band classifier — **test every boundary** (89.999/90/90.001) — logic drill, `zip` pass/fail, validation loop, mutate-while-iterating trap.
-- **0:55–1:00 — Recap + quiz + homework.** `if x == True` → `if x`; `range(1,5)` excludes 5; don't mutate a list you're looping. Quiz S3.
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S2 homework: two trap-journal entries; quiz `approx_equal(0.1+0.2, 0.3)`.
+- **0:05–0:30 — Core concept.** `if/elif/else`; **chained comparisons**; `and/or/not`, short-circuit, operand-return; `while` (+ infinite-loop demo); `for ... in`; `range` off-by-one; `break`/`continue`; the `while True:` validation pattern; `enumerate`/`zip` vs `range(len(...))`.
+- **0:30–0:42 — Live I.** Likert→label classifier; roster average two ways; the "ask until valid" loop.
+- **0:42–1:00 — Practice I.** Grade-band classifier (**test every boundary**: 89.999/90/90.001), logic drill, `zip` pass/fail, validation loop, the mutate-while-iterating trap.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** The ternary (tiny choices only); `match/case` (same-value-vs-literals ladders); `for/else` (search without a flag); nested loops (`break` exits inner only → function-and-`return` escape); the named patterns: accumulator, counter, best-so-far, sentinel.
+- **1:30–1:40 — Live II.** Demo deeper sections: `match/case` classifier, `for/else` first-failing, nested sections×students, best-so-far.
+- **1:40–1:53 — Practice II.** `match/case` rewrite (then: which reads better, and why?); `for/else` search; best-and-worst in one pass.
+- **1:53–2:00 — Recap + quiz + homework.** `if x == True` → `if x`; `range` excludes stop; name your pattern before you type. Quiz S3.
 
 **Transitions**
-- Concept→live: *"Watch me turn an ugly five-level `if` into three readable lines — then loop a whole roster."*
-- Live→practice: *"Boundaries are where the bugs live. Make 89.999, 90, and 90.001 all behave."*
-- Close: *"You can branch and repeat. Next hour: the containers worth looping over — and a list of dicts is secretly your dataset."*
+- Concept→live: *"Watch me turn an ugly five-level `if` into three readable lines."*
+- Break→deeper: *"You can branch and repeat. Now the idioms that make control flow READ well — and the four skeletons behind almost every loop you'll ever write."*
+- Close: *"Next session: the containers worth looping over — and a list of dicts is secretly your dataset."*
 
 **Predicted misconceptions**
-- Writes `if score >= 90 and score < 100` — show chaining `90 <= score < 100`.
-- Boundary errors (`>=` vs `>`) at cutoffs — make him test 89.999 / 90 / 90.001.
-- `range(len(x))` index habit (from R/SPSS vectorized thinking) — push `enumerate`/`zip`.
-- Removes items from a list *while iterating it* → demo the bug, then build a new list.
+- Writes `if score >= 90 and score < 100` — chain it.
+- Boundary errors at cutoffs — make him test 89.999/90/90.001.
+- `range(len(x))` habit — push `enumerate`/`zip`.
+- Will over-apply `match/case` everywhere for a week — name its niche (one value vs literals).
 
 **Socratic prompts**
 - "`x = 5 and 0` — what's `x`? Why isn't it `True`/`False`?"
-- "You need both the position and the value. What's cleaner than indexing?"
-- "How many numbers does `range(1, 5)` produce? Prove it."
+- "When does the `else` on a `for` run? What bookkeeping does it delete?"
+- "Which of the four patterns is your grade-average loop? Your validation loop?"
 
-**Cut line:** drop `match/case` and `for/else`; keep chained comparisons, `enumerate`/`zip`, and the validation loop.
+**Cut line:** drop nested loops and the ternary slide (they resurface naturally); keep `match/case`, `for/else`, and both practice blocks.
 **Homework:** attendance labeler · number-guessing game · leap-year checker.
 
 ---
 
 ## SESSION 4 — Data Structures
-**Covers:** `list`/`tuple`/`dict`/`set`, slicing, nesting (list of dicts = dataset), comprehensions, `sorted(key=…)`, aliasing.
-**Pre-flight:** `examples/session-04/`; a "list of dicts = tidy dataset" diagram (Connection Map #6); the aliasing demo staged.
+**Covers:** `list`/`tuple`/`dict`/`set`, slicing, list-of-dicts-as-dataset, comprehensions, `sorted(key=…)`, aliasing · **deeper:** unpacking, dict power methods, `Counter`/`defaultdict`, full set algebra, multi-key sorting, `copy` vs `deepcopy`.
+**Pre-flight:** `examples/session-04/`; the "list of dicts = tidy dataset" diagram (Connection Map #6); the aliasing demo staged.
 
-**The clock (60 min)**
-- **0:00–0:05 — Warm-up.** S3 homework debrief: `label(79.9)`? `is_leap(1900)`? One boundary he got wrong, re-run.
-- **0:05–0:25 — Concept.** `list`(mutable)/`tuple`(immutable)/`dict`(key→value)/`set`(unique); indexing & **slicing**; nesting → **a list of dicts is a dataset** (rows as dicts, keys as your variables); list/dict comprehensions; `sorted(key=lambda …)`.
-- **0:25–0:37 — Live.** Build a roster as a list of dicts, sort by score, dedupe answers with a `set`, rewrite a loop as a comprehension — then the **aliasing** bug (`b = a`, mutate `a`, watch `b`) and its fix.
-- **0:37–0:55 — Practice.** `examples/session-04/practice.md` (In class): rank, `{name: score}` comprehension, group pass/fail, dedupe, reproduce-then-fix aliasing.
-- **0:55–1:00 — Recap + quiz + homework.** `=` aliases; `.sort()` returns `None`; `.get()` beats `KeyError`; `[[0]*3]*3` shares rows. Quiz S4.
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S3 homework: `label(79.9)`? `is_leap(1900)`? Re-run one boundary he missed.
+- **0:05–0:30 — Core concept.** The four containers; indexing & slicing; nesting → **a list of dicts is a dataset**; list/dict comprehensions; `sorted(key=lambda …)`.
+- **0:30–0:42 — Live I.** Build the roster, sort by score, dedupe with a `set`, rewrite a loop as a comprehension — then the **aliasing** bug and its fix.
+- **0:42–1:00 — Practice I.** Rank, `{name: score}` comprehension, group pass/fail, dedupe, reproduce-then-fix aliasing.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** Unpacking (`head, *rest`, zip-loops ARE unpacking); dict power methods (`.get/.setdefault/.pop`, `|` merge); `Counter` ("your tally loop, one line"); `defaultdict(list)` grouping; set algebra (`& | - ^`, subset, `dict.fromkeys` ordered dedupe); multi-key tuple sorts + stability; `copy` vs `deepcopy`.
+- **1:30–1:40 — Live II.** Demo deeper sections: shallow-vs-deep copy on nested lists, ordered dedupe; plus Counter/defaultdict from the earlier sections if not yet run.
+- **1:40–1:53 — Practice II.** `Counter` + `.most_common`; `defaultdict` grouping; the multi-key sort; ordered dedupe.
+- **1:53–2:00 — Recap + quiz + homework.** `=` aliases; `.sort()` returns `None`; tuple keys sort on multiple fields; nested → `deepcopy`. Quiz S4.
 
 **Transitions**
-- Open (the pair's thread): *"You can loop over data now. This hour: the containers worth looping — and a list of dicts is just a tidy dataset."*
-- Live→aliasing: *"One last thing that bites everyone — assignment doesn't copy. Watch `b` change when I never touched it."*
-- Close: *"Data's handled. Next hour we stop repeating ourselves: functions."*
+- Open (the pair's thread): *"You can loop over data. This session: the containers worth looping — and a list of dicts is just a tidy dataset."*
+- Break→deeper: *"You can store and sort. Now the toolkit that deletes half your loops — Counter, defaultdict, and sorts with tie-breaks."*
+- Close: *"Data's handled. Next session we stop repeating ourselves: functions."*
 
 **Predicted misconceptions**
-- **Aliasing** is the big one — expects `b = a` to copy. Show `a.append(...)` changing `b`; tie to S1 "label on object" and S2 `is`.
-- Expects `xs.sort()` to return the sorted list (it returns `None`).
-- Reaches for a list when uniqueness is the requirement (→ `set`).
+- **Aliasing** is the big one — `b = a` doesn't copy; tie to S1 "label on object" and S2 `id()`.
+- Expects `xs.sort()` to return the list.
+- Expects `set` to keep first-seen order — show `dict.fromkeys`.
+- Multi-key sort: will try `reverse=True` when only ONE key should descend — show the `-score` trick.
 
 **Socratic prompts**
-- "`b = a; a.append(99)` — what's in `b`? Why? (Labels, not boxes.)"
-- "Survey gave duplicate free-text answers. What structure removes duplicates for free?"
-- "Each dict is a row, each key a column. What's your unit of analysis here?"
+- "`b = a; a.append(99)` — what's in `b`? Why?"
+- "Your tally loop is six lines. What one import makes it one line?"
+- "Sort by score descending, ties by name ascending — what must the key return?"
 
-**Cut line:** drop deep-copy/`[[0]*3]*3` (homework covers the grid); keep comprehensions and aliasing basics.
+**Cut line:** drop `^` symmetric difference and `deepcopy` detail (homework's grid covers sharing); keep Counter, defaultdict, and multi-key sorting.
 **Homework:** gradebook dict drill · frequency counter · fix-the-grid.
 
 ---
 
 ## SESSION 5 — Functions, Scope & Reusability
-**Covers:** `def`, parameters (positional/keyword/default, `*args`/`**kwargs`), `return` vs `print`, LEGB scope, docstrings, type hints, the mutable-default bug.
-**Pre-flight:** `examples/session-05/`; the **mutable-default-arg** demo staged (the headline); S4's inline code ready to refactor.
+**Covers:** `def`, parameters (positional/keyword/default, `*args`/`**kwargs`), `return` vs `print`, LEGB, docstrings, type hints, the mutable-default bug · **deeper:** functions as values, `lambda`, closures, a first decorator, keyword-only args, doctests.
+**Pre-flight:** `examples/session-05/`; the mutable-default demo staged (the headline); S4 inline code ready to refactor.
 
-**The clock (60 min)**
-- **0:00–0:05 — Warm-up.** S4 homework debrief: the grid bug — *why* did every row change? (Aliasing, again. It should be automatic now.)
-- **0:05–0:25 — Concept.** `def`; parameters (positional/keyword/default, `*args`/`**kwargs`); `return` vs `print`; scope (LEGB), `global` and why to avoid it; docstrings; **type hints** ("not enforced; `mypy` checks them").
-- **0:25–0:37 — Live.** Refactor S4 inline code into `class_average`/`letter_grade`; then the **mutable-default bug** live (`def add(x, bag=[])` accumulating across calls) → fix with `bag=None`.
-- **0:37–0:55 — Practice.** `examples/session-05/practice.md` (In class): grade-functions library with hints/docstrings; reproduce-then-fix the mutable default; `summary(*scores)`.
-- **0:55–1:00 — Recap + quiz + homework.** Mutable default → `None`; forgot `return` → `None`; assigning a global → `UnboundLocalError`; hints aren't enforced. Quiz S5.
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S4 homework: the grid bug — *why* did every row change? (Aliasing. It should be automatic by now.)
+- **0:05–0:30 — Core concept.** `def`; parameters; `return` vs `print`; scope (LEGB), why not `global`; docstrings; type hints (not enforced).
+- **0:30–0:42 — Live I.** Refactor S4 code into `class_average`/`letter_grade`; the **mutable-default bug** live → fix with `None`.
+- **0:42–1:00 — Practice I.** Grade-functions library; reproduce-then-fix the mutable default; `summary(*scores)`.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** Functions are objects (assign, pass, dispatch dict) — *`key=` was never magic*; `lambda` honestly; closures (`make_curver` factory; the capture-by-variable trap); a first decorator (`@announce` — "you'll USE `@property`, `@cache`, `@pytest.mark` forever; now you know what `@` does"); keyword-only `*`; doctests.
+- **1:30–1:40 — Live II.** Demo deeper sections: the stats dispatch dict, curver factory, doctest run.
+- **1:40–1:53 — Practice II.** `apply_to_all`; `make_curver`; write `@announce`; add a doctest and run it.
+- **1:53–2:00 — Recap + quiz + homework.** Mutable default → `None`; forgot `return` → `None`; a decorator wraps; doctests keep docs honest. Quiz S5.
 
 **Transitions**
-- Concept→live: *"This next bug has burned every Python programmer once. Watch the list keep growing across calls."*
-- Live→practice: *"Now you cause the bug on purpose, then cure it. Bugs you've caused are bugs you recognize."*
-- Close: *"A function can call other functions. Next hour, the mind-bender: it can call itself."*
+- Concept→live: *"This next bug has burned every Python programmer once. Watch the list keep growing."*
+- Break→deeper: *"You can write functions. Second hour: functions AS VALUES — the idea behind `key=`, decorators, and half of modern Python."*
+- Close: *"A function can call other functions. Next session, the mind-bender: it can call itself."*
 
 **Predicted misconceptions**
-- Won't believe the default list persists until shown twice; then explain defaults evaluate *once, at definition* — and note it's the S4 aliasing story again.
-- Thinks a function that `print`s has "returned" the value → show `x = show(...)` is `None`.
-- Expects type hints to enforce types → show `add("a","b")` still runs.
+- Won't believe the default list persists — show twice; defaults evaluate once, at `def`.
+- Thinks printing is returning.
+- Decorators look like magic — write `curve = announce(curve)` long-hand FIRST, then show `@` is only sugar.
 
 **Socratic prompts**
-- "I called `add(1)` three times and the list keeps growing. When does `bag=[]` actually run?"
-- "`print` vs `return` — which lets the *next* function use the result?"
-- "Where does Python look for a name first? (L-E-G-B — walk it.)"
+- "When does `bag=[]` actually run?"
+- "What exactly did `sorted` receive when you wrote `key=lambda s: s['score']` last session?"
+- "`make_curver(5)` returned something. What is it? Where does the 5 live now?"
 
-**Cut line:** drop decorators/closures and keyword-only args (Extra practice has them); **never** cut the mutable-default demo.
+**Cut line:** drop keyword-only args and `nonlocal`; **never** cut the mutable-default demo or the decorator (S6's `@cache` and S10's `@property` depend on it).
 **Homework:** tiny stats library · `mean_ignoring_none` · scope prediction.
 
 ---
 
 ## SESSION 6 — Recursion & Recursive Thinking
-**Covers:** base case + recursive case, tracing the call stack, recursion vs iteration, nested data, `RecursionError`.
-**Pre-flight:** `examples/session-06/`; a nested-JSON-shaped dict staged for `deep_sum`; the `runaway` overflow + `sys.getrecursionlimit()` queued.
+**Covers:** base + recursive case, the call stack, recursion vs iteration, nested data, `RecursionError` · **deeper:** memoization (`@cache`), binary search, tree data, the explicit-stack escape, the decision checklist.
+**Pre-flight:** `examples/session-06/`; nested dict staged for `deep_sum`; the `runaway` overflow queued.
 
-**The clock (60 min)**
-- **0:00–0:05 — Warm-up.** S5 homework debrief: `mean_ignoring_none(None)`? The scope drill — what error, and why?
-- **0:05–0:25 — Concept.** The two parts: a **base case** and a **recursive case** that moves toward it. Trace `orderings(3)` as a stack that builds then unwinds; recursion vs iteration; the cost (each pending call is a frame; **no tail-call optimization**, limit ≈ 1000). The prereq-chain example (`prereqs_deep`).
-- **0:25–0:37 — Live.** `countdown`/`factorial`, then `deep_sum` over nested data (the payoff a single loop can't reach), then a `RecursionError` read together. Mention `@functools.cache`.
-- **0:37–0:55 — Practice.** `examples/session-06/practice.md` (In class): recursive `total`, `reverse`, `flatten`, `depth`, and the two trap-fixes (missing base case; forgetting to `return`).
-- **0:55–1:00 — Recap + quiz + homework.** Reachable base case or overflow; `return` the recursive call; loops for flat work. Quiz S6.
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S5 homework: `mean_ignoring_none(None)`? The scope drill — what error, why?
+- **0:05–0:30 — Core concept.** Base case + recursive case; trace `orderings(3)` as a stack; recursion vs iteration; the cost (frames, no tail-call optimization, limit ≈ 1000); the prereq-chain example.
+- **0:30–0:42 — Live I.** `countdown`/`factorial`; `deep_sum` on nested data; a `RecursionError` read together.
+- **0:42–1:00 — Practice I.** Recursive `total`, `reverse`, `flatten`, `depth`, the two trap-fixes.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** Memoization: naive `fib` re-solves subproblems → `@functools.cache` (a decorator — yesterday's lesson working today); divide & conquer: binary search halves the problem (log₂ intuition: 1,000 → ~10 steps); tree-shaped data (org chart: the function mirrors the tree); the explicit-stack version of `flatten` (same logic, no frames); the checklist: flat→loop, nested→recursion, repeated→cache, deep→stack.
+- **1:30–1:40 — Live II.** Demo deeper sections: binary search with indented printout, org-tree count, `flatten_iter`.
+- **1:40–1:53 — Practice II.** Binary search with step counter; `count_people` + `deepest`; `flatten` without recursion.
+- **1:53–2:00 — Recap + quiz + homework.** Reachable base case; `return` the call; pick by the shape of the data. Quiz S6.
 
 **Transitions**
-- Open (the pair's thread): *"A function can call other functions. The mind-bender: it can call *itself*. That's exactly the tool for data defined in terms of itself — nested data."*
-- Live→practice: *"Say the base case out loud before you write the function — that's where the bugs hide."*
-- Close: *"You handle clean data beautifully. Next hour: what to do when the data fights back."*
+- Open (the pair's thread): *"A function can call other functions. The mind-bender: it can call itself — exactly the tool for data defined in terms of itself."*
+- Break→deeper: *"You can write A recursion. Now: when it's brilliant (halving, trees, caching) and how to escape when it isn't (the explicit stack)."*
+- Close: *"You handle clean data beautifully. Next session: what to do when the data fights back."*
 
 **Predicted misconceptions**
-- Writes the recursive case but forgets to `return` it → silent `None`.
-- From a vectorized stats background, may not see when recursion beats a loop → the nested-data demo is the "aha".
-- May assume recursion is a free swap for loops → show the limit.
+- Forgets to `return` the recursive call → silent `None`.
+- Thinks binary search works on unsorted data — ask him why sorted matters.
+- Assumes `@cache` helps every recursion — only *repeated* subproblems (deep_sum gains nothing).
 
 **Socratic prompts**
-- "What's the smallest input where the answer is obvious without recursing? That's your base case."
-- "Your data is a list that can contain lists. What kind of function matches a thing defined in terms of itself?"
-- "Each pending call sits on a stack. What happens at call #1001?"
+- "What's the smallest input where the answer is obvious? That's your base case."
+- "fib(35) computes fib(5) how many times? What would 'remembering' buy?"
+- "1,000 sorted names — how many looks to find one? Why?"
 
-**Cut line:** drop `depth`/string-reverse tasks and `@cache`; **never** cut `deep_sum` on nested data.
+**Cut line:** drop `deepest` and the mutual-recursion aside; **never** cut `deep_sum`, `@cache`, or binary search.
 **Homework:** `sum_digits` · `deep_count` · loop-vs-recursion paragraph.
 
 ---
 
 ## SESSION 7 — Exceptions & Defensive Code
-**Covers:** `try`/`except`/`else`/`finally`, exception types, `raise`, EAFP vs LBYL, `assert`, a first `pytest` test.
-**Pre-flight:** `examples/session-07/`; a dirty list ("N/A", "", "7" on a 1–5 scale) staged; `pytest` installed and verified.
+**Covers:** `try`/`except`/`else`/`finally`, exception types, `raise`, EAFP vs LBYL, `assert`, a first pytest test · **deeper:** the exception hierarchy & handler order, custom exceptions with data, `raise ... from`, logging, parametrized tests.
+**Pre-flight:** `examples/session-07/`; the dirty list staged; `pytest` installed and verified.
 
-**The clock (60 min)**
-- **0:00–0:05 — Warm-up.** S6 homework debrief: `sum_digits(4823)` trace; why did `deep_count` need the bool check? (S2 pays rent again.)
-- **0:05–0:25 — Concept.** Errors vs exceptions; `try/except/else/finally`; common types (`ValueError`, `KeyError`, `FileNotFoundError`); `raise ValueError(...)`; **EAFP** vs LBYL; `assert` (a developer check, can be disabled — not input validation).
-- **0:25–0:37 — Live.** Harden `safe_int()`/`clean_likert()` against blanks/"N/A"/out-of-range; a first `pytest.raises` test, run it, watch it pass.
-- **0:37–0:55 — Practice.** `examples/session-07/practice.md` (In class): validate a raw response list into clean values + a rejection log; add a `raise`; one pytest test.
-- **0:55–1:00 — Recap + quiz + homework.** Never bare `except:`; don't swallow errors; `assert` ≠ validation. Quiz S7.
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S6 homework: trace `sum_digits(4823)`; why did `deep_count` need the bool check? (S2 pays rent.)
+- **0:05–0:30 — Core concept.** Errors vs exceptions; `try/except/else/finally`; common types on sight; `raise`; EAFP vs LBYL; `assert` (developer check, not validation).
+- **0:30–0:42 — Live I.** Harden `safe_int()`/`clean_likert()`; a first `pytest.raises` test, run it green.
+- **0:42–1:00 — Practice I.** Clean the raw list into values + a rejection log; add a `raise`; one pytest test.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** The exception family tree; handlers tried top-down → specific before broad; catching a tuple; custom exceptions that carry data (`.value`); `raise ... from` (domain error outside, real cause inside); `finally` → the cleanup mindset (`with` is this, packaged — S8 preview); `logging` vs `print` (output vs diary, levels); pytest round 2: parametrize, arrange-act-assert, test the edges.
+- **1:30–1:40 — Live II.** Demo deeper sections: except-order, the logging rejection log.
+- **1:40–1:53 — Practice II.** Fix the except-order bug; `SurveyError` with `raise ... from`; convert the log to `logging`; parametrize the tests.
+- **1:53–2:00 — Recap + quiz + homework.** Specific before broad; never bare `except:`; log the diary, print the output. Quiz S7.
 
 **Transitions**
-- Open: *"Your real survey data WILL have 'N/A' in a numeric column. This hour we write code that shrugs it off."*
-- Live→practice: *"Here are eight dirty values. I want a clean list AND a rejection log — you never silently discard data."*
-- Close: *"You can survive one bad value. Real data is a *file full* of them — next hour we open a real CSV and clean it with exactly these moves."*
+- Open: *"Your real survey data WILL have 'N/A' in a numeric column. Today we write code that shrugs it off."*
+- Break→deeper: *"You can catch an error. Now: catch the RIGHT error, keep the evidence, and leave a paper trail — that's the difference between a script and a tool."*
+- Close: *"You can survive one bad value. Real data is a file full of them — next session we open a real CSV."*
 
 **Predicted misconceptions**
-- Reaches for `if/else` (LBYL) everywhere; introduce EAFP as the Pythonic default, but be honest both are valid.
-- Writes bare `except:` — show why `except ValueError:` is safer.
-- Confuses `raise` with `return`, and `assert` with input validation.
+- Writes bare `except:` or puts `except Exception` first — the unreachable-handler demo cures it.
+- Confuses `raise` with `return`, `assert` with validation.
+- Will log at `DEBUG` and wonder where the output went — show the level threshold.
 
 **Socratic prompts**
-- "User typed 'seven' instead of 7. Catch it *before* (`if`) or *after* (`try`)? Trade-offs?"
-- "Why is a bare `except:` dangerous? What might you swallow?"
-- "You rejected four values. Should the program say so? Where's the audit trail?"
+- "'seven' instead of 7 — catch it before (`if`) or after (`try`)? Trade-offs?"
+- "Your program rejected four values silently. Who finds out, and when?"
+- "Why does the order of the two `except` clauses matter? What's tried first?"
 
-**Cut line:** drop the custom exception subclass (Extra practice has it) and shrink pytest to one test; keep `try/except` validation.
-**Homework:** `ask_int` · three pytest cases · error triage.
+**Cut line:** drop `raise ... from` and shrink logging to the two-line teaser; keep except-order, `SurveyError`, and parametrize.
+**Homework:** `ask_int` · three pytest cases (as one parametrized test if he's ahead) · error triage.
 
 ---
 
 ## SESSION 8 — Files, Libraries & Research Data
-**Covers:** `open`/`with`, file modes, CSV via `DictReader`/`DictWriter`, `json`, the researcher's stdlib, the pandas teaser.
-**Pre-flight:** `examples/session-08/` with `students.csv` + `survey.csv`; confirm `pip` works and have `pandas` importable for the teaser.
+**Covers:** `open`/`with`, file modes, CSV via `DictReader`/`DictWriter`, the researcher's stdlib, the pandas teaser · **deeper:** `pathlib`, encodings, `csv.reader` vs `DictReader`, JSON for nested data, `datetime`, seeded `random`.
+**Pre-flight:** `examples/session-08/` with `students.csv` + `survey.csv`; `pip` works; `pandas` importable.
 
-**The clock (60 min)**
-- **0:00–0:05 — Warm-up.** S7 homework debrief: one error-triage item; `ask_int` — what happens on `" 42 "`, and why does EAFP win there?
-- **0:05–0:25 — Concept.** `open`/`with` (auto-close); modes (`r/w/a`; **`w` overwrites!**); **CSV** via `csv.DictReader`/`DictWriter` (rows as dicts → ties to S4); `json`; researcher stdlib (`statistics`, `datetime`, `pathlib`); `pip install`.
-- **0:25–0:37 — Live.** Read `students.csv` → list of dicts, class mean with `statistics.mean`, write a summary CSV; then the **`pandas` teaser** (*"same thing in three lines — that's your next course"*).
-- **0:37–0:55 — Practice.** `examples/session-08/practice.md` (In class): per-item survey means skipping dirty values, write `survey_summary.csv`, mean by major — S7's exception skills do the cleaning.
-- **0:55–1:00 — Recap + quiz + homework.** Bare `"w"` destroys data; `newline=""`; files exhaust after one read; CSV values are strings. Quiz S8.
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S7 homework: one error-triage item; `ask_int(" 42 ")` — why does EAFP win?
+- **0:05–0:30 — Core concept.** `open`/`with`; modes (**`"w"` truncates!**); CSV as dicts (ties to S4); the researcher's stdlib (`statistics`, `pathlib` first taste); `pip install`.
+- **0:30–0:42 — Live I.** Read `students.csv` → list of dicts, class mean, write a summary CSV.
+- **0:42–1:00 — Practice I.** Per-item survey means skipping dirty values; write `survey_summary.csv`; mean by major.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** `pathlib` full tour (`/` joins, `glob`/`rglob`, `read_text`); encodings (`utf-8`, the Excel BOM → `utf-8-sig`, mojibake); `csv.reader` vs `DictReader`, `delimiter=";"`; JSON for nested data (`True`→`true`, `None`→`null`); `datetime` (`strptime`/`strftime`, date math); `random` with a **seed** (reproducible sampling — methods-section gold); the extended pandas teaser.
+- **1:30–1:40 — Live II.** Demo deeper sections: `csv.reader` rows, date math, the seeded sample run twice.
+- **1:40–1:53 — Practice II.** pathlib inventory; days-between; seeded sample; CSV → JSON.
+- **1:53–2:00 — Recap + quiz + homework.** `"w"` destroys; CSV values are strings; seed your randomness; JSON is its own language. Quiz S8.
 
 **Transitions**
-- Open (the pair's thread): *"You can now survive one bad value. Real data is a file full of them — let's open a real CSV."*
-- Teaser framing: *"Everything you just did by hand, pandas does in three lines — your next course, not today's. Now you know what it's doing underneath."*
-- Close: *"Numbers are clean. Next hour: the messiest data of all — text."*
+- Open (the pair's thread): *"You can survive one bad value. Real data is a file full of them."*
+- Break→deeper: *"You've done one CSV by hand. Now the ecosystem around it — paths, encodings, dates, JSON, and reproducible sampling. This is the session your future scripts live in."*
+- Teaser framing: *"Everything you did by hand, pandas does in five lines — next course, not today. Now you know what it does underneath."*
+- Close: *"Numbers are clean. Next session: the messiest data of all — text."*
 
 **Predicted misconceptions**
-- Opens with `"w"` to read and wonders why the file is empty; stress mode meanings.
-- Expects to iterate a file object twice without re-opening; show the exhausted cursor.
-- Forgets CSV values are strings (`"91" + 1` → `TypeError` — S2 again).
+- Opens with `"w"` to read; iterates a file twice.
+- Forgets CSV values are strings (`"91" + 1` — S2 again).
+- Believes seeding makes randomness "fake" — reframe: it makes the *method* reproducible.
+- Expects JSON to accept `True`/`None` spellings.
 
 **Socratic prompts**
-- "Why does `with` matter even if your program crashes? What does it guarantee?"
-- "The score column came back as `'91'`. What must happen before math?"
-- "Your summary has `True` in it. What will JSON write there?" (→ `true` — JSON is its own language)
+- "Why does `with` matter even if the program crashes?"
+- "Your co-author reruns the sampling script. What guarantees they get the same participants?"
+- "Nested per-item stats — why does CSV fight you and JSON doesn't?"
 
-**Cut line:** drop the `pandas`/`json` teaser; keep `csv.DictReader/Writer` and the dirty-value cleaning.
+**Cut line:** drop encodings and `csv.reader` (leave the slide as reference) and shrink the pandas teaser; keep pathlib, datetime, and the seeded sample.
 **Homework:** attendance-report pipeline · JSON round-trip · your own CSV.
 
 ---
 
 ## SESSION 9 — Regular Expressions & Text Cleaning
-**Covers:** raw strings, the survival tokens, `search`/`fullmatch`/`findall`/`sub`, capture groups, when NOT to use regex.
-**Pre-flight:** `examples/session-09/`; messy free-text, emails, and "Last, First" names staged; regex101.com open (flavor: Python).
+**Covers:** raw strings, the survival tokens, `search`/`fullmatch`/`findall`/`sub`, capture groups, when NOT to use regex · **deeper:** flags, `re.compile`, `VERBOSE`, named/non-capturing groups, greedy vs lazy, `sub` with a function, regex + files.
+**Pre-flight:** `examples/session-09/`; messy text, emails, "Last, First" names staged; regex101.com open (flavor: Python).
 
-**The clock (60 min)**
-- **0:00–0:05 — Warm-up.** S8 homework debrief: what did JSON do to `True`? What dirty value did his own CSV throw, and how did he handle it?
-- **0:05–0:25 — Concept.** Why regex for a researcher (validate/extract/clean/qualitative-coding, Connection Map #9). **Raw strings** `r"..."`. Survival tokens (`. \d \w \s + * ? {m,n} ^ $ [] () |`); `.` matches *any* char (use `\.`). The four functions: `search`/`fullmatch`/`findall`/`sub`; capture groups.
-- **0:25–0:37 — Live.** Validate an email (`fullmatch`), extract dept+number with groups, collapse whitespace with `sub`, count `#hashtags` with `findall` — and one case where `.split()` beats regex.
-- **0:37–0:55 — Practice.** `examples/session-09/practice.md` (In class): email validator, extract codes, hashtag count, the `"Last, First"` flip, the judgment call.
-- **0:55–1:00 — Recap + quiz + homework.** `r"..."` always; `\.` for a literal dot; guard `None` before `.group()`. Quiz S9.
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S8 homework: what did JSON do to `True`? What dirty value did his own CSV throw?
+- **0:05–0:30 — Core concept.** Why regex for a researcher (Connection Map #9); raw strings; the survival tokens; `.` matches any char; the four functions; capture groups.
+- **0:30–0:42 — Live I.** Validate an email; extract dept+number; collapse whitespace; count hashtags; one case where `.split()` wins.
+- **0:42–1:00 — Practice I.** Email validator, extract codes, hashtag count, the "Last, First" flip, the judgment call.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** Flags (`IGNORECASE`, `MULTILINE`); `re.compile` (name your patterns); `re.VERBOSE` (patterns with comments — reviewable!); named + non-capturing groups; greedy vs lazy (`.+` vs `.+?`); `re.sub` with a **function** (the anonymizer — a closure, S5 pays off); regex + files (S8 bridge).
+- **1:30–1:40 — Live II.** Demo deeper sections: flag counts, greedy-vs-lazy brackets, the anonymizer.
+- **1:40–1:53 — Practice II.** VERBOSE email; the anonymizer; the two-format date harvest; the flag count.
+- **1:53–2:00 — Recap + quiz + homework.** `r"..."` always; guard `None`; lazy for bracketed things; compile what you reuse. Quiz S9.
 
 **Transitions**
-- Concept→live: *"Four functions cover almost everything: search, fullmatch, findall, sub. Every pattern is a raw string, no exceptions."*
-- Live→practice: *"Regex matches form, not meaning. You decide what the pattern should be — then make Python agree."*
-- Close: *"You can now clean any string. Last hour of new material: organizing your code so it's reusable."*
+- Concept→live: *"Four functions cover almost everything. Every pattern is a raw string, no exceptions."*
+- Break→deeper: *"You can write a pattern. Now write patterns a colleague can REVIEW — named, commented, compiled — and do the one trick plain sub can't: computed replacements."*
+- Close: *"You can clean any string. Final session of new material: organizing your code so it's reusable."*
 
 **Predicted misconceptions**
-- Forgets raw strings → backslash chaos. Always `r"..."`.
-- Calls `.group()` on a `None` result → teach the `if m:` guard (same shape as `5 > '5'` from S2).
-- Expects regex to understand meaning (qualitative-coding hopes) — it matches *form*.
+- Forgets raw strings; calls `.group()` on `None`.
+- Reaches for greedy `.+` inside brackets/quotes — show the runaway match.
+- Expects regex to understand meaning — it matches *form*.
 
 **Socratic prompts**
-- "You want every response mentioning a theme. Is that a *form* match (regex) or a *meaning* match (human coding)? What can regex actually catch?"
-- "Why does `re.search(...).group()` crash when there's no match? (Same shape as `5 > '5'` weeks ago.)"
-- "Would you regex-split `'a,b,c'`? What's the simpler tool?"
+- "A theme-mention count: form match or meaning match? What can regex actually promise?"
+- "Why did `\\[(.+)\\]` swallow both course codes? What does the `?` change?"
+- "Same participant name must always map to the same ID. Where does that memory live?" (→ the closure)
 
-**Cut line:** drop named groups / `re.VERBOSE` (Extra practice has named groups); keep validate + extract + `sub`.
+**Cut line:** drop `MULTILINE` and non-capturing groups; keep VERBOSE, greedy-vs-lazy, and the anonymizer.
 **Homework:** pattern drill · messy-name cleanup · domain harvest.
 
 ---
 
 ## SESSION 10 — Modules, OOP & the Pythonic Toolkit
-**Covers:** modules & `import`, the `__main__` guard, a class with `__init__`/`self`/`__str__`, a validating `@property`, inheritance, generators, `map`/`filter`, walrus.
-**Pre-flight:** `examples/session-10/`; `grades.py` ready to import; the `Student` class and the generator-exhaustion demo staged.
+**Covers:** modules & the `__main__` guard, a class with `__init__`/`self`/`__str__`, a validating `@property`, inheritance, generators, `map`/`filter`, walrus · **deeper:** `__repr__`/`__eq__`/`__lt__`, dataclasses with `default_factory`, `@classmethod`, composition vs inheritance, class vs instance attributes, generator pipelines, project layout.
+**Pre-flight:** `examples/session-10/`; `grades.py` ready to import; the `Student` class and generator-exhaustion demo staged.
 
-**The clock (60 min)**
-- **0:00–0:05 — Warm-up.** S9 homework debrief: his three patterns — run each against one *invalid* example; did `fullmatch` catch it?
-- **0:05–0:25 — Concept.** Modules: move grade functions to `grades.py`, `import`, the `if __name__ == "__main__":` guard. OOP: a small `Student` class — `__init__`, `self`, a method, `__str__`, a validating `@property` setter (Connection Map #10), brief inheritance with `super()`.
-- **0:25–0:37 — Live.** Build the validating `Student`; `ana.gpa = 5.0` raises — the object defends its own integrity. Then the toolkit tour-by-doing: comprehension, `map`/`filter`, a generator + its one-pass exhaustion, the walrus `:=`.
-- **0:37–0:55 — Practice.** `examples/session-10/practice.md` (In class): import from `grades.py`, the validating `Student`, `GradStudent(super())`, toolkit drills.
-- **0:55–1:00 — Recap + quiz + homework + course wrap.** `self` is just "this instance"; generators exhaust; don't class-ify what a dict does. Quiz S10. Frame the capstone: *"Next time, you drive."*
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S9 homework: run one of his patterns against an *invalid* example — did `fullmatch` catch it?
+- **0:05–0:30 — Core concept.** Modules & the `__main__` guard; the `Student` class (`__init__`, `self`, `__str__`, validating `@property` — Connection Map #10); inheritance with `super()`.
+- **0:30–0:42 — Live I.** Build the validating `Student`; `ana.gpa = 5.0` raises; the toolkit: comprehension, `map`/`filter`, generator exhaustion, walrus.
+- **0:42–1:00 — Practice I.** Import from `grades.py`; the validating `Student`; `GradStudent(super())`; toolkit drills.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** `__repr__`/`__eq__`/`__lt__` → `sorted()` just works; dataclasses round 2 (`default_factory` = the S5 rule in class form; `frozen=True`); `@classmethod` alternate constructors (`from_row`: file format at the edge, objects inside — S8 bridge); composition over inheritance; class vs instance attributes (the trap → the law); generator **pipelines** (lazy stages, constant memory); from script to project (folder layout, one module per concern).
+- **1:30–1:40 — Live II.** Demo deeper sections: sortable `Score`s, `default_factory`, `from_row`, the two-stage pipeline.
+- **1:40–1:53 — Practice II.** Sortable `Student`; the dataclass `Course`; `from_row`; the pipeline.
+- **1:53–2:00 — Recap + quiz + homework + course wrap.** Dunders make objects native; mutable data in `__init__`/`default_factory`, always; compose first. Quiz S10. Frame the capstone: *"Next time, you drive."*
 
 **Transitions**
-- Open (the pair's thread): *"You can now clean any string. Last step: organize your code so it's reusable — functions into modules, then data-plus-behavior into a class."*
-- Modules→OOP: *"Functions in a file is reuse. A class bundles the data *and* the rules that guard it."*
-- Close: *"That's the toolbox — every tool in it earned its place. The capstone is where you prove it's yours."*
+- Open (the pair's thread): *"You can clean any string. Last step: organize code so it's reusable — functions into modules, data-plus-rules into classes."*
+- Break→deeper: *"You've built a class that defends itself. Now make your objects feel NATIVE — printable, comparable, sortable — and wire generators into a pipeline that could eat a million rows."*
+- Close: *"That's the toolbox — every tool earned its place. The capstone is where you prove it's yours."*
 
 **Predicted misconceptions**
-- `self` looks magical — it's just "this particular instance."
-- Treats a generator like a list (iterates once) → show the second pass is empty.
-- Reaches for a class when a function or dict would do — name when OOP earns its keep.
+- `self` looks magical; generators exhaust.
+- Puts `courses: list = []` in a dataclass — the S5 bug reborn; `default_factory` is the cure.
+- Inherits when he should compose — "is-a or has-a?" out loud.
 
 **Socratic prompts**
-- "Your operational definition of 'student' — what attributes and rules belong to it? That's your class."
-- "A million rows won't fit in memory. What does `yield` give you that a list doesn't?"
-- "Why does the demo code in `grades.py` NOT run when you import it?"
+- "What must `sorted` be able to ask two Students, for no `key=` to be needed?"
+- "Where should `roster = []` live so two Cohorts don't share students? Why?"
+- "When does any work happen in `in_range(to_ints(raw))`? What forces it?"
 
-**Cut line:** drop `@dataclass` (Extra practice) and compress the toolkit tour to comprehensions + generators; keep modules and the validating class.
+**Cut line:** drop `frozen=True`, `@staticmethod`, and the project-layout slide; keep dunders, `default_factory`, `from_row`, and the pipeline.
 **Homework:** `Student` with computed GPA · `Cohort` class · Pythonic rewrite.
 
 ---
@@ -359,7 +414,8 @@ Each session has:
 ---
 
 ## Instructor's running checklist (use across all sessions)
-- [ ] Timer visible; the practice block got its full ~18 minutes.
+- [ ] Timer visible; both practice blocks got their minutes; the break was honored.
+- [ ] The Going-deeper block taught NEW material — it never became overflow practice time.
 - [ ] Warm-up pulled from the homework and the misconceptions log — not improvised.
 - [ ] Pair through-lines named out loud (S2, S4, S6, S8, S10 openings).
 - [ ] Every trap demoed via **predict-then-run**, not narration.

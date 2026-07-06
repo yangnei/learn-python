@@ -7,8 +7,6 @@ paginate: true
 # Session 4
 ## Data Structures
 
-*Learn Python — Session 4 of 10 · one hour.*
-
 ---
 
 ## Four containers, four jobs
@@ -124,6 +122,103 @@ b = a.copy()         # ✅ independent copy
 
 ---
 
+# Going deeper
+## The collections toolkit
+
+---
+
+## Unpacking
+
+```python
+name, score = ("Ana", 91)        # tuple unpacking
+head, *rest = [10, 20, 30, 40]   # head=10, rest=[20, 30, 40]
+a, b = b, a                      # the swap, revisited
+for name, score in zip(names, scores): ...   # unpacking IS how zip loops work
+```
+
+---
+
+## Dict power methods
+
+```python
+student.get("major", "N/A")        # safe lookup with default
+student.pop("temp", None)          # remove + return (default if absent)
+groups.setdefault("pass", []).append(name)   # create-if-missing, then use
+d1 | d2                            # merged dict (right side wins, 3.9+)
+for key, val in student.items(): ...
+```
+
+---
+
+## `collections.Counter` — frequencies in one line
+
+```python
+from collections import Counter
+counts = Counter(["yes", "no", "yes", "maybe", "yes"])
+counts                 # Counter({'yes': 3, 'no': 1, 'maybe': 1})
+counts.most_common(1)  # [('yes', 3)]
+```
+
+🧠 Your entire "tally the survey" loop, as one expression. It IS a dict underneath.
+
+---
+
+## `collections.defaultdict` — grouping without ceremony
+
+```python
+from collections import defaultdict
+by_major = defaultdict(list)          # missing key? make a [] first
+for s in roster:
+    by_major[s["major"]].append(s["name"])
+```
+
+Same job as `setdefault`, cleaner at scale.
+
+---
+
+## Sets, the full toolkit
+
+```python
+fall & spring     # intersection: both terms
+fall | spring     # union: either
+fall - spring     # difference: only fall
+fall ^ spring     # symmetric diff: exactly one term
+{1, 2} <= {1, 2, 3}   # subset? True
+list(dict.fromkeys(xs))   # dedupe KEEPING order (a set won't)
+```
+
+---
+
+## Sorting, round 2
+
+```python
+sorted(roster, key=lambda s: (-s["score"], s["name"]))
+# score high→low, ties broken by name A→Z
+```
+
+- Multi-key: return a **tuple** from `key` — compared element by element (Session 2!).
+- Python's sort is **stable**: equal keys keep their original order.
+
+---
+
+## `copy` vs `deepcopy`
+
+```python
+import copy
+flat = a.copy()            # new outer list — inner objects still shared
+full = copy.deepcopy(a)    # copies all the way down
+```
+
+Rule: nested + you'll mutate the inners → `deepcopy`. Otherwise `.copy()` is enough.
+
+---
+
+## Your turn — round 2
+
+`examples/session-04/practice.md` → **In class — going deeper**:
+`Counter` + `defaultdict` re-dos, a multi-key sort, and order-keeping dedupe.
+---
+
 ## Traps recap
 
 - `=` aliases; use `.copy()` / `copy.deepcopy()`.
@@ -139,7 +234,7 @@ You can store, look up, dedup, sort, and reshape data.
 
 ## Homework (before Session 5)
 
-*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-04/practice.md` → **Homework**.*
+*Outside class — it doesn't count toward class time. Full specs + solutions: `examples/session-04/practice.md` → **Homework**.*
 
 1. **Gradebook dict drill** — add, update, look up (safely), and delete students.
 2. **Frequency counter** — count survey answers with a dict (no imports).

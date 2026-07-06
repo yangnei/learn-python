@@ -7,8 +7,6 @@ paginate: true
 # Session 8
 ## Files, Libraries & Research Data
 
-*Learn Python — Session 8 of 10 · one hour.*
-
 ---
 
 ## Opening files with `with`
@@ -118,6 +116,115 @@ We learned the fundamentals *underneath* it first.
 
 ---
 
+# Going deeper
+## Real data work
+
+---
+
+## `pathlib`, the full tour
+
+```python
+from pathlib import Path
+data = Path("data")
+f = data / "students.csv"          # / joins paths, any OS
+f.exists(), f.stat().st_size       # is it there? how big?
+list(data.glob("*.csv"))           # every CSV here
+list(data.rglob("*.csv"))          # ...and in every subfolder
+data.mkdir(exist_ok=True)
+notes = f.with_suffix(".txt").read_text()   # small files: one-liners
+```
+
+---
+
+## Encodings — the Excel gotcha
+
+```python
+open("survey.csv", newline="", encoding="utf-8")        # say it explicitly
+open("from_excel.csv", newline="", encoding="utf-8-sig") # eats Excel's BOM
+```
+
+- Mojibake (`Ã©` for `é`) = the bytes were read with the wrong encoding.
+- Excel often saves `cp1252` or UTF-8 *with a BOM* — `utf-8-sig` handles the latter.
+
+---
+
+## `csv`, round 2
+
+```python
+csv.reader(f)        # rows as LISTS (no/duplicate headers)
+csv.DictReader(f)    # rows as DICTS (the default choice)
+w.writerows(report)  # write many dicts at once
+csv.DictReader(f, delimiter=";")   # European Excel exports
+```
+
+---
+
+## JSON for nested data
+
+```python
+import json
+snapshot = {"course": "ED101",
+            "items": {"q1": {"mean": 4.2, "n": 28}, "q2": {"mean": 3.8, "n": 27}}}
+Path("snapshot.json").write_text(json.dumps(snapshot, indent=2))
+back = json.loads(Path("snapshot.json").read_text())
+```
+
+CSV is a rectangle; JSON nests. `True/None` become `true/null` — JSON is its own language,
+`json.load` translates back.
+
+---
+
+## `datetime` — dates are data too
+
+```python
+from datetime import date, datetime
+d = datetime.strptime("2026-07-06", "%Y-%m-%d")   # parse text -> datetime
+d.strftime("%b %d")                                # format -> "Jul 06"
+(date(2026, 7, 6) - date(2026, 1, 5)).days         # 182 — date math works
+date.fromisoformat("2026-07-06")                   # the ISO shortcut
+```
+
+`strptime` = *parse* (string → date), `strftime` = *format* (date → string).
+
+---
+
+## `random`, reproducibly
+
+```python
+import random
+random.seed(42)                 # same "random" every run — methods sections rejoice
+random.choice(roster)           # one
+random.sample(roster, 3)        # three, no repeats
+random.shuffle(order)           # in place — random assignment
+```
+
+Seeding makes stochastic analysis **reproducible** — rerunning your script re-draws the
+same sample.
+
+---
+
+## The pandas teaser, extended
+
+```python
+import pandas as pd
+df = pd.read_csv("students.csv")
+df["score"].describe()                    # count/mean/std/quartiles
+df.groupby("major")["score"].agg(["mean", "count"])
+df[df["score"] < 60]                      # filter rows
+df.to_csv("report.csv", index=False)
+```
+
+Five lines = today's whole session. That's the next course — and now you know what each
+line does underneath.
+
+---
+
+## Your turn — round 2
+
+`examples/session-08/practice.md` → **In class — going deeper**:
+a `pathlib` inventory, date math on enrollment dates, a seeded sample, and CSV → JSON.
+---
+
 ## Traps recap
 
 - `"w"` silently overwrites — be sure of the filename.
@@ -133,7 +240,7 @@ You can load, summarize, and write real research data.
 
 ## Homework (before Session 9)
 
-*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-08/practice.md` → **Homework**.*
+*Outside class — it doesn't count toward class time. Full specs + solutions: `examples/session-08/practice.md` → **Homework**.*
 
 1. **Attendance report** — read a CSV, clean it, summarize it, write a report CSV — the whole pipeline.
 2. **JSON round-trip** — save your summary with `json.dump`, load it back, verify equality.

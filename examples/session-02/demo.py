@@ -69,3 +69,38 @@ m = int("257"); p = int("257")          # built at runtime, so NOT folded to one
 print("257 runtime   :", m is p)        # False — outside the cache, separate objects
 print("but 257 == 257:", m == p)        # True  — value is equal; identity is not
 # Lesson: this is why you compare values with ==, never identities with `is`.
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: None, properly ---------------------------------------------
+print("\n=== GOING DEEPER ===")
+middle_name = None                      # absence — not zero, not empty
+print("is None?      ", middle_name is None)
+print("three nothings:", repr(None), repr(""), repr(0), "- all different kinds")
+
+# --- deeper 2: the conversion matrix --------------------------------------
+print('int("42")           =', int("42"))
+try:
+    int("4.2")
+except ValueError as e:
+    print('int("4.2")          -> ValueError:', e)
+print('float("4.2")        =', float("4.2"))
+print('int(float("4.2"))   =', int(float("4.2")), "(the two-step)")
+
+# --- deeper 3: nan and inf -------------------------------------------------
+import math
+bad = float("nan")
+print("nan == nan   :", bad == bad, "   math.isnan:", math.isnan(bad))
+print('inf > 10**100:', float("inf") > 10**100)
+
+# --- deeper 4: id() — what `is` actually compares --------------------------
+a = [1, 2]; b = a; c = [1, 2]
+print("id(a) == id(b):", id(a) == id(b), "(alias)   id(a) == id(c):", id(a) == id(c))
+
+# --- deeper 5: Decimal — exact when floats aren't good enough ---------------
+from decimal import Decimal
+print('floats : 0.1 + 0.2 == 0.3            ->', 0.1 + 0.2 == 0.3)
+print('Decimal: D("0.1") + D("0.2") == D("0.3") ->',
+      Decimal("0.1") + Decimal("0.2") == Decimal("0.3"))
+# Build Decimals from STRINGS: Decimal(0.1) would inherit the float's error.

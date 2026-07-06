@@ -7,8 +7,6 @@ paginate: true
 # Session 6
 ## Recursion & Recursive Thinking
 
-*Learn Python — Session 6 of 10 · one hour.*
-
 ---
 
 ## The shape of every recursion
@@ -113,6 +111,106 @@ Python has **no tail-call optimization** — every call keeps its frame
 
 ---
 
+# Going deeper
+## Recursion in the wild
+
+---
+
+## Memoization: remember past calls
+
+```python
+def fib(n):                       # naive: fib(35) recomputes fib(5) thousands of times
+    return n if n < 2 else fib(n - 1) + fib(n - 2)
+
+import functools
+@functools.cache                  # remembers every (input -> output) it has seen
+def fib(n):
+    return n if n < 2 else fib(n - 1) + fib(n - 2)
+```
+
+Naive `fib(35)`: seconds. Cached: instant. Same code — a decorator (Session 5!) did the work.
+When a recursion re-solves the **same subproblem**, cache it.
+
+---
+
+## Divide & conquer: binary search
+
+```python
+def find(sorted_names, target, lo=0, hi=None):
+    if hi is None:
+        hi = len(sorted_names)
+    if lo >= hi:
+        return False                   # base case: empty range
+    mid = (lo + hi) // 2
+    if sorted_names[mid] == target:
+        return True
+    if sorted_names[mid] < target:
+        return find(sorted_names, target, mid + 1, hi)
+    return find(sorted_names, target, lo, mid)
+```
+
+Each call **halves** the problem: 1 000 names ≈ 10 steps, a million ≈ 20.
+(Requires sorted data — Session 4's `sorted` earns its keep.)
+
+---
+
+## Tree-shaped data
+
+```python
+org = {"name": "Dean",
+       "reports": [{"name": "Chair A", "reports": []},
+                   {"name": "Chair B",
+                    "reports": [{"name": "Prof C", "reports": []}]}]}
+
+def count_people(node):
+    return 1 + sum(count_people(r) for r in node["reports"])
+
+count_people(org)      # 4
+```
+
+Org charts, folder trees, threaded replies, nested codes — the function's shape **mirrors the
+data's shape**. That's the whole trick.
+
+---
+
+## Escaping the limit: an explicit stack
+
+```python
+def flatten_iter(xs):
+    out, to_visit = [], list(xs)
+    while to_visit:
+        x = to_visit.pop(0)
+        if isinstance(x, list):
+            to_visit = x + to_visit    # open the box in place
+        else:
+            out.append(x)
+    return out
+```
+
+Same logic, **no call-stack frames** — depth 10 000 is fine. When data may nest deeper than
+~1000, carry your own to-visit list.
+
+---
+
+## Choosing: loop, recursion, or cache?
+
+| Situation | Reach for |
+|---|---|
+| flat sequence | a plain **loop** |
+| self-similar / nested data | **recursion** |
+| repeated subproblems | recursion + **`@cache`** |
+| possibly very deep | loop + **explicit stack** |
+
+Recursion is a tool, not a virtue — pick by the *shape of the data*.
+
+---
+
+## Your turn — round 2
+
+`examples/session-06/practice.md` → **In class — going deeper**:
+binary search with a step counter, an org-tree count, and `flatten` without recursion.
+---
+
 ## Traps recap
 
 - Every recursion needs a **reachable base case**, or it overflows the stack.
@@ -128,7 +226,7 @@ You can solve problems that are defined in terms of themselves — especially ne
 
 ## Homework (before Session 7)
 
-*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-06/practice.md` → **Homework**.*
+*Outside class — it doesn't count toward class time. Full specs + solutions: `examples/session-06/practice.md` → **Homework**.*
 
 1. **`sum_digits(n)`** — recursion on a number instead of a list.
 2. **`deep_count(obj)`** — count every score in a nested gradebook dict.

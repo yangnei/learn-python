@@ -68,3 +68,34 @@ print("Years left:", years_to_graduation(60, 120, 30))   # 2.0
 # --- 7. Reading a traceback ---------------------------------------------
 # Uncomment the next line to SEE an error on purpose, then read the LAST line:
 # age = int("thirty")   # ValueError: invalid literal for int() with base 10: 'thirty'
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: arithmetic, fully -----------------------------------------
+print("\n=== GOING DEEPER ===")
+print("7 / 2  =", 7 / 2, "   7 // 2 =", 7 // 2, "   7 % 2 =", 7 % 2)
+print("2 ** 10 =", 2 ** 10)
+minutes = 130
+print(f"{minutes} minutes = {minutes // 60} h {minutes % 60} min")
+score = 80
+score += 5                      # augmented assignment: score = score + 5
+print("after += 5:", score)
+for student_id in [101, 102, 103, 104, 105, 106]:
+    print(f"  student {student_id} -> discussion group {student_id % 3}")
+
+# --- deeper 2: string methods, chained -----------------------------------
+raw_name = "  aDA lovelace "
+print(repr(raw_name), "->", repr(raw_name.strip().title()))
+print("commas in 'a,b,c':", "a,b,c".count(","))
+print("ends with .edu?  ", "ana@uni.edu".endswith(".edu"))
+
+# --- deeper 3: aligned report lines --------------------------------------
+for name, score, rate in [("Ana", 91.456, 0.873), ("Ben", 58.0, 0.412)]:
+    print(f"{name:<10}{score:>8.1f}{rate:>8.1%}")
+
+# --- deeper 4: import = borrowing a toolbox -------------------------------
+import math
+print("sqrt(144) =", math.sqrt(144), "  ceil(3.1) =", math.ceil(3.1),
+      "  pi =", round(math.pi, 5))
+# help(round) and dir(str) are your built-in manual — try them in the REPL.

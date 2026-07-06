@@ -40,7 +40,7 @@ print(any(n >= 90 for n in nums))    # -> True    (92 passes)
 print(92 in nums, 60 in nums)        # -> True False
 ```
 
-## Extra practice (in class, if you're ahead)
+## In class — going deeper (second hour)
 
 ### E1 — Refactor to chained comparisons
 Rewrite each with one chained comparison:
@@ -52,9 +52,21 @@ Rewrite each with one chained comparison:
 Print 10 → 1 then `Go!` — once with `range`, once with `while`. Mind the off-by-one at
 **both** ends.
 
+### D1 — `match/case` rewrite
+Rewrite your Likert classifier with `match/case`: 5/4 → `"agree"`, 3 → `"neutral"`,
+1/2 → `"disagree"`, anything else → `"invalid"`. Which version reads better here — and why?
+
+### D2 — `for/else` search
+Find the first score below 60 in `[91, 73, 84, 58, 90]` and print it; if there is none,
+print `"everyone passed"` — **without** a `found` flag.
+
+### D3 — Best AND worst, one pass
+Track best-so-far and worst-so-far through a single loop over
+`[73, 91, 58, 84]` (no `max()`/`min()`). Print both.
+
 ## Homework (before Session 4)
 
-*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
+*~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
 ### H1 — Attendance labeler
 Write `label(pct)` → `"perfect"` (exactly 100), `"good"` (≥ 80), `"at risk"` (≥ 50), else
@@ -107,7 +119,7 @@ while True:
 xs = [x for x in xs if x % 2 != 0]            # build a new list instead -> [1, 3]
 ```
 
-### Extra practice
+### In class — going deeper
 
 ```python
 # E1
@@ -125,6 +137,39 @@ while n >= 1:
     print(n)
     n -= 1
 print("Go!")
+```
+
+```python
+# D1
+def likert_label(answer):
+    match answer:
+        case 5 | 4:
+            return "agree"
+        case 3:
+            return "neutral"
+        case 1 | 2:
+            return "disagree"
+        case _:
+            return "invalid"
+# match wins here: every branch compares the SAME value against literals.
+
+# D2
+for s in [91, 73, 84, 58, 90]:
+    if s < 60:
+        print("first failing:", s)
+        break
+else:
+    print("everyone passed")
+
+# D3
+scores = [73, 91, 58, 84]
+best = worst = scores[0]
+for s in scores[1:]:
+    if s > best:
+        best = s
+    if s < worst:
+        worst = s
+print("best:", best, "worst:", worst)    # 91 58
 ```
 
 ### Homework

@@ -38,7 +38,7 @@ print(m.group("year"), m.groupdict())   # -> 2026 {'year': '2026'}   (named grou
 print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        (split on commas + spaces)
 ```
 
-## Extra practice (in class, if you're ahead)
+## In class — going deeper (second hour)
 
 ### E1 — Named groups
 Redo the dept+number extraction with `(?P<dept>...)` / `(?P<num>...)` and print
@@ -48,9 +48,25 @@ Redo the dept+number extraction with `(?P<dept>...)` / `(?P<num>...)` and print
 Paste your email pattern into regex101.com (flavor: **Python**). Read the left-panel
 explanation token by token — does it say what you *meant*?
 
+### D1 — A commented pattern
+Rewrite your email validator with `re.compile(..., re.VERBOSE)`, one commented line per
+token. It must behave identically.
+
+### D2 — The anonymizer
+Replace every occurrence of the names Ana/Ben/Cara in a transcript with stable IDs
+`P001`, `P002`, … (same name → same ID) using `re.sub` with a **function** replacement.
+
+### D3 — Two-format date harvest
+From `"submitted 2026-07-06, revised 07/08/2026, due 2026-09-01"`, extract **all** dates
+in either `YYYY-MM-DD` or `MM/DD/YYYY` form with one `findall` and an alternation.
+
+### D4 — Case-insensitive keyword count
+Count mentions of "stress" in a paragraph regardless of case, with a flag — not by
+lowercasing the text.
+
 ## Homework (before Session 10)
 
-*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
+*~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
 ### H1 — Pattern drill
 One `re.fullmatch` pattern each; test against two valid and two invalid strings:
@@ -88,7 +104,7 @@ Reach for regex only when the pattern is genuinely variable (digits, optional pa
 Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and never forget the
 `r"..."` prefix or your backslashes become Python escape sequences.
 
-### Extra practice
+### In class — going deeper
 
 ```python
 # E1
@@ -100,6 +116,39 @@ print(m.groupdict())                     # {'dept': 'ED', 'num': '1234'}
 
 E2 — the point is the habit: regex101's explainer catches "`.` matches any character"
 mistakes before your data does.
+
+```python
+import re
+
+# D1
+EMAIL = re.compile(r"""
+    \w+          # the user part
+    @
+    \w+          # the domain
+    \.edu        # a literal dot, then edu
+""", re.VERBOSE)
+print(EMAIL.fullmatch("ana@university.edu") is not None)   # True
+
+# D2
+ids = {}
+def anonymize(m):
+    name = m.group(0)
+    ids.setdefault(name, f"P{len(ids) + 1:03d}")
+    return ids[name]
+
+text = "Ana said X. Ben said Y. Ana agreed."
+print(re.sub(r"\b(?:Ana|Ben|Cara)\b", anonymize, text))
+# P001 said X. P002 said Y. P001 agreed.
+
+# D3
+s = "submitted 2026-07-06, revised 07/08/2026, due 2026-09-01"
+print(re.findall(r"\d{4}-\d{2}-\d{2}|\d{2}/\d{2}/\d{4}", s))
+# ['2026-07-06', '07/08/2026', '2026-09-01']
+
+# D4
+para = "Stress was high. Some stress is normal. STRESS!"
+print(len(re.findall(r"stress", para, re.IGNORECASE)))     # 3
+```
 
 ### Homework
 

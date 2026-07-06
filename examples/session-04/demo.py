@@ -87,3 +87,20 @@ grid_ok = [[0] * 3 for _ in range(3)]
 grid_ok[0][0] = 9
 print("independent grid:", grid_ok)   # [[9,0,0],[0,0,0],[0,0,0]]
 _ = copy.deepcopy(grid_ok)            # deepcopy duplicates every nested level
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: copy vs deepcopy ---------------------------------------------
+print("\n=== GOING DEEPER ===")
+import copy
+nested = [["Ana", 91], ["Ben", 58]]
+shallow = nested.copy()
+deep = copy.deepcopy(nested)
+nested[0][1] = 99                       # mutate an INNER list
+print("shallow sees it:", shallow[0], "   deepcopy doesn't:", deep[0])
+
+# --- deeper 2: dedupe KEEPING order -----------------------------------------
+answers = ["yes", "no", "yes", "maybe", "no"]
+print("set() order-free :", set(answers))
+print("fromkeys ordered :", list(dict.fromkeys(answers)))

@@ -62,3 +62,29 @@ print("\n", flip_name("Curie, Marie"))      # Marie Curie
 # For simple splits/trims, string methods are clearer than regex:
 print("\nuse .split():", "a,b,c".split(","))
 print("use .strip():", "  hi  ".strip())
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: flags -----------------------------------------------------------------
+print("\n=== GOING DEEPER ===")
+corpus = "Stress was high. Some stress is normal. STRESS!"
+print("ignorecase count:", len(re.findall(r"stress", corpus, re.IGNORECASE)))
+lines = "42 Ana\n7 Ben\nnope Cara"
+print("per-line numbers:", re.findall(r"^\d+", lines, re.MULTILINE))
+
+# --- deeper 2: greedy vs lazy ---------------------------------------------------------
+tags = "[ED101][ED102]"
+print("greedy .+ :", re.search(r"\[(.+)\]", tags).group(1))
+print("lazy  .+? :", re.search(r"\[(.+?)\]", tags).group(1))
+
+# --- deeper 3: re.sub with a FUNCTION — the anonymizer ---------------------------------
+transcript = "Ana said the course helped. Ben disagreed. Ana insisted."
+ids = {}
+def anonymize(m):
+    name = m.group(0)
+    ids.setdefault(name, f"P{len(ids) + 1:03d}")
+    return ids[name]
+
+print(re.sub(r"\b(?:Ana|Ben|Cara)\b", anonymize, transcript))
+print("mapping:", ids)

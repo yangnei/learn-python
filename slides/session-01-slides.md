@@ -7,8 +7,6 @@ paginate: true
 # Session 1
 ## Running Python, Variables & Types
 
-*Learn Python — Session 1 of 10 · one hour.*
-
 ---
 
 ## Why Python (for you)
@@ -124,6 +122,111 @@ ValueError: invalid literal for int() with base 10: 'thirty'
 
 ---
 
+# Going deeper
+## Numbers, strings & the tools around them
+
+---
+
+## Arithmetic, fully
+
+| Op | Meaning | Example |
+|---|---|---|
+| `+ - *` | the usual | `3 * 7` → `21` |
+| `/` | true division | `7 / 2` → `3.5` |
+| `//` | floor division | `7 // 2` → `3` |
+| `%` | remainder | `7 % 2` → `1` |
+| `**` | power | `2 ** 10` → `1024` |
+
+Precedence follows math (`**` first, then `* / // %`, then `+ -`) — when in doubt, **parenthesize**.
+Update in place: `score += 5`, `count -= 1`, `total *= 2`.
+
+---
+
+## `%` earns its keep
+
+```python
+n % 2 == 0            # even?
+student_id % 3        # 0, 1, or 2 -> rotate into 3 discussion groups
+minutes = 130
+print(minutes // 60, "h", minutes % 60, "min")   # 2 h 10 min
+```
+
+🧠 `//` and `%` together split a quantity into "whole units + remainder" — hours/minutes,
+pages/sheets, groups/leftovers.
+
+---
+
+## Strings have methods
+
+```python
+name = "  aDA lovelace "
+name.strip()          # "aDA lovelace"   (trim ends)
+name.strip().title()  # "Ada Lovelace"   (chain them!)
+"CS50".lower()        # "cs50"
+"a,b,c".count(",")    # 2
+"ana@uni.edu".startswith("ana")   # True
+"@" in "ana@uni.edu"  # True  (membership)
+len("data")           # 4
+```
+
+Methods **return a new string** — the original never changes (strings are immutable).
+
+---
+
+## f-strings, round 2 — aligned reports
+
+```python
+name, score, rate = "Ana", 91.456, 0.873
+print(f"{name:<10}{score:>8.1f}{rate:>8.1%}")
+# Ana           91.5   87.3%
+```
+
+- `:<10` pad left-aligned to 10 · `:>8` right-align to 8
+- `:.1f` one decimal · `:,` thousands · `:.1%` percent
+- `{score=}` prints `score=91.456` — debugging gold.
+
+---
+
+## Borrowing a toolbox: `import`
+
+```python
+import math
+math.sqrt(144)     # 12.0
+math.floor(3.9)    # 3
+math.ceil(3.1)     # 4
+math.pi            # 3.141592653589793
+```
+
+One line borrows a whole library. (The full import story — and `pip` — lands in Session 8.)
+
+---
+
+## Ask Python itself
+
+```python
+help(round)      # the manual for one function
+dir(str)         # every method a string has
+```
+
+In the REPL, `_` holds the last result. These three habits replace half your web searches.
+
+---
+
+## Names that don't bite
+
+- `snake_case` for variables and functions: `class_average`, not `ClassAvg`.
+- Names say **what it is**: `n_students`, not `x`.
+- Constants by convention: `MAX_SCORE = 100` (Python won't enforce it — the capitals warn humans).
+- Comments explain **why**, not what: the code already says what.
+
+---
+
+## Your turn — round 2
+
+`examples/session-01/practice.md` → **In class — going deeper**:
+formatting drill, a name normalizer, and the `%`-groups exercise.
+---
+
 ## Traps recap
 
 - `input()` → **always a string**; convert with `int()`/`float()`.
@@ -138,7 +241,7 @@ You can run code, name values, convert types, format output, and read an error.
 
 ## Homework (before Session 2)
 
-*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-01/practice.md` → **Homework**.*
+*Outside class — it doesn't count toward class time. Full specs + solutions: `examples/session-01/practice.md` → **Homework**.*
 
 1. **Unit converter** — a script that asks for a value and reports it converted, nicely f-string formatted.
 2. **Traceback drill** — break three lines on purpose; for each, read the last line and name the error.

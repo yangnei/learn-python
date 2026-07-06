@@ -96,3 +96,48 @@ try:
     runaway(0)
 except RecursionError:
     print("RecursionError: maximum recursion depth exceeded (as expected)")
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: divide & conquer — binary search -------------------------------
+print("\n=== GOING DEEPER ===")
+def find(sorted_names, target, lo=0, hi=None, depth=0):
+    if hi is None:
+        hi = len(sorted_names)
+    if lo >= hi:
+        return False
+    mid = (lo + hi) // 2
+    print("  " * depth + f"looking at {sorted_names[mid]!r}")
+    if sorted_names[mid] == target:
+        return True
+    if sorted_names[mid] < target:
+        return find(sorted_names, target, mid + 1, hi, depth + 1)
+    return find(sorted_names, target, lo, mid, depth + 1)
+
+roster = sorted(["Ana", "Ben", "Cara", "Dev", "Eve", "Fay", "Gus"])
+print("found Fay?", find(roster, "Fay"), "— each step HALVES the problem")
+
+# --- deeper 2: tree-shaped data ------------------------------------------------
+org = {"name": "Dean", "reports": [
+    {"name": "Chair A", "reports": []},
+    {"name": "Chair B", "reports": [{"name": "Prof C", "reports": []}]},
+]}
+
+def count_people(node):
+    return 1 + sum(count_people(r) for r in node["reports"])
+
+print("people in the org tree:", count_people(org))
+
+# --- deeper 3: same logic, no recursion — an explicit stack ---------------------
+def flatten_iter(xs):
+    out, to_visit = [], list(xs)
+    while to_visit:
+        x = to_visit.pop(0)
+        if isinstance(x, list):
+            to_visit = x + to_visit     # unpack in place, keep order
+        else:
+            out.append(x)
+    return out
+
+print("flatten_iter:", flatten_iter([1, [2, [3, 4]], 5]), "— depth 10,000? no problem")

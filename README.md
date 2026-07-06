@@ -5,8 +5,9 @@ experience** but strong self-learning skills. The pace is accelerated and the co
 deliberately front-loaded with the **easily-missed language fundamentals** (the dynamic-typing
 "traps") that beginners skip and later get bitten by.
 
-- **Length:** **10 one-hour sessions** (~10 hours) + an optional 11th capstone session. Every
-  session also assigns **homework (~30–45 min)** that doesn't count toward class time.
+- **Length:** **10 two-hour sessions** (~20 hours) + an optional 11th capstone session. Each
+  session = a **core** hour + a **Going deeper** hour of new material around a break, and
+  assigns **homework (~30–45 min)** that doesn't count toward class time.
 - **Two editions:** a clean **student** track and a **teacher** track (timing, transitions, misconceptions).
 - **Everything original.** All prose, slides, code, and cheat sheets here were written for this learner.
 
@@ -109,7 +110,7 @@ learn-python/
     └── build_student_pdf.py        ← regenerates the student PDF
 ```
 
-## The 10 sessions at a glance (one hour each, + homework)
+## The 10 sessions at a glance (two hours each, + homework)
 | # | Title |
 |---|---|
 | 1 | Running Python, Variables & Types |
@@ -142,10 +143,10 @@ Requires Python 3.11+. The only optional third-party packages are `pytest` (Sess
 and `pandas` (Session 8 teaser); everything else is the standard library.
 
 ## Scaling to the available time
-- **~8 hours:** merge S1+S2 and S3+S4 into two fast 90-minute sessions and trim the S10
-  toolkit tour and the S8 pandas/json teaser.
-- **~10 hours:** run S1–S10 as written, one hour each (recommended).
-- **~12 hours:** add the S11 capstone.
+- **~14–16 hours:** keep every core hour; trim the Going-deeper blocks to the essentials
+  named by each session's cut line.
+- **~20 hours:** run S1–S10 as written, two hours each (recommended).
+- **~22 hours:** add the S11 capstone.
 
 ## Note
 All instructional content in this package — prose, slides, code, cheat sheets, and quizzes —

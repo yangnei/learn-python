@@ -80,3 +80,35 @@ print("mean:", mean([2, 4, 6]))
 # except:            # ❌ catches EVERYTHING, even Ctrl+C and typos
 #     pass           # ❌ and silently swallows the error
 # Always: except SpecificError as e: ...
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: except order matters — specific BEFORE broad ---------------------
+print("\n=== GOING DEEPER ===")
+def parse(cell):
+    try:
+        return int(cell)
+    except ValueError:                  # the specific case we planned for
+        return None
+    except Exception as exc:            # last resort: log and stop — never silently pass
+        print("unexpected:", exc)
+        raise
+
+print("parse('7') =", parse("7"), "  parse('N/A') =", parse("N/A"))
+# If `except Exception` came FIRST, it would swallow the ValueError path too.
+
+# --- deeper 2: logging beats print for diagnostics -------------------------------
+import logging
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+raw = ["5", "N/A", "3"]
+kept = []
+for cell in raw:
+    n = parse(cell)
+    if n is None:
+        logging.warning("rejected %r: not a number", cell)
+    else:
+        kept.append(n)
+logging.info("kept %d of %d values", len(kept), len(raw))
+print("kept:", kept)
+# print = the program's OUTPUT; logging = its DIARY (levels, timestamps, off-switch).

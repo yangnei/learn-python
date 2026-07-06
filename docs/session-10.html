@@ -64,8 +64,6 @@
 # Session 10
 ## Modules, OOP & the Pythonic Toolkit
 
-*Learn Python — Session 10 of 10 · one hour.*
-
 ---
 
 ## Modules: split your code into files
@@ -186,6 +184,137 @@ if (n := len(roster)) > 30:   # walrus := : assign + test in one step
 
 ---
 
+# Going deeper
+## Designing with objects
+
+---
+
+## `__repr__` and friends
+
+```python
+class Student:
+    def __repr__(self):                    # for developers (REPL, lists, logs)
+        return f"Student({self.name!r}, {self.gpa})"
+    def __eq__(self, other):
+        return (self.name, self.gpa) == (other.name, other.gpa)
+    def __lt__(self, other):               # "less than" — sorted() now just works
+        return self.gpa < other.gpa
+
+sorted(roster)                              # no key= needed anymore
+```
+
+Dunders make your objects behave like built-ins: printable, comparable, sortable.
+
+---
+
+## `@dataclass`, round 2
+
+```python
+from dataclasses import dataclass, field
+
+@dataclass
+class Student:
+    name: str
+    gpa: float = 0.0
+    courses: list = field(default_factory=list)   # NOT courses: list = []
+```
+
+`default_factory=list` is the mutable-default rule (Session 5!) in class form — a fresh list
+per instance. `@dataclass(frozen=True)` gives you an immutable record.
+
+---
+
+## `@classmethod`: alternate constructors
+
+```python
+@dataclass
+class Student:
+    name: str
+    score: int
+
+    @classmethod
+    def from_row(cls, row):                # a CSV row (Session 8) -> an object
+        return cls(row["name"], int(row["score"]))
+
+roster = [Student.from_row(r) for r in csv.DictReader(f)]
+```
+
+`cls` is the class itself. Pattern: **file format at the edge, objects inside**.
+
+---
+
+## Composition over inheritance
+
+```python
+class Cohort:                    # a Cohort HAS Students  (composition ✅)
+    def __init__(self, name):
+        self.students = []
+
+class GradStudent(Student):      # a GradStudent IS a Student (inheritance ✅)
+    ...
+```
+
+Inherit only for a true *is-a*. When in doubt, hold objects inside other objects —
+it stays flexible and testable.
+
+---
+
+## Class vs instance attributes — the rule
+
+```python
+class Course:
+    school = "Ed School"         # class attr: SHARED by all — constants only
+    def __init__(self):
+        self.students = []       # instance attr: each object its own
+```
+
+Mutable data goes in `__init__`, always. (You met the shared-list trap — this is the law it
+teaches.)
+
+---
+
+## Generator pipelines
+
+```python
+def to_ints(rows):
+    for r in rows:
+        try:
+            yield int(r)
+        except ValueError:
+            pass
+
+def in_range(vals, lo=1, hi=5):
+    yield from (v for v in vals if lo <= v <= hi)
+
+clean = list(in_range(to_ints(raw)))    # nothing runs until consumed
+```
+
+Each stage yields to the next — **lazy**, constant-memory, works on a million-row file.
+
+---
+
+## From script to project
+
+```text
+survey_tool/
+├── clean.py        # validation functions
+├── stats.py        # summaries
+├── report.py       # main: python3 report.py
+└── tests/test_clean.py
+```
+
+One module per concern; `report.py` imports the rest; tests alongside. You already know
+every ingredient — this is just arranging them.
+
+---
+
+## Your turn — round 2
+
+`examples/session-10/practice.md` → **In class — going deeper**:
+sortable `Student`s, a dataclass with `default_factory`, `from_row`, and a two-stage
+generator pipeline.
+---
+
 ## Traps recap
 
 - `self` is just "this instance" — not magic.
@@ -201,7 +330,7 @@ You can structure code into modules and classes and write idiomatic Python.
 
 ## Homework (before the capstone)
 
-*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-10/practice.md` → **Homework**.*
+*Outside class — it doesn't count toward class time. Full specs + solutions: `examples/session-10/practice.md` → **Homework**.*
 
 1. **`Student.courses`** — a courses list and a *computed* `gpa` — data plus the rules that guard it.
 2. **A `Cohort` class** — holds `Student`s; `mean_gpa()`, `at_risk()`.
@@ -293,6 +422,7 @@ math.students
 3. Why doesn't a module's `if __name__ == "__main__":` block run when you `import` it?
 4. `class Course: students = []` — what goes wrong when two `Course` objects enroll
    students, and what's the fix?
+5. In a dataclass, why write `courses: list = field(default_factory=list)` instead of `= []`?
 
 <details><summary>Show answers</summary>
 
@@ -300,7 +430,7 @@ math.students
 empty — a generator is exhausted after one iteration. 3. On import, `__name__` is the
 module's name, not `"__main__"`, so the block is skipped. 4. `students` is a *class*
 variable shared by every instance, so both courses see one combined list; give each its
-own in `__init__`: `self.students = []`.
+own in `__init__`: `self.students = []`. 5. A bare `[]` default would be created once and shared by every instance — the Session 5 mutable-default bug in class form; `default_factory` builds a fresh list per instance.
 
 </details>
 </script>

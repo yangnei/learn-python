@@ -7,8 +7,6 @@ paginate: true
 # Session 7
 ## Exceptions & Defensive Code
 
-*Learn Python — Session 7 of 10 · one hour.*
-
 ---
 
 ## try / except
@@ -125,6 +123,114 @@ Run: `pytest`
 
 ---
 
+# Going deeper
+## Robust programs
+
+---
+
+## The exception family tree
+
+```text
+Exception
+ ├── ValueError        ├── KeyError / IndexError (LookupError)
+ ├── TypeError         └── OSError (FileNotFoundError, ...)
+```
+
+```python
+try:
+    n = int(raw)
+except (ValueError, TypeError):   # catch a tuple of specifics
+    ...
+```
+
+**Order matters**: `except` clauses are tried top-down — specific before broad, and a final
+`except Exception as e:` only to log-and-stop, never to ignore.
+
+---
+
+## Custom exceptions that carry data
+
+```python
+class SurveyError(ValueError):
+    def __init__(self, value, message):
+        super().__init__(message)
+        self.value = value            # keep the evidence
+
+raise SurveyError(raw, f"{raw!r} is not a 1-5 rating")
+```
+
+Callers can catch `SurveyError` specifically — or `ValueError` broadly — and still see
+*which* value broke.
+
+---
+
+## `raise ... from` — keep the cause
+
+```python
+try:
+    n = int(cell)
+except ValueError as e:
+    raise SurveyError(cell, "bad rating cell") from e
+```
+
+The traceback shows **both**: your domain-level error on top, the real low-level cause
+beneath. Future-you debugging at midnight says thanks.
+
+---
+
+## `finally` and the cleanup mindset
+
+```python
+try:
+    f = open("data.csv")
+    ...
+finally:
+    f.close()        # runs no matter what happened above
+```
+
+`with open(...)` (Session 8) is exactly this pattern, packaged. Rule: whoever acquires a
+resource guarantees its release.
+
+---
+
+## `logging` beats `print` for diagnostics
+
+```python
+import logging
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+logging.info("processing %s rows", len(rows))
+logging.warning("rejected %r: out of range", raw)
+```
+
+- `print` is for the program's *output*; `logging` is for its *diary*.
+- Levels (`DEBUG/INFO/WARNING/ERROR`) let you silence chatter without deleting lines.
+
+---
+
+## pytest, round 2
+
+```python
+import pytest
+from clean import clean_likert
+
+@pytest.mark.parametrize("bad", ["3", True, None, 0, 9])
+def test_rejects(bad):
+    with pytest.raises(ValueError):
+        clean_likert(bad)
+```
+
+One test, five inputs, five reported results. Pattern: **arrange, act, assert** — and test the
+*edges* (boundaries, wrong types), not the happy middle.
+
+---
+
+## Your turn — round 2
+
+`examples/session-07/practice.md` → **In class — going deeper**:
+fix an except-order bug, build `SurveyError` with `raise ... from`, switch the rejection log
+to `logging`, and parametrize your tests.
+---
+
 ## Traps recap
 
 - **Never** bare `except:` — name the exception.
@@ -140,7 +246,7 @@ You can validate messy input and fail loudly when you should.
 
 ## Homework (before Session 8)
 
-*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-07/practice.md` → **Homework**.*
+*Outside class — it doesn't count toward class time. Full specs + solutions: `examples/session-07/practice.md` → **Homework**.*
 
 1. **`ask_int(prompt, lo, hi)`** — Session 3's validation loop rebuilt the EAFP way.
 2. **Three more pytest cases** — edge cases for `clean_likert` (`True`, `"3"`, `None`).

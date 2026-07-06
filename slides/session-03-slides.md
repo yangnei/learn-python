@@ -7,8 +7,6 @@ paginate: true
 # Session 3
 ## Control Flow: Conditionals & Loops
 
-*Learn Python — Session 3 of 10 · one hour.*
-
 ---
 
 ## Part 1 — Conditionals
@@ -124,6 +122,87 @@ while True:
 
 ---
 
+# Going deeper
+## More control flow
+
+---
+
+## The ternary — a tiny `if` in one line
+
+```python
+label = "pass" if score >= 60 else "fail"
+print(f"{name}: {'✔' if attended else '✘'}")
+```
+
+For **tiny** choices only. If it needs two reads, use a real `if`.
+
+---
+
+## `match/case` — the readable ladder (3.10+)
+
+```python
+match answer:
+    case 5 | 4:
+        label = "agree"
+    case 3:
+        label = "neutral"
+    case 1 | 2:
+        label = "disagree"
+    case _:                 # the default
+        label = "invalid"
+```
+
+When every branch compares the **same value** against literals, `match` beats an `elif` ladder.
+
+---
+
+## `for/else` — search without a flag
+
+```python
+for s in scores:
+    if s < 60:
+        print("first failing score:", s)
+        break
+else:                      # runs only if the loop did NOT break
+    print("everyone passed")
+```
+
+The `else` belongs to the `for`. No `found = False` bookkeeping needed.
+
+---
+
+## Nested loops
+
+```python
+for section in ["A", "B"]:
+    for student in roster:
+        print(section, student)
+```
+
+- Every inner pass runs per outer pass (2 × 4 = 8 lines).
+- `break` exits the **inner** loop only — to escape both, put the loops in a function and `return`.
+
+---
+
+## Name the pattern you're writing
+
+| Pattern | Skeleton |
+|---|---|
+| **accumulator** | `total = 0` … `total += x` |
+| **counter** | `n = 0` … `n += 1` |
+| **best-so-far** | `best = xs[0]` … `if x > best: best = x` |
+| **sentinel** | `while True:` … `if raw == "done": break` |
+
+Recognizing these turns "staring at a blank editor" into "picking a skeleton".
+
+---
+
+## Your turn — round 2
+
+`examples/session-03/practice.md` → **In class — going deeper**:
+a `match/case` rewrite, a `for/else` search, and best-so-far without `max()`.
+---
+
 ## Traps recap
 
 - `if x == True` → just `if x:`; use `x is None` (not `== None`).
@@ -141,7 +220,7 @@ You can branch and repeat cleanly.
 
 ## Homework (before Session 4)
 
-*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-03/practice.md` → **Homework**.*
+*Outside class — it doesn't count toward class time. Full specs + solutions: `examples/session-03/practice.md` → **Homework**.*
 
 1. **Attendance labeler** — chained comparisons + `elif` ladder on a list of percentages.
 2. **Number-guessing game** — a `while` loop with input validation and attempt counting.

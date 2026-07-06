@@ -1,9 +1,9 @@
 # Master Course Outline — Learn Python
 
 > Single source of truth. The student and teacher syllabi both derive from this.
-> **10 core one-hour sessions** + 1 optional capstone session (~10 hours core, ~12 with
-> the capstone). Every session also assigns **homework (~30–45 min)** that does *not*
-> count toward class time.
+> **10 core two-hour sessions** + 1 optional capstone session (~20 hours core, ~22 with
+> the capstone). Every session pairs a **core** hour with a **Going deeper** hour of new
+> material, and assigns **homework (~30–45 min)** that does *not* count toward class time.
 
 ## How the topics are sequenced
 
@@ -30,14 +30,16 @@ The power-tools (comprehensions, generators, `*args`, type hints, the walrus) ar
 into the sessions where they naturally belong, not saved for the end.
 
 ## Design rules (from the e-learning pipeline)
-- **Every session = one hour = one topic**, run **warm-up → concept → live example →
-  practice → recap + quiz**, with practice protected (~25 min hands-on in every hour).
+- **Every session = two hours = one topic, twice as deep**: warm-up → core concept →
+  live example → practice → **break** → going-deeper concept → live example → practice →
+  recap + quiz. The second hour is **new material** (never overflow practice); the two
+  practice blocks total ~30 min of protected hands-on time.
 - Every session assigns **homework** (in `examples/session-NN/practice.md` →
   *Homework*): ~30–45 min outside class, solutions included, reviewed in the next
-  session's warm-up. Each practice file also carries an **Extra practice** block for
-  fast finishes — in-class stretch material, not extra talking.
-- Every session has 2–3 learning objectives; every objective is testable in that
-  session's quiz.
+  session's warm-up. The practice file's **In class — going deeper** block belongs to
+  the second hour.
+- Every session has 3–5 learning objectives across its core and going-deeper halves;
+  every objective is testable in that session's quiz.
 - Every abstract idea ships with a runnable, education-flavored example.
 - Difficulty rises monotonically; nothing is used before it's introduced (except
   clearly-flagged teasers).
@@ -53,6 +55,8 @@ into the sessions where they naturally belong, not saved for the end.
 3. Do I/O with `input()`/`print()`, f-strings, and `int()`/`float()`/`str()` casting —
    and remember `input()` is *always* a `str`.
 
+**Going deeper (second hour):** the full operator set (`// % **`), string methods,
+aligned f-strings, `import math`, `help()`/`dir()`, naming conventions.
 **Trap focus:** `input()` returns text (`"5" + "3"` is `"53"`); `int(3.9)` truncates;
 `print(a, b)` vs `print(a + b)`.
 **Homework:** unit converter; traceback drill; type-prediction table.
@@ -70,6 +74,8 @@ into the sessions where they naturally belong, not saved for the end.
 
 **Why it leads:** front-loading the traps — right after the types they concern — means
 every later session can assume the fluency.
+**Going deeper (second hour):** `None` semantics, the conversion matrix, `nan`/`inf`,
+mutable vs immutable + `id()`, exact arithmetic with `Decimal`.
 **Trap focus:** the ~18-trap predict-then-run gauntlet *is* the session.
 **Homework:** trap journal (5 traps in your own words); `approx_equal`; `is_missing`.
 
@@ -85,6 +91,8 @@ every later session can assume the fluency.
    off-by-one; run the `while True:` validation loop.
 3. Iterate Pythonically with `enumerate`/`zip` instead of `range(len(...))`.
 
+**Going deeper (second hour):** the ternary, `match/case`, `for/else`, nested loops,
+the named loop patterns (accumulator, counter, best-so-far, sentinel).
 **Trap focus:** `if x == True`; `range(1,5)` excludes 5; mutating a list while iterating
 it; `range(len(...))`.
 **Homework:** attendance labeler (boundary testing); number-guessing game; leap-year
@@ -100,6 +108,8 @@ checker.
 2. Build list/dict **comprehensions**; sort with `sorted(key=…)`.
 3. Reason about **mutability & aliasing** (copy vs reference, `[[0]*3]*3` shared rows).
 
+**Going deeper (second hour):** unpacking, dict power methods, `Counter`/`defaultdict`,
+full set algebra, multi-key sorting, `copy` vs `deepcopy`.
 **Trap focus:** aliasing (`b = a` shares the list); `.sort()` returns `None`;
 `dict.get()` vs `KeyError`; the shared-row grid.
 **Homework:** gradebook dict drill; frequency counter; fix-the-grid.
@@ -114,6 +124,8 @@ checker.
 2. Explain scope (LEGB) and dodge the `UnboundLocalError`/`global` trap.
 3. Document with docstrings and **type hints** (and know hints aren't enforced).
 
+**Going deeper (second hour):** functions as values, closures, a first decorator,
+keyword-only arguments, doctests.
 **Trap focus:** the **mutable default argument** bug; forgetting to `return`; assigning
 to a global inside a function.
 **Homework:** a tiny stats library; `mean_ignoring_none(*values)`; scope-prediction
@@ -131,6 +143,8 @@ drill.
 3. Apply recursion to **naturally nested data** (nested lists/dicts/JSON) where one loop
    is awkward.
 
+**Going deeper (second hour):** memoization (`@functools.cache`), binary search,
+tree-shaped data, the explicit-stack escape from the recursion limit.
 **Trap focus:** an unreachable base case → stack overflow; forgetting to `return` the
 recursive call.
 **Homework:** `sum_digits`; `deep_count` on a nested gradebook; loop-vs-recursion
@@ -148,6 +162,8 @@ paragraph.
 3. Use `assert` for developer checks (never input validation) and write a first `pytest`
    test.
 
+**Going deeper (second hour):** the exception hierarchy & handler order, custom
+exceptions that carry data, `raise ... from`, `logging`, parametrized tests.
 **Trap focus:** bare `except:`; swallowing errors; `assert` ≠ validation.
 **Homework:** `ask_int` (EAFP validation loop); three more pytest cases; error triage.
 
@@ -163,6 +179,8 @@ paragraph.
 3. `import` the researcher's stdlib (`statistics`, `datetime`, `pathlib`),
    `pip install` a package, and meet `pandas` in a guided teaser.
 
+**Going deeper (second hour):** `pathlib`, encodings, `csv.reader` vs `DictReader`,
+JSON for nested data, `datetime`, seeded `random`, the extended pandas teaser.
 **Trap focus:** `"w"` silently overwrites; forgotten `newline=""`; reading a file twice;
 CSV values are strings.
 **Homework:** attendance-report pipeline; JSON round-trip; run the pipeline on your own
@@ -177,6 +195,8 @@ CSV.
 2. Use `re.search`/`fullmatch`/`findall`/`sub` to validate, extract (capture groups),
    and clean real research text.
 
+**Going deeper (second hour):** flags, `re.compile`, `re.VERBOSE`, named groups,
+greedy vs lazy, `re.sub` with a function replacement, regex over files.
 **Trap focus:** forgetting `r"..."`; `.` matches any char; `re.search` returns `None` —
 guard before `.group()`.
 **Homework:** pattern drill (IDs, phones, dates); messy-name cleanup; domain harvest.
@@ -193,6 +213,9 @@ guard before `.group()`.
 3. Apply the **Pythonic toolkit**: comprehensions, `map`/`filter`, generators/`yield`,
    the walrus `:=`.
 
+**Going deeper (second hour):** `__repr__`/`__eq__`/`__lt__`, dataclasses with
+`default_factory`, `@classmethod` constructors, composition vs inheritance,
+generator pipelines, project layout.
 **Trap focus:** `self` confusion; a generator exhausts after one pass; the shared class
 variable; over-using a class where a function/dict fits.
 **Homework:** `Student` with computed GPA; a `Cohort` class; Pythonic rewrite of three
@@ -226,7 +249,7 @@ students, and write a report CSV. Alternative briefs are listed in
 | Power-tools (comprehensions, `*args`, type hints, generators, `map`/`filter`, walrus) | S4, S5, S10 |
 
 ## Scaling to the time budget
-- **~8 hours:** merge S1+S2 and S3+S4 into two fast 90-minute sessions (he's quick) and
-  trim the S10 toolkit tour and the S8 `pandas`/`json` teaser.
-- **~10 hours:** run S1–S10 as written, one hour each (recommended).
-- **~12 hours:** add the S11 capstone.
+- **~14–16 hours:** keep every core hour; trim each Going-deeper block to its two or
+  three starred essentials (each session's *cut line* names them).
+- **~20 hours:** run S1–S10 as written, two hours each (recommended).
+- **~22 hours:** add the S11 capstone.

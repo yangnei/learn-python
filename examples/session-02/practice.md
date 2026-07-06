@@ -41,7 +41,7 @@ print(x == y, x is y)                # -> True False   (equal value, different o
 print(float("nan") == float("nan"))  # -> False        (NaN equals nothing, not even itself)
 ```
 
-## Extra practice (in class, if you're ahead)
+## In class — going deeper (second hour)
 
 ### E1 — isinstance drill
 Predict each, then run:
@@ -57,9 +57,23 @@ isinstance(3, (int, float))
 Without running: after `a = [1, 2]; b = [1, 2]; c = a`, what are `a == b`, `a is b`,
 `a is c`? Now `c.append(3)` — what is `a`? Run and check all four.
 
+### D1 — Conversion-matrix predictions
+Predict each, then run: `int("42")` · `int("4.2")` · `float("4.2")` · `int(4.9)` ·
+`int(float("4.2"))` · `str(4.2) + "!"` · `bool("False")`.
+
+### D2 — `Decimal` re-run
+Show that `Decimal("0.1") + Decimal("0.2") == Decimal("0.3")` where floats said False —
+and check the grade weights: does `0.1 + 0.2 + 0.3 == 0.6` fix itself with `Decimal`?
+Why must you build Decimals from **strings**?
+
+### D3 — `describe(x)`
+Return `"missing"` for `None`, `"empty"` for `""`, `"zero"` for `0`/`0.0` (but **not**
+`False`), else `"value"`. Prove it on `[None, "", 0, 0.0, False, "0", 5]`.
+(Careful: `False == 0` — Session 2's own trap. What tool tells them apart?)
+
 ## Homework (before Session 3)
 
-*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
+*~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
 ### H1 — Trap journal
 From today's ~18 traps, pick the **five** that surprised you most. For each, write down:
@@ -106,7 +120,7 @@ for v in [87, 87.0, "87", "eighty", 120, True]:
 Key lesson: `float(True)` is `1.0`, so without the explicit bool check a flag would
 pass as a valid score. This is the `bool ⊂ int` trap in a real function.
 
-### Extra practice
+### In class — going deeper
 
 ```python
 # E1
@@ -121,6 +135,39 @@ a == b   # True  — same values
 a is b   # False — two separate list objects
 a is c   # True  — c is another label on a's object
 # after c.append(3): a == [1, 2, 3] — mutating through c shows through a
+```
+
+```python
+# D1
+int("42")          # 42
+# int("4.2")       -> ValueError — int() parses integer text only
+float("4.2")       # 4.2
+int(4.9)           # 4  (truncates)
+int(float("4.2"))  # 4  (the two-step)
+str(4.2) + "!"     # '4.2!'
+bool("False")      # True — any non-empty string is truthy!
+
+# D2
+from decimal import Decimal
+print(Decimal("0.1") + Decimal("0.2") == Decimal("0.3"))                    # True
+print(Decimal("0.1") + Decimal("0.2") + Decimal("0.3") == Decimal("0.6"))   # True
+# From strings, because Decimal(0.1) would copy the float's binary error in.
+
+# D3
+def describe(x):
+    if x is None:
+        return "missing"
+    if x == "":
+        return "empty"
+    if isinstance(x, bool):        # bool ⊂ int — check the flag FIRST
+        return "value"
+    if isinstance(x, (int, float)) and x == 0:
+        return "zero"
+    return "value"
+
+for v in [None, "", 0, 0.0, False, "0", 5]:
+    print(repr(v), "->", describe(v))
+# None missing · "" empty · 0 zero · 0.0 zero · False value · "0" value · 5 value
 ```
 
 ### Homework

@@ -1,19 +1,20 @@
 # Learn Python — Student Syllabus
 
-Welcome. This is a fast, ~10-hour path (**ten one-hour sessions**, plus an optional
+Welcome. This is a fast, ~20-hour path (**ten two-hour sessions**, plus an optional
 capstone) from "never coded" to "I can write a real Python program to wrangle my research
 data." It's re-ordered for you and front-loaded with the language quirks that trip people
 up.
 
-**How each 1-hour session runs:** a 5-minute warm-up on last time's traps and homework,
-then Concept (≈20 min) → I code, you watch (≈12 min) → **you code (≈18 min)** → recap +
-quiz (5 min). The practice is the biggest block on purpose — you learn by typing. You
-will *type every example yourself*.
+**How each 2-hour session runs:** a 5-minute warm-up on last time's traps and homework,
+then the **core** of the topic (concept → I code, you watch → **you code**), a short
+break, then **Going deeper** — a second hour of genuinely new material on the same topic,
+with its own live examples and its own practice round — and a recap + quiz to close.
+You will *type every example yourself*.
 
 **Homework:** every session assigns ~30–45 minutes of homework (the **Homework** section
 of that session's `practice.md`). It does **not** count toward class time, solutions are
-included, and the next session's warm-up starts from it. If you finish in-class practice
-early, each practice file also has an **Extra practice** block.
+included, and the next session's warm-up starts from it. The **In class — going deeper**
+section of each practice file belongs to the session's second hour.
 
 **What you need:** Python 3.11+, VS Code (or any editor), and this folder. Open the
 matching `slides/`, `examples/`, and `cheatsheets/` file for each session. (A full
@@ -22,7 +23,7 @@ matching `slides/`, `examples/`, and `cheatsheets/` file for each session. (A fu
 
 ---
 
-## The 10 sessions (1 hour each, + homework)
+## The 10 sessions (2 hours each, + homework)
 
 | # | Title | You'll be able to… |
 |---|---|---|

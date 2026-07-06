@@ -30,7 +30,7 @@ print(f(1, b=2))                     # -> (1, 2)
 print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into arguments)
 ```
 
-## Extra practice (in class, if you're ahead)
+## In class — going deeper (second hour)
 
 ### E1 — Keyword-only
 Rewrite `letter_grade(score, plus_minus)` so that `plus_minus` **must** be passed by
@@ -41,9 +41,25 @@ keyword (`letter_grade(95, plus_minus=True)`); calling it positionally should ra
 Give `pass_rate` a docstring that states what it returns, what `passing` means, and one
 usage example. One short paragraph, no fluff.
 
+### D1 — Your own `map`
+Write `apply_to_all(func, values)` returning a new list with `func` applied to each value.
+Test with `abs` and with a lambda that curves by +5.
+
+### D2 — A function factory
+Write `make_curver(bonus)` returning a function that adds `bonus`, capped at 100. Build a
+`gentle = make_curver(5)` and a `strict = make_curver(1)` and show they differ.
+
+### D3 — A first decorator
+Write `@announce` that prints `calling <name> with <args>` before running the wrapped
+function. Decorate your `letter_grade` and call it.
+
+### D4 — A doctest
+Add a docstring with two `>>>` examples to `class_average`, then run
+`python -m doctest your_file.py -v` and watch them pass.
+
 ## Homework (before Session 6)
 
-*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
+*~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
 ### H1 — A tiny stats library
 Three functions, each with a docstring and type hints:
@@ -112,7 +128,7 @@ print(summary(91, 58, 73))
 print(summary(*[91, 58, 73]))
 ```
 
-### Extra practice
+### In class — going deeper
 
 ```python
 # E1
@@ -127,6 +143,52 @@ def pass_rate(scores, passing=60):
 
     `passing` is the cutoff, 60 by default: pass_rate([70, 50, 90]) -> 0.66...
     """
+```
+
+```python
+# D1
+def apply_to_all(func, values):
+    return [func(v) for v in values]
+
+print(apply_to_all(abs, [-3, 4, -5]))                 # [3, 4, 5]
+print(apply_to_all(lambda s: min(s + 5, 100), [58, 97]))   # [63, 100]
+
+# D2
+def make_curver(bonus):
+    def curve(score):
+        return min(score + bonus, 100)
+    return curve
+
+gentle, strict = make_curver(5), make_curver(1)
+print(gentle(96), strict(96))    # 100 97
+
+# D3
+def announce(f):
+    def wrapper(*args, **kwargs):
+        print(f"calling {f.__name__} with {args}")
+        return f(*args, **kwargs)
+    return wrapper
+
+@announce
+def letter_grade(score):
+    for cutoff, letter in [(90, "A"), (80, "B"), (70, "C"), (60, "D")]:
+        if score >= cutoff:
+            return letter
+    return "F"
+
+print(letter_grade(85))          # calling letter_grade with (85,)  ->  B
+
+# D4
+def class_average(scores):
+    """Mean of scores.
+
+    >>> class_average([90, 80, 70])
+    80.0
+    >>> class_average([100])
+    100.0
+    """
+    return sum(scores) / len(scores)
+# python -m doctest your_file.py -v  ->  2 passed.
 ```
 
 ### Homework

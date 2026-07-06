@@ -35,7 +35,7 @@ print(s)                             # -> {"n": 3, "ok": true}   (Python True ->
 print(json.loads(s)["ok"])           # -> True                   (and back to a Python bool)
 ```
 
-## Extra practice (in class, if you're ahead)
+## In class — going deeper (second hour)
 
 ### E1 — One more column
 Extend the survey summary: add a `pct_valid` column (share of rows with a usable value),
@@ -45,9 +45,25 @@ formatted to one decimal.
 With `from pathlib import Path`: does `students.csv` exist? How many bytes is it
 (`.stat().st_size`)? List every `.csv` in this folder (`.glob`).
 
+### D1 — pathlib inventory
+List every `.csv` in this folder with its size in bytes, one aligned line each, using
+`Path(".").glob` and `.stat().st_size`.
+
+### D2 — Date math
+Parse `"2026-01-05"` and `"2026-07-06"` with `strptime`, print the number of days between
+them, and print the first date as `Jan 05, 2026` with `strftime`.
+
+### D3 — A reproducible sample
+Seed with `random.seed(42)`, then `random.sample` 3 names from the students in
+`students.csv`. Run it twice — same three? Why does a methods section care?
+
+### D4 — CSV → JSON
+Read `students.csv` into a list of dicts with **int** scores, and write it to
+`students.json` with `indent=2`. Open the file: what happened to the quotes and numbers?
+
 ## Homework (before Session 9)
 
-*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
+*~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
 ### H1 — Attendance report (the whole pipeline)
 Create `attendance.csv` yourself: a `name` column plus five `s1..s5` columns of 0/1, about
@@ -90,7 +106,7 @@ def to_int(x):
 Trap: opening with `"w"` **truncates the file to empty immediately** — your data is gone
 before you ever read it. Use `"r"` (the default) to read.
 
-### Extra practice
+### In class — going deeper
 
 ```python
 # E1 — inside the loop over survey items
@@ -107,6 +123,35 @@ p = Path("students.csv")
 print(p.exists())                      # True (in this folder)
 print(p.stat().st_size)                # size in bytes
 print(sorted(Path(".").glob("*.csv"))) # every CSV here
+```
+
+```python
+# D1
+from pathlib import Path
+for p in sorted(Path(".").glob("*.csv")):
+    print(f"{p.name:<24}{p.stat().st_size:>8,} bytes")
+
+# D2
+from datetime import datetime
+a = datetime.strptime("2026-01-05", "%Y-%m-%d")
+b = datetime.strptime("2026-07-06", "%Y-%m-%d")
+print((b - a).days)                    # 182
+print(a.strftime("%b %d, %Y"))         # Jan 05, 2026
+
+# D3
+import csv, random
+with open("students.csv", newline="", encoding="utf-8") as f:
+    names = [r["name"] for r in csv.DictReader(f)]
+random.seed(42)
+print(random.sample(names, 3))         # same 3 every run — the seed pins the RNG,
+                                       # so your "random" sample is reproducible.
+
+# D4
+import json
+with open("students.csv", newline="", encoding="utf-8") as f:
+    rows = [{**r, "score": int(r["score"])} for r in csv.DictReader(f)]
+Path("students.json").write_text(json.dumps(rows, indent=2))
+# In the file: keys/strings get double quotes, scores sit bare (real JSON numbers).
 ```
 
 ### Homework

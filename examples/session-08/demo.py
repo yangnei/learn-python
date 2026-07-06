@@ -80,3 +80,26 @@ print("wrote survey_summary.csv")
 # --- 6. pathlib: discover files without hard-coding names ---------------
 csvs = sorted(p.stem for p in HERE.glob("*.csv"))   # .stem = filename without extension
 print("\nCSV files here:", csvs)
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: csv.reader vs DictReader -------------------------------------------
+print("\n=== GOING DEEPER ===")
+with open(HERE / "students.csv", newline="", encoding="utf-8") as f:
+    first_rows = list(csv.reader(f))[:2]
+print("csv.reader gives LISTS:", first_rows)   # row 0 is the header itself
+
+# --- deeper 2: datetime — dates are data too ---------------------------------------
+from datetime import date, datetime
+enrolled = datetime.strptime("2026-01-05", "%Y-%m-%d").date()
+today = date(2026, 7, 6)
+print("enrolled:", enrolled.strftime("%b %d, %Y"), "->", (today - enrolled).days, "days ago")
+
+# --- deeper 3: random, reproducibly -------------------------------------------------
+import random
+random.seed(42)                          # same "random" numbers every run
+names = ["Ana", "Ben", "Cara", "Dev", "Eve"]
+print("reproducible sample of 2:", random.sample(names, 2))
+random.seed(42)
+print("run it again, same seed :", random.sample(names, 2))

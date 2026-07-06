@@ -39,7 +39,7 @@ print({1, 2, 3} & {2, 3, 4})         # -> {2, 3}            (set intersection)
 print(list(zip(*[(1, 2), (3, 4)])))  # -> [(1, 3), (2, 4)]  (transpose)
 ```
 
-## Extra practice (in class, if you're ahead)
+## In class — going deeper (second hour)
 
 ### E1 — Slicing drill
 With `xs = list(range(10))`, predict:
@@ -49,9 +49,25 @@ With `xs = list(range(10))`, predict:
 `fall = {"Ana", "Ben", "Cara"}`, `spring = {"Ben", "Dev"}` — who attended both terms?
 either term? only fall? (`&`, `|`, `-`)
 
+### D1 — `Counter` in one line
+Redo the answer tally (`["yes", "no", "yes", "maybe", "yes", "no"]`) with
+`collections.Counter`, and print the top answer with `.most_common(1)`.
+
+### D2 — Group with `defaultdict`
+Group `roster` (list of dicts with `major`) into `{major: [names]}` using
+`collections.defaultdict(list)`.
+
+### D3 — Multi-key sort
+Sort `[("Ana", 91), ("Ben", 73), ("Cara", 91)]` by score **descending**, ties by name
+**ascending** — one `sorted()` call with a tuple key.
+
+### D4 — Dedupe, order kept
+From `["B", "A", "B", "C", "A"]` produce `["B", "A", "C"]` (first-seen order). Why does
+plain `set()` not guarantee this?
+
 ## Homework (before Session 5)
 
-*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
+*~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
 ### H1 — Gradebook dict drill
 Start from `gradebook = {"Ana": 91, "Ben": 58}`. Then: add Cara (73); Ben resubmits
@@ -98,7 +114,7 @@ roster.append({"name": "Eve", "score": 80})
 b = copy.deepcopy(roster)        # changes to roster no longer touch b
 ```
 
-### Extra practice
+### In class — going deeper
 
 ```python
 xs = list(range(10))
@@ -113,6 +129,29 @@ xs[5:2:-1]  # [5, 4, 3]          (backward, stop excluded)
 fall & spring   # {'Ben'}            — both terms
 fall | spring   # all four names     — either term
 fall - spring   # {'Ana', 'Cara'}    — only fall
+```
+
+```python
+# D1
+from collections import Counter
+counts = Counter(["yes", "no", "yes", "maybe", "yes", "no"])
+print(counts, counts.most_common(1))   # Counter({'yes': 3, ...}) [('yes', 3)]
+
+# D2
+from collections import defaultdict
+by_major = defaultdict(list)
+for s in roster:
+    by_major[s["major"]].append(s["name"])
+
+# D3
+pairs = [("Ana", 91), ("Ben", 73), ("Cara", 91)]
+print(sorted(pairs, key=lambda p: (-p[1], p[0])))
+# [('Ana', 91), ('Cara', 91), ('Ben', 73)] — negative flips score, name breaks the tie
+
+# D4
+xs = ["B", "A", "B", "C", "A"]
+print(list(dict.fromkeys(xs)))   # ['B', 'A', 'C'] — dicts remember insertion order;
+                                 # a set has no order to keep
 ```
 
 ### Homework

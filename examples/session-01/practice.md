@@ -33,7 +33,7 @@ print("CS50".lower(), "  hi ".strip())   # -> cs50 hi
 print("@" in "ana@uni.edu", len("data")) # -> True 4   (membership + length)
 ```
 
-## Extra practice (in class, if you're ahead)
+## In class — going deeper (second hour)
 
 ### E1 — f-string formatting drill
 Given `pi = 3.14159265`, `n = 9876543`, `rate = 0.4567`, print exactly:
@@ -42,9 +42,21 @@ Given `pi = 3.14159265`, `n = 9876543`, `rate = 0.4567`, print exactly:
 ### E2 — Weeks enrolled
 Extend `age.py`: also report the age in **weeks** (52 per year), with a thousands separator.
 
+### D1 — Aligned gradebook lines
+Print three students (`name, score, rate`) as aligned columns: name left-padded to 10,
+score right-aligned with 1 decimal, rate as a percent. All three lines must line up.
+
+### D2 — Name normalizer
+Turn `"  aDA lovelace "` into `"Ada Lovelace"` by *chaining* string methods, then report
+`len()` of the result and whether it `.startswith("Ada")`.
+
+### D3 — Whole units + remainder
+1. Convert 130 minutes into `2 h 10 min` using `//` and `%`.
+2. Assign student IDs `[101, 102, 103, 104, 105, 106]` to discussion groups 0/1/2 with `%`.
+
 ## Homework (before Session 2)
 
-*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
+*~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
 ### H1 — Unit converter (`convert.py`)
 Ask for a distance in miles (may be a decimal). Print kilometers (`× 1.60934`) to 2
@@ -87,7 +99,7 @@ a = int(input("a: ")); b = int(input("b: "))
 print(a + b)          # 5
 ```
 
-### Extra practice
+### In class — going deeper
 
 ```python
 pi, n, rate = 3.14159265, 9876543, 0.4567
@@ -99,6 +111,22 @@ print(f"{pi = }")         # pi = 3.14159265
 # E2
 age = int(input("Age: "))
 print(f"That's about {age * 52:,} weeks.")
+```
+
+```python
+# D1
+for name, score, rate in [("Ana", 91.456, 0.873), ("Ben", 58.0, 0.412), ("Cara", 73.2, 0.65)]:
+    print(f"{name:<10}{score:>8.1f}{rate:>8.1%}")
+
+# D2
+clean = "  aDA lovelace ".strip().title()
+print(clean, len(clean), clean.startswith("Ada"))   # Ada Lovelace 12 True
+
+# D3
+minutes = 130
+print(f"{minutes // 60} h {minutes % 60} min")      # 2 h 10 min
+for sid in [101, 102, 103, 104, 105, 106]:
+    print(sid, "-> group", sid % 3)
 ```
 
 ### Homework

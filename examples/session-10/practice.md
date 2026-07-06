@@ -48,7 +48,7 @@ def head(v):
 print(head([9, 8]), head(5))         # -> 9 None
 ```
 
-## Extra practice (in class, if you're ahead)
+## In class — going deeper (second hour)
 
 ### E1 — The guard, observed
 Add `print("running as", __name__)` to the top of `grades.py`. Run the file directly,
@@ -58,9 +58,26 @@ then `import grades` from the REPL — what prints each time, and why?
 Rebuild the plain (non-validating) `Student` as a `@dataclass`. What do you get for free?
 Check `repr` and `==` on two equal students.
 
+### D1 — Sortable students
+Give `Student` a `__repr__`, `__eq__`, and `__lt__` (by gpa) so that `sorted(roster)`
+works with **no** `key=`. Prove it.
+
+### D2 — `dataclass` done right
+Write `@dataclass class Course: name: str; roster: list = field(default_factory=list)`.
+Why would `roster: list = []` be wrong — and which Session 5 bug is this the class-shaped
+version of?
+
+### D3 — `from_row`
+Add `Student.from_row(cls, row)` building a `Student` from a CSV `DictReader` row
+(convert types!). Why is a `@classmethod` the right home for this?
+
+### D4 — A two-stage pipeline
+Write generators `to_ints(cells)` (skip unparseable) and `in_range(vals, lo=1, hi=5)`;
+chain them over `["5", "3", "N/A", "7", "1"]`. When does any work actually happen?
+
 ## Homework (before the capstone)
 
-*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
+*~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
 ### H1 — Courses and a computed GPA
 Extend `Student`: a `courses` list of `(name, grade_points)` tuples, an
@@ -125,7 +142,7 @@ Task 1: the `__name__` guard is only `"__main__"` when the file is **run directl
 its `__name__` is `"grades"`, so the demo block is skipped — that's how a file can be both a
 runnable script and an importable module.
 
-### Extra practice
+### In class — going deeper
 
 ```python
 # E1
@@ -142,6 +159,59 @@ class Student:
 
 # Free: __init__, a readable __repr__, and field-by-field __eq__:
 print(Student("Ana", 3.9) == Student("Ana", 3.9))   # True
+```
+
+```python
+# D1
+class Student:
+    def __init__(self, name, gpa):
+        self.name = name
+        self.gpa = gpa
+    def __repr__(self):
+        return f"Student({self.name!r}, {self.gpa})"
+    def __eq__(self, other):
+        return (self.name, self.gpa) == (other.name, other.gpa)
+    def __lt__(self, other):
+        return self.gpa < other.gpa
+
+roster = [Student("Ana", 3.9), Student("Ben", 1.8), Student("Cara", 3.2)]
+print(sorted(roster))    # Ben, Cara, Ana — __lt__ told sorted() how
+
+# D2
+from dataclasses import dataclass, field
+
+@dataclass
+class Course:
+    name: str
+    roster: list = field(default_factory=list)
+# `roster: list = []` would share ONE list across every Course — the mutable-default
+# bug from Session 5, in class form. default_factory makes a fresh list per instance.
+
+# D3
+@dataclass
+class Student2:
+    name: str
+    score: int
+
+    @classmethod
+    def from_row(cls, row):
+        return cls(row["name"], int(row["score"]))
+# It constructs an instance of the class itself, so it belongs to the CLASS (cls),
+# not to any one object — the "alternate constructor" pattern.
+
+# D4
+def to_ints(cells):
+    for c in cells:
+        try:
+            yield int(c)
+        except ValueError:
+            pass
+
+def in_range(vals, lo=1, hi=5):
+    yield from (v for v in vals if lo <= v <= hi)
+
+pipeline = in_range(to_ints(["5", "3", "N/A", "7", "1"]))
+print(list(pipeline))    # [5, 3, 1] — nothing ran until list() pulled values through
 ```
 
 ### Homework

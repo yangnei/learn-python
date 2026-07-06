@@ -69,3 +69,40 @@ def to_valid_score(raw):
     return int(raw) if raw.isdigit() and 0 <= int(raw) <= 100 else None
 
 print("\nvalidation:", [to_valid_score(x) for x in ["150", "abc", "84"]])  # None,None,84
+
+# ==========================================================================
+# GOING DEEPER — second-hour material
+# ==========================================================================
+# --- deeper 1: the ternary -------------------------------------------------
+print("\n=== GOING DEEPER ===")
+score = 72
+label = "pass" if score >= 60 else "fail"
+print("ternary:", label)
+
+# --- deeper 2: match/case (3.10+) ------------------------------------------
+def likert_label(answer):
+    match answer:
+        case 5 | 4:
+            return "agree"
+        case 3:
+            return "neutral"
+        case 1 | 2:
+            return "disagree"
+        case _:
+            return "invalid"
+
+for a in [5, 3, 1, 9]:
+    print("match/case:", a, "->", likert_label(a))
+
+# --- deeper 3: nested loops ------------------------------------------------
+for section in ["A", "B"]:
+    for name in ["Ana", "Ben"]:
+        print(f"  section {section}: {name}")
+
+# --- deeper 4: best-so-far (max by hand) ------------------------------------
+scores = [73, 91, 58, 84]
+best = scores[0]
+for s in scores[1:]:
+    if s > best:
+        best = s
+print("best-so-far:", best, "(same as max():", max(scores), ")")

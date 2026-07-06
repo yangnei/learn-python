@@ -91,8 +91,8 @@ def practice_cells(tasks: str, solution: str) -> list[dict]:
     """The practice block: tasks (in-class + extra + homework), scratch cell, solutions."""
     cells = [
         md("## Now you try\n\n"
-           "The **In class** tasks first; **Extra practice** if you're ahead; **Homework** "
-           "before the next session.\n\n" + tasks),
+           "The **In class** tasks first, **In class — going deeper** in the second hour, "
+           "and **Homework** before the next session.\n\n" + tasks),
         code("# Your practice work — type here. Predict before you run.\n"),
     ]
     if solution:

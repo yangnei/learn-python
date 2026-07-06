@@ -64,8 +64,6 @@
 # Session 5
 ## Functions, Scope & Reusability
 
-*Learn Python — Session 5 of 10 · one hour.*
-
 ---
 
 ## Defining & calling
@@ -189,6 +187,109 @@ Type hints document intent. **They are NOT enforced at runtime** (`mypy` checks 
 
 ---
 
+# Going deeper
+## Functions as values
+
+---
+
+## Functions are objects
+
+```python
+f = letter_grade            # no () — the function itself
+f(85)                       # "B"
+sorted(roster, key=grade_of)          # you've been passing functions since Session 4
+stats = {"mean": class_average, "max": max}
+stats["mean"]([91, 58, 73])           # dispatch by name
+```
+
+`key=lambda …` was never magic — you were handing `sorted` a function.
+
+---
+
+## `lambda`, honestly
+
+```python
+lambda s: s["score"]        # one expression, no statements, no docstring
+```
+
+Perfect as a throwaway `key=`. The moment it needs a second line or a name to be
+understood — promote it to `def`.
+
+---
+
+## Closures: functions that remember
+
+```python
+def make_curver(bonus):
+    def curve(score):
+        return min(score + bonus, 100)
+    return curve             # a function, with `bonus` baked in
+
+gentle = make_curver(5)
+harsh_year = make_curver(2)
+gentle(96)                   # 100
+```
+
+A **factory** for functions. (The lambda-in-a-loop trap earlier is this — capture happens by
+variable, not by value.)
+
+---
+
+## A first decorator
+
+```python
+def announce(f):
+    def wrapper(*args, **kwargs):
+        print(f"calling {f.__name__}{args}")
+        return f(*args, **kwargs)
+    return wrapper
+
+@announce                    # sugar for: curve = announce(curve)
+def curve(score):
+    return min(score + 5, 100)
+```
+
+A decorator **wraps** a function with extra behavior. You'll *use* them constantly
+(`@property`, `@cache`, `@pytest.mark...`) — now you know what the `@` does.
+
+---
+
+## Locking the call signature
+
+```python
+def curve(scores, *, bonus=5):     # everything after * is keyword-only
+    ...
+curve(xs, bonus=3)     # ✅ self-documenting
+curve(xs, 3)           # 💥 TypeError — no mystery positional flags
+```
+
+Keyword-only arguments make call sites readable a month later.
+
+---
+
+## Docstrings that test themselves
+
+```python
+def class_average(scores):
+    """Mean of scores.
+
+    >>> class_average([90, 80, 70])
+    80.0
+    """
+    return sum(scores) / len(scores)
+```
+
+`python -m doctest grades.py` runs every `>>>` example and complains on mismatch —
+documentation that can't silently rot.
+
+---
+
+## Your turn — round 2
+
+`examples/session-05/practice.md` → **In class — going deeper**:
+your own `apply_to_all`, a curve factory, an `@announce` decorator, and a doctest.
+---
+
 ## Traps recap
 
 - Mutable default arg → use `None`.
@@ -204,7 +305,7 @@ You can write reusable, documented, reproducible functions.
 
 ## Homework (before Session 6)
 
-*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-05/practice.md` → **Homework**.*
+*Outside class — it doesn't count toward class time. Full specs + solutions: `examples/session-05/practice.md` → **Homework**.*
 
 1. **A tiny stats library** — `validate_score`, `curve`, `summarize`, with docstrings + type hints.
 2. **`mean_ignoring_none(*values)`** — `*args` meets data cleaning.
@@ -285,6 +386,7 @@ Closures capture the VARIABLE `score`, not its value; by call time the loop has 
    runtime?
 4. `count = 0` at top level, then inside a function `count = count + 1` — what error, and
    why?
+5. In one sentence: what does a decorator do, and what is `@d` above a `def f` sugar for?
 
 <details><summary>Show answers</summary>
 
@@ -292,7 +394,7 @@ Closures capture the VARIABLE `score`, not its value; by call time the loop has 
 2. The default list is created once, at `def` time, and persists across calls; use
 `items=None` then create inside. 3. `None`; and no — hints are documentation (`mypy`
 checks them optionally). 4. `UnboundLocalError` — the assignment makes `count` local to
-the function, so the right-hand side reads a local that doesn't exist yet.
+the function, so the right-hand side reads a local that doesn't exist yet. 5. It wraps a function with extra behavior; `@d` is exactly `f = d(f)`.
 
 </details>
 </script>
