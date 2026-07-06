@@ -1,134 +1,167 @@
-# Session 5 — Practice: Regex, Modules & OOP
+# Session 5 — Practice: Functions, Scope & Reusability
 
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
+Type each solution yourself. **Predict every output before you run it.** Solutions at the bottom.
 
-## Part A — Regular Expressions & Text Cleaning
+## In class
 
-Always use raw strings `r"..."`. Predict each result before running.
+### Task 1 — Grade-functions module
+Write three functions with docstrings and type hints:
+- `class_average(scores: list[float]) -> float`
+- `letter_grade(score: float) -> str`  (reuse Session 3)
+- `pass_rate(scores: list[float], passing: float = 60) -> float`  (fraction passing, 0–1)
 
-### Task 1 — Validate
-Write `valid_university_email(addr)` returning `True` only for `something@something.edu`.
-Test: `"ana@university.edu"`, `"ana@gmail.com"`, `"a@b.edu.evil.com"`.
+Use bool-summing for `pass_rate` (recall `sum(s >= passing for s in scores)`).
 
-### Task 2 — Extract with groups
-From `"Course ED1234 meets Tue"`, pull the department (`ED`) and number (`1234`) using one
-regex with two capture groups.
+### Task 2 — Reproduce & fix the mutable-default bug
+Write `add_note(text, notes=[])` that appends and returns. Call it three times and watch
+the list grow. Then fix it with the `None` pattern and prove each call starts fresh.
 
-### Task 3 — Clean
-Collapse all runs of whitespace in `"  too    much\t space "` to single spaces and trim.
-
-### Task 4 — Mine free text
-From a list of open-ended responses, count how often each `#hashtag` appears
-(use `re.findall(r"#(\w+)", text)` and `collections.Counter`).
-
-### Task 5 — Reformat
-Turn `"Curie, Marie"` into `"Marie Curie"` with a single regex + groups.
-
-### Task 6 — Judgment
-Give one task where a plain string method (`.split()`, `.strip()`, `.replace()`) is the better,
-clearer choice than a regex.
+### Task 3 — *args summary
+Write `summary(*scores)` that returns a dict `{"n":..., "mean":..., "max":..., "min":...}`.
+Call it both as `summary(91, 58, 73)` and as `summary(*my_list)`.
 
 ### Bonus — Pythonic idiom drill
 Cover the `# ->` answers, predict each line, then run.
 
 ```python
-import re
-m = re.search(r"(?P<year>\d{4})", "class of 2026")
-print(m.group("year"), m.groupdict())   # -> 2026 {'year': '2026'}   (named groups)
-print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        (split on commas + spaces)
+def f(a, *, b):          # everything after * is keyword-only
+    return a, b
+print(f(1, b=2))                     # -> (1, 2)
+print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into arguments)
 ```
 
-## Part B — Modules, OOP & the Pythonic Toolkit
+## Extra practice (in class, if you're ahead)
 
-Files in this folder: `grades.py` (a module you import), `demo.py` (worked example).
+### E1 — Keyword-only
+Rewrite `letter_grade(score, plus_minus)` so that `plus_minus` **must** be passed by
+keyword (`letter_grade(95, plus_minus=True)`); calling it positionally should raise
+`TypeError`.
 
-### Task 1 — Use a module
-From a new file, `from grades import letter_grade, class_average` and call both. Why does the
-`if __name__ == "__main__":` block in `grades.py` NOT run when you import it?
+### E2 — Docstring polish
+Give `pass_rate` a docstring that states what it returns, what `passing` means, and one
+usage example. One short paragraph, no fluff.
 
-### Task 2 — A class with a validating property
-Build `Student(name, gpa)` with:
-- `__str__` → `"Ana: 3.9 (Good)"`,
-- `standing()` → `"Good"` if gpa ≥ 2.0 else `"Probation"`,
-- a `@property` setter for `gpa` that raises `ValueError` outside 0–4.
-Prove the setter rejects `5.0`.
+## Homework (before Session 6)
 
-### Task 3 — Inheritance
-Add `GradStudent(Student)` that also stores an `advisor` and uses `super().__init__(...)`.
-Override `__str__` to append the advisor.
+*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
 
-### Task 4 — The Pythonic toolkit
-Given a roster of `Student`s:
-1. names in good standing (list comprehension),
-2. uppercase names (`map`),
-3. at-risk students (`filter`),
-4. mean gpa via a **generator** that `yield`s each gpa — then show the generator is empty on a
-   second pass.
+### H1 — A tiny stats library
+Three functions, each with a docstring and type hints:
+- `validate_score(x) -> float` — accept int/float/numeric str in 0–100; `raise ValueError`
+  otherwise (and reject `bool` — remember Session 2!),
+- `curve(scores: list[float], bonus: float = 5) -> list[float]` — add the bonus, cap at
+  100, and **don't mutate the input list**,
+- `summarize(scores: list[float]) -> dict` — `n` / `mean` / `min` / `max`.
 
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
+### H2 — `mean_ignoring_none(*values)`
+`mean_ignoring_none(90, None, 80, None, 70)` → `80.0`. If nothing survives the cleaning,
+return `None` rather than dividing by zero.
 
+### H3 — Scope prediction
+What does this print — and what breaks? Predict *before* running:
 ```python
-from dataclasses import dataclass
+count = 0
 
-@dataclass                           # auto __init__, __repr__, __eq__
-class Point:
-    x: int
-    y: int
-print(Point(1, 2), Point(1, 2) == Point(1, 2))   # -> Point(x=1, y=2) True
+def tally(xs):
+    total = 0
+    for x in xs:
+        total += x
+    return total
 
-def head(v):
-    match v:                         # structural pattern matching (3.10+)
-        case [first, *_]: return first
-        case _: return None
-print(head([9, 8]), head(5))         # -> 9 None
+def bump():
+    count = count + 1   # ← think hard here
+
+print(tally([1, 2, 3]))
+bump()
 ```
 
 ---
 
 ## Solutions
 
-### Part A — Regular Expressions & Text Cleaning
-
-See `demo.py` in this folder — it implements all six. Key lines:
+### In class
 
 ```python
-re.fullmatch(r"\w+@\w+\.edu", addr) is not None      # 1 (fullmatch anchors both ends)
-m = re.search(r"([A-Z]{2})(\d{4})", s); m.group(1), m.group(2)   # 2
-re.sub(r"\s+", " ", messy).strip()                   # 3
-from collections import Counter; Counter(re.findall(r"#(\w+)", text))   # 4
-m = re.search(r"^(.+),\s*(.+)$", s); f"{m.group(2)} {m.group(1)}"      # 5
-```
-Task 6: splitting `"a,b,c"` on commas is just `"a,b,c".split(",")` — no regex needed.
-Reach for regex only when the pattern is genuinely variable (digits, optional parts, anchors).
-```
-```
-Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and never forget the
-`r"..."` prefix or your backslashes become Python escape sequences.
+def class_average(scores: list[float]) -> float:
+    """Mean of scores."""
+    return sum(scores) / len(scores)
 
-### Part B — Modules, OOP & the Pythonic Toolkit
+def letter_grade(score: float) -> str:
+    """A/B/C/D/F by 90/80/70/60 cutoffs."""
+    for cutoff, letter in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
+        if score >= cutoff:
+            return letter
+    return "F"
 
-See `demo.py` — it implements Tasks 2–4. Key points:
+def pass_rate(scores: list[float], passing: float = 60) -> float:
+    """Fraction of scores >= passing (0..1)."""
+    return sum(s >= passing for s in scores) / len(scores)
+
+# Task 2
+def add_note(text, notes=None):     # fixed version
+    if notes is None:
+        notes = []
+    notes.append(text)
+    return notes
+
+# Task 3
+def summary(*scores):
+    return {"n": len(scores), "mean": sum(scores)/len(scores),
+            "max": max(scores), "min": min(scores)}
+print(summary(91, 58, 73))
+print(summary(*[91, 58, 73]))
+```
+
+### Extra practice
 
 ```python
-@property
-def gpa(self): return self._gpa
-@gpa.setter
-def gpa(self, v):
-    if not 0 <= v <= 4: raise ValueError(...)
-    self._gpa = v
+# E1
+def letter_grade(score, *, plus_minus=False):   # * makes what follows keyword-only
+    ...
+# letter_grade(95, True)            -> TypeError
+# letter_grade(95, plus_minus=True) -> ok
 
-class GradStudent(Student):
-    def __init__(self, name, gpa, advisor):
-        super().__init__(name, gpa)
-        self.advisor = advisor
+# E2
+def pass_rate(scores, passing=60):
+    """Return the fraction (0..1) of scores at or above `passing`.
 
-[s.name for s in roster if s.gpa >= 2.0]          # comprehension
-list(map(lambda s: s.name.upper(), roster))        # map
-[s.name for s in filter(lambda s: s.gpa < 2.0, roster)]   # filter
-def gpas(rs):
-    for s in rs: yield s.gpa                        # generator (exhausts after one pass)
+    `passing` is the cutoff, 60 by default: pass_rate([70, 50, 90]) -> 0.66...
+    """
 ```
-Task 1: the `__name__` guard is only `"__main__"` when the file is **run directly**; on `import`
-its `__name__` is `"grades"`, so the demo block is skipped — that's how a file can be both a
-runnable script and an importable module.
+
+### Homework
+
+```python
+# H1
+def validate_score(x) -> float:
+    """Return x as a float score in 0-100, or raise ValueError."""
+    if isinstance(x, bool):                  # bool would sneak through float()!
+        raise ValueError("bool is a flag, not a score")
+    score = float(x)                         # ValueError for bad strings
+    if not 0 <= score <= 100:
+        raise ValueError(f"{score} outside 0-100")
+    return score
+
+def curve(scores: list[float], bonus: float = 5) -> list[float]:
+    """Return a NEW list with `bonus` added to each score, capped at 100."""
+    return [min(s + bonus, 100) for s in scores]
+
+def summarize(scores: list[float]) -> dict:
+    """n, mean, min, max of `scores`."""
+    return {"n": len(scores), "mean": sum(scores) / len(scores),
+            "min": min(scores), "max": max(scores)}
+
+# H2
+def mean_ignoring_none(*values):
+    clean = [v for v in values if v is not None]
+    return sum(clean) / len(clean) if clean else None
+
+print(mean_ignoring_none(90, None, 80, None, 70))   # 80.0
+print(mean_ignoring_none(None, None))               # None
+
+# H3
+# tally([1, 2, 3]) prints 6 — `total` is local to tally, no conflict with anything.
+# bump() raises UnboundLocalError: the assignment makes `count` local to bump,
+# so `count + 1` reads a local variable that doesn't exist yet.
+# The fix is not `global` — return the new value and reassign at the call site.
+```

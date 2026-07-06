@@ -29,8 +29,31 @@ import warnings
 
 
 TRAPS: dict[int, list[dict]] = {
-    # ---- Session 1 — Types & the dynamic-typing traps -------------------
+    # ---- Session 1 — Running Python, variables & types ------------------
     1: [
+        {"setup": "score = '5'\nbonus = '3'   # what input() would hand you",
+         "code": "score + bonus",
+         "expect": "8 — they're numbers",
+         "why": "These are strings (as `input()` always returns): `+` concatenates text. "
+                "Convert first: `int(score) + int(bonus)`."},
+        {"setup": "age = 21",
+         "code": "'Age: ' + age",
+         "expect": "'Age: 21'",
+         "why": "You can't glue text to a number with `+`. Use an f-string — "
+                "`f\"Age: {age}\"` — or `print('Age:', age)`."},
+        {"setup": "gpa = 3.9",
+         "code": "int(gpa)",
+         "expect": "4 — it rounds",
+         "why": "`int()` truncates toward zero, it doesn't round. Use `round(gpa)` when "
+                "you mean rounding."},
+        {"setup": "name = 'ada'\nname.upper()",
+         "code": "name",
+         "expect": "'ADA' — we just upper-cased it",
+         "why": "Strings are immutable: `.upper()` RETURNS a new string and leaves the "
+                "original alone. Assign it back: `name = name.upper()`."},
+    ],
+    # ---- Session 2 — The dynamic-typing traps ----------------------------
+    2: [
         {"setup": "ana_scores = [88, 91]\nben_scores = [88, 91]",
          "code": "ana_scores is ben_scores",
          "expect": "True — the two lists are identical",
@@ -123,8 +146,8 @@ TRAPS: dict[int, list[dict]] = {
                 "257 built at runtime are separate objects. Compare values with `==`, never "
                 "`is`."},
     ],
-    # ---- Session 2 — Control flow & data structures ---------------------
-    2: [
+    # ---- Session 3 — Control flow: conditionals & loops ------------------
+    3: [
         {"setup": "typed_name = ''   # the user left the box blank",
          "code": "typed_name or 'Anonymous'",
          "expect": "True or False",
@@ -134,15 +157,18 @@ TRAPS: dict[int, list[dict]] = {
          "code": "list(weeks)",
          "expect": "[1, 2, 3, 4, 5]",
          "why": "`range(start, stop)` stops BEFORE `stop`, so weeks 1–4 here."},
+        {"setup": "scores = [55, 92, 78]",
+         "code": "all(s >= 60 for s in scores)",
+         "expect": "True",
+         "why": "`all()` is True only if EVERY item passes; 55 fails, so it's False."},
+    ],
+    # ---- Session 4 — Data structures --------------------------------------
+    4: [
         {"setup": "gradebook = [[0] * 3] * 3   # 3 students x 3 assignments\ngradebook[0][0] = 9",
          "code": "gradebook",
          "expect": "only the first student's first score changes",
          "why": "`[[0]*3]*3` makes three references to ONE inner row, so editing one edits all. "
                 "Build with `[[0]*3 for _ in range(3)]`."},
-        {"setup": "scores = [55, 92, 78]",
-         "code": "all(s >= 60 for s in scores)",
-         "expect": "True",
-         "why": "`all()` is True only if EVERY item passes; 55 fails, so it's False."},
         {"setup": "gpa = {'Ana': 3.9}",
          "code": "gpa.get('Ben')",
          "expect": "KeyError",
@@ -153,8 +179,8 @@ TRAPS: dict[int, list[dict]] = {
          "expect": "an error, or the same list",
          "why": "A slice with step -1 returns a reversed COPY — a common Python idiom."},
     ],
-    # ---- Session 3 — Functions, scope & recursion -----------------------
-    3: [
+    # ---- Session 5 — Functions, scope & reusability -----------------------
+    5: [
         {"setup": "def enroll(name, roster=[]):\n    roster.append(name)\n    return roster\nenroll('Ana')",
          "code": "enroll('Ben')",
          "expect": "['Ben'] — a fresh empty roster each call",
@@ -169,14 +195,29 @@ TRAPS: dict[int, list[dict]] = {
          "expect": "[88, 91, 73]",
          "why": "Closures capture the VARIABLE `score`, not its value; by call time the loop has "
                 "left `score = 73`. Fix by binding it: `lambda score=score: score`."},
+    ],
+    # ---- Session 6 — Recursion --------------------------------------------
+    6: [
         {"setup": "def grade(n):\n    return grade(n - 1)   # forgot the base case",
          "code": "grade(3)",
          "expect": "runs forever, or 0",
          "why": "Every recursive function needs a base case. Without one Python stops at its "
                 "recursion limit (~1000 deep) with RecursionError."},
+        {"setup": "def curve(score):\n    if score >= 95:\n        return 100\n    score + 5   # looks right...",
+         "code": "curve(80) is None",
+         "expect": "False — it computed 85",
+         "why": "The second branch computes `score + 5` and then throws it away: without "
+                "`return` in front, the function falls off the end and hands back `None`. In a "
+                "recursive function this same slip silently poisons the whole call chain."},
+        {"setup": "import sys",
+         "code": "sys.getrecursionlimit()",
+         "expect": "no limit — Python just keeps going",
+         "why": "Every pending call keeps a stack frame, and CPython caps the stack (~1000 by "
+                "default), raising RecursionError past it. Recursion isn't free — deep flat "
+                "work belongs in a loop."},
     ],
-    # ---- Session 4 — Exceptions, files & research data ------------------
-    4: [
+    # ---- Session 7 — Exceptions & defensive code --------------------------
+    7: [
         {"setup": "score = '3.0'   # a value from a CSV",
          "code": "int(score)",
          "expect": "3",
@@ -197,18 +238,27 @@ TRAPS: dict[int, list[dict]] = {
          "expect": "ValueError",
          "why": "Python accepts underscores as digit separators, even inside `int()` text."},
     ],
-    # ---- Session 5 — Regex, modules & OOP -------------------------------
-    5: [
-        {"setup": "gpas = (s for s in [3.9, 1.8, 3.2])\nfirst_pass = list(gpas)",
-         "code": "list(gpas)",
-         "expect": "the same GPAs again",
-         "why": "A generator is one-shot: after the first full pass it is exhausted. "
-                "Rebuild it, or store a list if you need it twice."},
-        {"setup": "from dataclasses import dataclass\n\n@dataclass\nclass Grade:\n    course: str\n    score: int\n\ng1 = Grade('ED101', 91)\ng2 = Grade('ED101', 91)",
-         "code": "g1 == g2",
-         "expect": "False — two different objects",
-         "why": "`@dataclass` writes an `__eq__` that compares fields, so equal-valued grades "
-                "are `==` (even though `g1 is g2` is False)."},
+    # ---- Session 8 — Files, libraries & research data ---------------------
+    8: [
+        {"setup": "import csv, io\nrow = next(csv.DictReader(io.StringIO('name,score\\nAna,91')))",
+         "code": "row['score'] + 1",
+         "expect": "92",
+         "why": "Every CSV value arrives as a STRING — `'91' + 1` doesn't add, it crashes. "
+                "Convert first: `int(row['score']) + 1`."},
+        {"setup": "import json",
+         "code": "json.dumps({'passed': True})",
+         "expect": "'{\"passed\": True}'",
+         "why": "JSON is its own language: Python's `True` is written as lowercase `true` "
+                "(and `None` becomes `null`). `json.load` translates them back."},
+        {"setup": "import io\nf = io.StringIO('Ana\\nBen\\n')   # stands in for an open file\nfirst_pass = f.readlines()",
+         "code": "f.readlines()",
+         "expect": "['Ana\\n', 'Ben\\n'] again",
+         "why": "A file object is a cursor, not a container: after one pass it sits at the end "
+                "and a second read returns nothing. Re-open the file (or `seek(0)`), or read "
+                "it into a list once."},
+    ],
+    # ---- Session 9 — Regular expressions -----------------------------------
+    9: [
         {"setup": "import re\nm = re.match(r'\\[(.+)\\]', '[ED101][ED102]')",
          "code": "m.group(1)",
          "expect": "'ED101'",
@@ -219,6 +269,24 @@ TRAPS: dict[int, list[dict]] = {
          "expect": "True — there's a number in there",
          "why": "`re.match` anchors at the START of the string. Use `re.search` to find a match "
                 "anywhere."},
+        {"setup": "import re",
+         "code": "re.fullmatch(r'grades.csv', 'gradesXcsv') is not None",
+         "expect": "False — the dot is a dot",
+         "why": "`.` matches ANY character, so `gradesXcsv` fits the pattern. Escape it — "
+                "`r'grades\\.csv'` — when you mean a literal dot."},
+    ],
+    # ---- Session 10 — Modules & OOP ----------------------------------------
+    10: [
+        {"setup": "gpas = (s for s in [3.9, 1.8, 3.2])\nfirst_pass = list(gpas)",
+         "code": "list(gpas)",
+         "expect": "the same GPAs again",
+         "why": "A generator is one-shot: after the first full pass it is exhausted. "
+                "Rebuild it, or store a list if you need it twice."},
+        {"setup": "from dataclasses import dataclass\n\n@dataclass\nclass Grade:\n    course: str\n    score: int\n\ng1 = Grade('ED101', 91)\ng2 = Grade('ED101', 91)",
+         "code": "g1 == g2",
+         "expect": "False — two different objects",
+         "why": "`@dataclass` writes an `__eq__` that compares fields, so equal-valued grades "
+                "are `==` (even though `g1 is g2` is False)."},
         {"setup": "class Course:\n    students = []\n    def enroll(self, name):\n        self.students.append(name)\n\nart = Course()\nmath = Course()\nart.enroll('Ana')",
          "code": "math.students",
          "expect": "[] — math is a different course",

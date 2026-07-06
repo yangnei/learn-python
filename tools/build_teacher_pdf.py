@@ -95,7 +95,7 @@ COVER = f"""
   <p style="font-size:12pt;color:#33415c">Minute-by-minute session playbooks · transition scripts ·
      predicted misconceptions · Socratic prompts</p>
   <div class="meta">
-     A 5-session, ~12-hour (two hours per session, + capstone) accelerated Python course<br>
+     A 10-session, ~10-hour (one hour per session, + capstone) accelerated Python course<br>
      for a PhD-in-Education learner with no prior coding experience.<br><br>
      Generated {date.today().isoformat()} · Instructional content original
   </div>

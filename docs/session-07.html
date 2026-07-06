@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){try{var k="lp.theme",t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t="light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<title>Session 7 — Exceptions &amp; Defensive Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
+</head>
+<body data-page="session-07">
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Recursion &amp; Recursive Thinking">S6</a><a href="session-07.html" class="active" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a><button class="theme-toggle" type="button" aria-label="Switch light or dark theme" title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span><span class="ti-sun" aria-hidden="true">&#9728;</span></button></nav></div></header>
+<main>
+
+<article>
+  
+<aside class="nb-bar">
+  <a class="nb-btn nb-primary" href="notebooks/session-07.ipynb" download>&#8595; Download this session (.ipynb)</a>
+  <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener">Open a blank notebook in Colab &#8599;</a>
+</aside>
+  <div id="lesson-a" class="md"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-07.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — run this session's notebook</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-07.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+  <div id="traps" class="md"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-07-traps.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Traps — predict, then run</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-07-traps.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-07-try.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Try it yourself</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-07-try.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+  <h2>Check yourself</h2>
+<div id="quiz" class="md"></div>
+  <div class="page-foot">
+    <button id="complete-btn" class="complete-btn" type="button">Mark this session complete</button>
+    <div class="foot-nav">
+      <a href="session-06.html">&larr; Prev</a>
+      <a href="session-08.html">Next &rarr;</a>
+    </div>
+    <p class="dl-line"><a class="dl-btn" href="learn-python-student.pdf" download>&#8595; Download the full course (PDF)</a></p>
+  </div>
+</article>
+
+</main>
+<script type="text/markdown" id="lesson-a-md">
+# Session 7
+## Exceptions & Defensive Code
+
+*Learn Python — Session 7 of 10 · one hour.*
+
+---
+
+## try / except
+
+```python
+try:
+    n = int(value)
+except ValueError:
+    n = None        # handle the bad case
+```
+
+When code might fail at runtime, wrap it. The `except` catches the named error.
+
+---
+
+## Common exception types
+
+| Exception | Happens when |
+|---|---|
+| `ValueError` | right type, bad value: `int("N/A")` |
+| `TypeError` | wrong type: `5 > "5"` |
+| `KeyError` | missing dict key: `d["nope"]` |
+| `IndexError` | bad list index: `xs[99]` |
+| `ZeroDivisionError` | `x / 0` |
+| `FileNotFoundError` | `open("missing.csv")` |
+
+---
+
+## try / except / else / finally
+
+```python
+try:
+    n = int(value)
+except ValueError:
+    print("not a number")
+else:
+    print("ok:", n)      # only if NO exception
+finally:
+    print("always runs")  # cleanup
+```
+
+---
+
+## Raise your own
+
+```python
+def clean_likert(n):
+    if not 1 <= n <= 5:
+        raise ValueError(f"{n} not in 1–5")
+    return n
+```
+
+`raise` throws an exception on purpose — caller decides how to handle it.
+
+---
+
+## EAFP vs LBYL
+
+```python
+# LBYL — "look before you leap"
+if value.isdigit():
+    n = int(value)
+
+# EAFP — "easier to ask forgiveness" (Pythonic)
+try:
+    n = int(value)
+except ValueError:
+    n = None
+```
+
+Both valid. EAFP shines when "checking first" is hard or racy.
+
+---
+
+## assert (developer check, not validation)
+
+```python
+assert len(scores) > 0, "scores must not be empty"
+```
+
+For *your* sanity checks while developing. Can be disabled (`python -O`),
+so **never** use `assert` to validate untrusted input — use `raise`.
+
+---
+
+## A first test with pytest
+
+```python
+# clean.py
+def clean_likert(n):
+    if not 1 <= n <= 5:
+        raise ValueError("1–5 only")
+    return n
+
+# test_clean.py
+import pytest
+from clean import clean_likert
+
+def test_valid():    assert clean_likert(3) == 3
+def test_invalid():
+    with pytest.raises(ValueError):
+        clean_likert(9)
+```
+Run: `pytest`
+
+---
+
+## Your turn
+
+`examples/session-07/practice.md`:
+1. `safe_int(value)` returning int or None.
+2. Clean a dirty survey list, collecting good values + a rejection log.
+3. Write one `pytest` test.
+
+---
+
+## Traps recap
+
+- **Never** bare `except:` — name the exception.
+- Don't catch too broadly or swallow errors silently.
+- `assert` ≠ input validation (use `raise`).
+- Catch the *specific* error you expect.
+
+## Summary
+You can validate messy input and fail loudly when you should.
+**Next:** Session 8 — files & research data.
+
+---
+
+## Homework (before Session 8)
+
+*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-07/practice.md` → **Homework**.*
+
+1. **`ask_int(prompt, lo, hi)`** — Session 3's validation loop rebuilt the EAFP way.
+2. **Three more pytest cases** — edge cases for `clean_likert` (`True`, `"3"`, `None`).
+3. **Error triage** — five real error messages: name the exception and the fix.
+
+</script>
+<script type="text/markdown" id="traps-md">
+## Traps — predict, then reveal
+Read each snippet and decide what it does **before** you reveal the answer. To run and tinker with them line by line, open **&#9656; Traps — predict, then run** just below.
+
+<div class="trap">
+
+**1.**
+
+```python
+score = '3.0'   # a value from a CSV
+int(score)
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `ValueError: invalid literal for int() with base 10: '3.0'`
+
+`int()` parses INTEGER text only; '3.0' is not a valid int literal. Use `int(float(score))`.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**2.**
+
+```python
+score = 2.5
+round(score)
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `2`
+
+Python uses banker's rounding (round half to EVEN): `round(2.5) == 2` but `round(3.5) == 4`. Watch this when summarising data.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**3.**
+
+```python
+weight = 0.1 + 0.2 + 0.3   # three grade components
+weight == 0.6
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `False`
+
+Float error accumulates when you total components: 0.1+0.2+0.3 is 0.6000000000000001. Compare sums with `math.isclose`, or round for display.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**4.**
+
+```python
+enrolment = '1_000'
+int(enrolment)
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `1000`
+
+Python accepts underscores as digit separators, even inside `int()` text.
+
+</details>
+
+</div>
+
+</script>
+<script type="text/markdown" id="quiz-md">
+### Quiz — Exceptions & Defensive Code
+1. Which exception does `int("N/A")` raise? Wrap `int(value)` so it returns `None` on
+   failure.
+2. Why is a bare `except:` dangerous?
+3. When should you use `raise` vs `assert`?
+4. Name the two validation styles — and give the EAFP version of converting `value` to an
+   int.
+
+<details><summary>Show answers</summary>
+
+**Answers:** 1. `ValueError`;
+`try: return int(value)` / `except (ValueError, TypeError): return None`.
+2. It catches *everything* (even Ctrl+C and your own typos) and can hide bugs.
+3. `raise` to validate real/untrusted input; `assert` for developer sanity checks (it can
+be disabled with `python -O`). 4. LBYL ("look before you leap": `if value.isdigit():`)
+vs EAFP ("easier to ask forgiveness"): `try: n = int(value)` / `except ValueError: ...`.
+
+</details>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

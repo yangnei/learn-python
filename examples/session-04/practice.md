@@ -1,134 +1,146 @@
-# Session 4 — Practice: Exceptions, Files & Research Data
+# Session 4 — Practice: Data Structures
 
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
+Type each solution yourself. **Predict every output before you run it.** Solutions at the bottom.
 
-## Part A — Exceptions & Defensive Code
+## In class
 
-### Task 1 — `safe_int`
-Write `safe_int(value)` returning `int(value)` or `None` on failure. Test on
-`"42"`, `"N/A"`, `""`, `None`, `3.0`.
+Start from:
+```python
+roster = [
+    {"name": "Ana", "score": 91}, {"name": "Ben", "score": 58},
+    {"name": "Cara", "score": 73}, {"name": "Dev", "score": 64},
+]
+```
 
-### Task 2 — Clean a survey column
-Given `raw = ["5","3","N/A","7","","1","two","4"]`, produce:
-- `clean` — list of valid Likert ints (1–5), and
-- `rejected` — list of `(value, reason)` pairs.
-Use a `clean_likert(n)` that **raises** `ValueError` for out-of-range or non-ints.
+### Task 1 — Rank
+Print names sorted by score, highest first.
 
-### Task 3 — Write a test
-Put `clean_likert` in `clean.py` and write `test_clean.py` with pytest:
-one passing case and one `pytest.raises(ValueError)` case. Run `pytest`.
+### Task 2 — Map (dict comprehension)
+Build `{name: score}` in one line.
 
-### Task 4 — Discuss
-Why is `except:` (bare) dangerous? Give one error it would hide that you'd rather see.
+### Task 3 — Group
+Build `{"pass": [...names...], "fail": [...names...]}` using a loop.
+
+### Task 4 — Dedup
+From `["A","B","A","C","B"]`, get the distinct values and how many there are.
+
+### Task 5 — Aliasing
+Show that `b = roster` then `roster.append({...})` also changes `b`. Then make `b` an
+independent copy so it doesn't. (Hint: nested dicts → `copy.deepcopy`.)
 
 ### Bonus — Pythonic idiom drill
 Cover the `# ->` answers, predict each line, then run.
 
 ```python
-class LikertError(ValueError):       # your own exception type
-    pass
-print(issubclass(LikertError, ValueError))   # -> True  (so `except ValueError` still catches it)
-
-try:
-    assert 1 == 2, "values differ"   # assert: cheap internal sanity check
-except AssertionError as e:
-    print(e)                         # -> values differ
+head, *tail = [10, 20, 30, 40]
+print(head, tail)                    # -> 10 [20, 30, 40]   (star-unpacking)
+print({"a": 1} | {"b": 2})           # -> {'a': 1, 'b': 2}  (dict union, 3.9+)
+print({1, 2, 3} & {2, 3, 4})         # -> {2, 3}            (set intersection)
+print(list(zip(*[(1, 2), (3, 4)])))  # -> [(1, 3), (2, 4)]  (transpose)
 ```
 
-## Part B — Files, Libraries & Research Data
+## Extra practice (in class, if you're ahead)
 
-Files provided: `students.csv`, `survey.csv`.
+### E1 — Slicing drill
+With `xs = list(range(10))`, predict:
+`xs[2:5]` · `xs[-3:]` · `xs[:-3]` · `xs[::2]` · `xs[::-1]` · `xs[5:2:-1]`.
 
-### Task 1 — Read & summarize students
-Read `students.csv` with `csv.DictReader`. Remember the values are **strings** — convert
-`score` to `int`. Print the class mean and median with the `statistics` module.
+### E2 — Two cohorts
+`fall = {"Ana", "Ben", "Cara"}`, `spring = {"Ben", "Dev"}` — who attended both terms?
+either term? only fall? (`&`, `|`, `-`)
 
-### Task 2 — Mean by major
-Build `{major: mean_score}`. (Hint: `dict.setdefault(key, []).append(...)`.)
+## Homework (before Session 5)
 
-### Task 3 — Clean & summarize the survey
-`survey.csv` has `"N/A"` and blanks in numeric columns. For each `q*` item, compute the
-mean of the **valid** values only, and how many were valid. Write `survey_summary.csv`
-with columns `item,mean,n_valid`.
+*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
 
-### Task 4 — pandas teaser (optional)
-If `pandas` is installed: `pd.read_csv("students.csv")["score"].describe()`. Compare the
-mean to your hand-computed one.
+### H1 — Gradebook dict drill
+Start from `gradebook = {"Ana": 91, "Ben": 58}`. Then: add Cara (73); Ben resubmits
+(58 → 68); look up Dev **without** a `KeyError` (default `"no record"`); delete Ben;
+print `name: score` lines sorted by score, highest first.
 
-### Trap check
-What happens if you accidentally open `students.csv` with mode `"w"` before reading it?
+### H2 — Frequency counter
+Turn `answers = ["yes", "no", "yes", "maybe", "yes", "no"]` into
+`{"yes": 3, "no": 2, "maybe": 1}` with a plain dict and `.get(k, 0)` — no imports. Then
+print the most common answer with `max(counts, key=counts.get)`.
 
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-import json
-s = json.dumps({"n": 3, "ok": True})
-print(s)                             # -> {"n": 3, "ok": true}   (Python True -> JSON true)
-print(json.loads(s)["ok"])           # -> True                   (and back to a Python bool)
-```
+### H3 — Fix the grid
+Build a 3×3 grid of zeros with `[[0]*3]*3`, set `grid[0][0] = 9`, print it — see the bug
+with your own eyes. Rebuild it with a comprehension and prove the fix.
 
 ---
 
 ## Solutions
 
-### Part A — Exceptions & Defensive Code
+### In class
 
 ```python
-def safe_int(value):
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return None
+# 1
+print([s["name"] for s in sorted(roster, key=lambda s: s["score"], reverse=True)])
+# ['Ana', 'Cara', 'Dev', 'Ben']
 
-def clean_likert(n):
-    if isinstance(n, bool) or not isinstance(n, int):
-        raise ValueError(f"{n!r} not an int")
-    if not 1 <= n <= 5:
-        raise ValueError(f"{n} outside 1–5")
-    return n
+# 2
+name_to_score = {s["name"]: s["score"] for s in roster}
 
-raw = ["5","3","N/A","7","","1","two","4"]
-clean, rejected = [], []
-for r in raw:
-    try:
-        clean.append(clean_likert(safe_int(r)))
-    except ValueError as e:
-        rejected.append((r, str(e)))
-print(clean)      # [5, 3, 1, 4]
-print(rejected)   # [('N/A', ...), ('7', ...), ('', ...), ('two', ...)]
+# 3
+groups = {"pass": [], "fail": []}
+for s in roster:
+    groups["pass" if s["score"] >= 60 else "fail"].append(s["name"])
+
+# 4
+vals = ["A","B","A","C","B"]
+distinct = set(vals); print(distinct, len(distinct))   # {'A','B','C'} 3
+
+# 5
+import copy
+b = roster                       # alias
+roster.append({"name": "Eve", "score": 80})
+# b now also has Eve. To stay independent:
+b = copy.deepcopy(roster)        # changes to roster no longer touch b
 ```
+
+### Extra practice
 
 ```python
-# test_clean.py
-import pytest
-from clean import clean_likert
-def test_ok():   assert clean_likert(3) == 3
-def test_bad():
-    with pytest.raises(ValueError):
-        clean_likert(9)
+xs = list(range(10))
+xs[2:5]     # [2, 3, 4]          (stop excluded)
+xs[-3:]     # [7, 8, 9]          (last three)
+xs[:-3]     # [0, 1, 2, 3, 4, 5, 6]
+xs[::2]     # [0, 2, 4, 6, 8]    (every other)
+xs[::-1]    # reversed COPY
+xs[5:2:-1]  # [5, 4, 3]          (backward, stop excluded)
+
+# E2
+fall & spring   # {'Ben'}            — both terms
+fall | spring   # all four names     — either term
+fall - spring   # {'Ana', 'Cara'}    — only fall
 ```
 
-Task 4: a bare `except:` also catches `KeyboardInterrupt` (Ctrl+C) and `NameError`
-from your own typos — so a misspelled variable would be silently swallowed instead of
-showing you the bug. Always catch the specific exception you expect.
-
-### Part B — Files, Libraries & Research Data
-
-See `demo.py` in this folder — it implements Tasks 1–3 exactly. Key lines:
+### Homework
 
 ```python
-scores = [int(s["score"]) for s in students]     # convert strings!
-statistics.mean(scores)                           # 75.5
+# H1
+gradebook = {"Ana": 91, "Ben": 58}
+gradebook["Cara"] = 73                       # add
+gradebook["Ben"] = 68                        # update
+print(gradebook.get("Dev", "no record"))     # safe lookup
+del gradebook["Ben"]                         # delete
+for name, score in sorted(gradebook.items(), key=lambda kv: kv[1], reverse=True):
+    print(f"{name}: {score}")                # Ana: 91 / Cara: 73
 
-by_major = {}
-for s in students:
-    by_major.setdefault(s["major"], []).append(int(s["score"]))
+# H2
+answers = ["yes", "no", "yes", "maybe", "yes", "no"]
+counts = {}
+for a in answers:
+    counts[a] = counts.get(a, 0) + 1
+print(counts)                       # {'yes': 3, 'no': 2, 'maybe': 1}
+print(max(counts, key=counts.get))  # yes
 
-def to_int(x):
-    try: return int(x)
-    except (ValueError, TypeError): return None   # handles N/A and ""
+# H3
+grid = [[0] * 3] * 3
+grid[0][0] = 9
+print(grid)   # [[9,0,0],[9,0,0],[9,0,0]] — three labels on ONE row (aliasing!)
+
+grid = [[0] * 3 for _ in range(3)]
+grid[0][0] = 9
+print(grid)   # [[9,0,0],[0,0,0],[0,0,0]] — independent rows
 ```
-
-Trap: opening with `"w"` **truncates the file to empty immediately** — your data is gone
-before you ever read it. Use `"r"` (the default) to read.

@@ -1,8 +1,8 @@
-# Session 1 — Practice: Types & the Type Traps
+# Session 1 — Practice: Running Python, Variables & Types
 
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
+Type each solution yourself. **Predict every output before you run it.** Solutions at the bottom.
 
-## Part A — Running Python, Variables & Types
+## In class
 
 Type each solution yourself. Predict output before running. Solutions at the bottom.
 
@@ -33,50 +33,42 @@ print("CS50".lower(), "  hi ".strip())   # -> cs50 hi
 print("@" in "ana@uni.edu", len("data")) # -> True 4   (membership + length)
 ```
 
-## Part B — The Dynamic-Typing Traps
+## Extra practice (in class, if you're ahead)
 
-### Predict-the-output gauntlet
-For each line, write *why* (one sentence). Predict, then run to check.
+### E1 — f-string formatting drill
+Given `pi = 3.14159265`, `n = 9876543`, `rate = 0.4567`, print exactly:
+`3.14` · `9,876,543` · `45.7%` · `pi = 3.14159265` (the self-documenting form).
 
-```python
-True + True            # 2     — bools are ints; True is 1
-3 == 3.0               # True  — numbers compare by value
-0.1 + 0.2 == 0.3       # False — binary float rounding
-5 == "5"               # False — different types, no error
-5 > "5"                # 💥    — can't ORDER int vs str
-[1,2] == (1,2)         # False — list vs tuple are different types
-bool("0")              # True  — non-empty string is truthy
-x=[1]; y=x; x.append(2); y   # [1,2] — y is an alias of x
-```
+### E2 — Weeks enrolled
+Extend `age.py`: also report the age in **weeks** (52 per year), with a thousands separator.
 
-### Build `clean_score()`
-Write a function that safely turns a value into a float on a 0–100 scale:
+## Homework (before Session 2)
 
-```python
-def clean_score(value):
-    """
-    Accept 87, 87.0, or "87" and return 87.0 (a float).
-    - Reject anything outside 0..100 with a clear message (return None).
-    - Compare floats safely (no exact ==).
-    """
-```
-Test it on: `87`, `87.0`, `"87"`, `"eighty"`, `120`, `True`.
-*What does `True` do, and why? (Hint: bool is an int...)*
+*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
 
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
+### H1 — Unit converter (`convert.py`)
+Ask for a distance in miles (may be a decimal). Print kilometers (`× 1.60934`) to 2
+decimals and meters with a thousands separator:
+`5.0 miles = 8.05 km (8,047 meters)`
 
-```python
-x = int("257"); y = int("257")
-print(x == y, x is y)                # -> True False   (equal value, different objects)
-print(float("nan") == float("nan"))  # -> False        (NaN equals nothing, not even itself)
-```
+### H2 — Traceback drill
+Break each of these on purpose in a script, run it, and copy down the LAST line of each
+traceback:
+1. `int("ten")`
+2. `"age: " + 21`
+3. `print(nmae)` right after `name = "Ada"` (typo on purpose)
+Then, one sentence each: what does the error *name* tell you?
+
+### H3 — Type-prediction table
+Predict `type(...)` (or the output) of each, then check in the REPL:
+`7/2` · `7//2` · `7.0//2` · `"7"*2` · `int("7")*2` · `7 == 7.0` · `None` · `input`
+(no parentheses!) · `print("hi")`
 
 ---
 
 ## Solutions
 
-### Part A — Running Python, Variables & Types
+### In class
 
 ```python
 # Task 2 — gpa.py
@@ -95,29 +87,43 @@ a = int(input("a: ")); b = int(input("b: "))
 print(a + b)          # 5
 ```
 
-### Part B — The Dynamic-Typing Traps
+### Extra practice
 
 ```python
-import math
+pi, n, rate = 3.14159265, 9876543, 0.4567
+print(f"{pi:.2f}")        # 3.14
+print(f"{n:,}")           # 9,876,543
+print(f"{rate:.1%}")      # 45.7%
+print(f"{pi = }")         # pi = 3.14159265
 
-def clean_score(value):
-    # Reject bools explicitly — they'd sneak through as ints (True == 1).
-    if isinstance(value, bool):
-        print(f"Rejected {value!r}: looks like a flag, not a score.")
-        return None
-    try:
-        score = float(value)              # handles int, float, and numeric strings
-    except (ValueError, TypeError):
-        print(f"Rejected {value!r}: not a number.")
-        return None
-    if not 0 <= score <= 100:
-        print(f"Rejected {value!r}: out of range 0–100.")
-        return None
-    return score
-
-for v in [87, 87.0, "87", "eighty", 120, True]:
-    print(v, "->", clean_score(v))
-# 87->87.0, 87.0->87.0, "87"->87.0, "eighty"->None, 120->None, True->None
+# E2
+age = int(input("Age: "))
+print(f"That's about {age * 52:,} weeks.")
 ```
-Key lesson: `float(True)` is `1.0`, so without the explicit bool check a flag would
-pass as a valid score. This is the `bool ⊂ int` trap in a real function.
+
+### Homework
+
+```python
+# H1 — convert.py
+miles = float(input("Miles: "))
+km = miles * 1.60934
+print(f"{miles} miles = {km:.2f} km ({round(km * 1000):,} meters)")
+```
+
+H2 — the last lines, and what the names mean:
+1. `ValueError: invalid literal for int() with base 10: 'ten'` — right *type* of argument, unusable value.
+2. `TypeError: can only concatenate str (not "int") to str` — the types themselves don't fit the operation.
+3. `NameError: name 'nmae' is not defined` — you used a name that was never assigned (usually a typo).
+
+```python
+# H3 — what type() says
+7 / 2         # float — / always gives a float (3.5)
+7 // 2        # int   — floor division of two ints (3)
+7.0 // 2      # float — floored VALUE, float TYPE (3.0)
+"7" * 2       # str   — repetition: '77', not math
+int("7") * 2  # int   — 14
+7 == 7.0      # bool  — True (numbers compare by value)
+None          # NoneType
+input         # builtin_function_or_method — a function is a value too
+print("hi")   # prints hi, then evaluates to None (print returns nothing)
+```

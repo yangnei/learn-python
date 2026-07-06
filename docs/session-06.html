@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){try{var k="lp.theme",t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t="light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<title>Session 6 — Recursion &amp; Recursive Thinking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
+</head>
+<body data-page="session-06">
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" class="active" data-page="session-06" title="Recursion &amp; Recursive Thinking">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a><button class="theme-toggle" type="button" aria-label="Switch light or dark theme" title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span><span class="ti-sun" aria-hidden="true">&#9728;</span></button></nav></div></header>
+<main>
+
+<article>
+  
+<aside class="nb-bar">
+  <a class="nb-btn nb-primary" href="notebooks/session-06.ipynb" download>&#8595; Download this session (.ipynb)</a>
+  <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener">Open a blank notebook in Colab &#8599;</a>
+</aside>
+  <div id="lesson-a" class="md"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-06.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — run this session's notebook</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-06.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+  <div id="traps" class="md"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-06-traps.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Traps — predict, then run</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-06-traps.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-06-try.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Try it yourself</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-06-try.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+  <h2>Check yourself</h2>
+<div id="quiz" class="md"></div>
+  <div class="page-foot">
+    <button id="complete-btn" class="complete-btn" type="button">Mark this session complete</button>
+    <div class="foot-nav">
+      <a href="session-05.html">&larr; Prev</a>
+      <a href="session-07.html">Next &rarr;</a>
+    </div>
+    <p class="dl-line"><a class="dl-btn" href="learn-python-student.pdf" download>&#8595; Download the full course (PDF)</a></p>
+  </div>
+</article>
+
+</main>
+<script type="text/markdown" id="lesson-a-md">
+# Session 6
+## Recursion & Recursive Thinking
+
+*Learn Python — Session 6 of 10 · one hour.*
+
+---
+
+## The shape of every recursion
+
+Real example: how many prerequisites deep is a course?
+
+```python
+prereq_of = {"ED700": "ED600", "ED600": "ED500",
+             "ED500": "ED400", "ED400": None}   # ED400 has none
+
+def prereqs_deep(course):
+    earlier = prereq_of[course]
+    if earlier is None:               # BASE CASE — stop here
+        return 0
+    return 1 + prereqs_deep(earlier)  # RECURSIVE CASE — step back one
+```
+
+Two parts, always:
+- a **base case** that stops, and
+- a **recursive case** that moves *toward* the base case.
+
+---
+
+## Trace the call stack
+
+`orderings(n)` = ways to rank *n* students = n!
+
+```python
+orderings(3)
+= 3 * orderings(2)
+=     3 * (2 * orderings(1))
+=         3 * (2 * 1)          # base case returns 1
+= 6
+```
+
+Each call waits on the one inside it. The calls stack up, then unwind.
+
+🧠 Each pending call is a **stack frame** — that matters in a moment.
+
+---
+
+## Recursion vs iteration
+
+```python
+def orderings(n):                 # ways to rank n students (n!)
+    if n <= 1:
+        return 1
+    return n * orderings(n - 1)   # ← must RETURN the call
+
+def orderings_loop(n):
+    total = 1
+    for k in range(2, n + 1):
+        total *= k
+    return total
+```
+
+Same answer. For flat counting, the **loop** is usually clearer.
+
+---
+
+## Where recursion shines: nested data
+
+```python
+def deep_sum(obj):
+    if isinstance(obj, (int, float)):
+        return obj
+    if isinstance(obj, dict):
+        return sum(deep_sum(v) for v in obj.values())
+    if isinstance(obj, (list, tuple)):
+        return sum(deep_sum(x) for x in obj)
+    return 0
+
+deep_sum([1, [2, [3, 4]], {"a": 6}])   # 16
+```
+
+Nested JSON, folder trees, threaded replies — a single loop can't reach all the way down. Recursion can.
+
+---
+
+## The trap: no base case
+
+```python
+def runaway(n):
+    return runaway(n + 1)     # never stops
+```
+
+```
+RecursionError: maximum recursion depth exceeded
+```
+
+Python has **no tail-call optimization** — every call keeps its frame
+(default limit ≈ 1000). Deep recursion *will* hit the ceiling.
+
+---
+
+## Your turn
+
+`examples/session-06/practice.md`:
+1. Recursive `total(scores)` — sum a list of scores; name the base case first.
+2. `flatten([1, [2, [3, 4]], 5])` → one flat list.
+3. `depth(...)` — how deeply is a list nested?
+
+---
+
+## Traps recap
+
+- Every recursion needs a **reachable base case**, or it overflows the stack.
+- **Return** the recursive call — forgetting to gives you a silent `None`.
+- Recursion isn't free: each call costs a stack frame (no tail-call optimization).
+- A plain **loop** is better for flat sequences and for very deep work.
+
+## Summary
+You can solve problems that are defined in terms of themselves — especially nested data.
+**Next:** Session 7 — exceptions & defensive code.
+
+---
+
+## Homework (before Session 7)
+
+*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-06/practice.md` → **Homework**.*
+
+1. **`sum_digits(n)`** — recursion on a number instead of a list.
+2. **`deep_count(obj)`** — count every score in a nested gradebook dict.
+3. **In your own words** — one paragraph: when is a loop the better tool?
+
+</script>
+<script type="text/markdown" id="traps-md">
+## Traps — predict, then reveal
+Read each snippet and decide what it does **before** you reveal the answer. To run and tinker with them line by line, open **&#9656; Traps — predict, then run** just below.
+
+<div class="trap">
+
+**1.**
+
+```python
+def grade(n):
+    return grade(n - 1)   # forgot the base case
+grade(3)
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `RecursionError: maximum recursion depth exceeded`
+
+Every recursive function needs a base case. Without one Python stops at its recursion limit (~1000 deep) with RecursionError.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**2.**
+
+```python
+def curve(score):
+    if score >= 95:
+        return 100
+    score + 5   # looks right...
+curve(80) is None
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `True`
+
+The second branch computes `score + 5` and then throws it away: without `return` in front, the function falls off the end and hands back `None`. In a recursive function this same slip silently poisons the whole call chain.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**3.**
+
+```python
+import sys
+sys.getrecursionlimit()
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `1000`
+
+Every pending call keeps a stack frame, and CPython caps the stack (~1000 by default), raising RecursionError past it. Recursion isn't free — deep flat work belongs in a loop.
+
+</details>
+
+</div>
+
+</script>
+<script type="text/markdown" id="quiz-md">
+### Quiz — Recursion & Recursive Thinking
+1. What two parts must every recursive function have?
+2. What error comes from a base case that's never reached, and why doesn't Python just
+   keep going?
+3. Why is recursion a natural fit for nested data (a list of lists, or nested JSON)?
+4. The recursive case computes `n * f(n - 1)` but has no `return` in front — what does a
+   call produce?
+
+<details><summary>Show answers</summary>
+
+**Answers:** 1. A **base case** (stops) and a **recursive case** (calls itself on a
+smaller input, *toward* the base case). 2. `RecursionError` — Python has no tail-call
+optimization, so each pending call keeps a stack frame until the limit (~1000).
+3. The data is *defined in terms of itself* (a list may contain lists), so a function
+defined in terms of itself mirrors its shape and reaches every level. 4. `None` — the
+value is computed and thrown away; the function falls off the end.
+
+</details>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
 </head>
 <body>
-<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Types &amp; the Type Traps">S1</a><a href="session-02.html" data-page="session-02" title="Control Flow &amp; Data Structures">S2</a><a href="session-03.html" data-page="session-03" title="Functions, Scope &amp; Recursion">S3</a><a href="session-04.html" data-page="session-04" title="Exceptions, Files &amp; Research Data">S4</a><a href="session-05.html" data-page="session-05" title="Regular Expressions, Modules &amp; OOP">S5</a><a href="cheatsheets.html" class="active">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a><button class="theme-toggle" type="button" aria-label="Switch light or dark theme" title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span><span class="ti-sun" aria-hidden="true">&#9728;</span></button></nav></div></header>
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Recursion &amp; Recursive Thinking">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html" class="active">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a><button class="theme-toggle" type="button" aria-label="Switch light or dark theme" title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span><span class="ti-sun" aria-hidden="true">&#9728;</span></button></nav></div></header>
 <main>
 <div id="cheats" class="md"></div>
 </main>
@@ -85,15 +85,15 @@ variable viewer and debugger.
 **Run a script:** save your code as `name.py`, then in a terminal run `python name.py` (Windows)
 or `python3 name.py` (macOS/Linux).
 
-**Install a package** (e.g. for the Session 4 pandas teaser): `pip install pandas` (or `pip3`).
+**Install a package** (e.g. for the Session 8 pandas teaser): `pip install pandas` (or `pip3`).
 
 ## Visualize what your code does — Python Tutor
 **<https://pythontutor.com/>** — paste code and **step through it line by line**, watching
 variables, the call stack, and which names point at which objects. It's the single best tool for
 the things this course keeps warning you about:
-- **aliasing** — see `b = a` make both names point at the *same* list (Session 2),
-- the **mutable-default-argument** bug (Session 3),
-- the **recursion call stack** building up and unwinding (Session 3).
+- **aliasing** — see `b = a` make both names point at the *same* list (Session 4),
+- the **mutable-default-argument** bug (Session 5),
+- the **recursion call stack** building up and unwinding (Session 6).
 
 Whenever you think *"wait, why did that happen?"* — drop the snippet into Python Tutor.
 
@@ -114,7 +114,7 @@ ask it to slow down and walk you through it.
 
 ## Other handy tools
 - **regex101.com** (<https://regex101.com/>) — build and *explain* regular expressions
-  interactively, with a live match view (Session 5). Set the flavor to **Python**.
+  interactively, with a live match view (Session 9). Set the flavor to **Python**.
 - **Official docs** — the [Python Tutorial](https://docs.python.org/3/tutorial/) and the
   [Library Reference](https://docs.python.org/3/library/). Bookmark both.
 - **Google Colab** (<https://colab.research.google.com/>) — run Python notebooks in the browser,
@@ -134,7 +134,7 @@ ask it to slow down and walk you through it.
 
 ---
 
-## 1 — Equality `==` vs Identity `is`  *(Session 1)*
+## 1 — Equality `==` vs Identity `is`  *(Session 2)*
 
 | Expression | Result | |
 |---|---|---|
@@ -156,7 +156,7 @@ ask it to slow down and walk you through it.
 
 ---
 
-## 2 — Booleans ARE integers  *(Session 1)*
+## 2 — Booleans ARE integers  *(Session 2)*
 
 ```python
 True == 1            # True   (bool is a subclass of int)
@@ -173,7 +173,7 @@ type(True) is int          # False  (its type is bool, a subtype)
 
 ---
 
-## 3 — Float precision  *(Session 1)*
+## 3 — Float precision  *(Session 2)*
 
 ```python
 0.1 + 0.2            # 0.30000000000000004
@@ -194,7 +194,7 @@ type(True) is int          # False  (its type is bool, a subtype)
 
 ---
 
-## 4 — Comparing across types  *(Session 1)*
+## 4 — Comparing across types  *(Session 2)*
 
 ```python
 5 == "5"     # False   (different types → not equal, but NO error)
@@ -209,7 +209,7 @@ type(True) is int          # False  (its type is bool, a subtype)
 
 ---
 
-## 5 — Sequences compare element-by-element  *(Session 1 / 2)*
+## 5 — Sequences compare element-by-element  *(Session 2 / 4)*
 
 ```python
 [1, 2] == [1, 2]     # True
@@ -223,7 +223,7 @@ type(True) is int          # False  (its type is bool, a subtype)
 
 ---
 
-## 6 — Truthiness (what counts as False)  *(Session 1 / 2)*
+## 6 — Truthiness (what counts as False)  *(Session 2 / 3)*
 
 ```python
 # These are all "falsy":
@@ -236,7 +236,7 @@ bool([0])   # True   ← a non-empty list is truthy, even if it holds a 0
 
 ---
 
-## 7 — `and` / `or` return an operand, not a bool  *(Session 2)*
+## 7 — `and` / `or` return an operand, not a bool  *(Session 3)*
 
 ```python
 5 and 0      # 0      (and → first falsy, or last value)
@@ -249,7 +249,7 @@ bool([0])   # True   ← a non-empty list is truthy, even if it holds a 0
 
 ---
 
-## 8 — Mutable default arguments  *(Session 3)* — the famous one
+## 8 — Mutable default arguments  *(Session 5)* — the famous one
 
 ```python
 def add_student(name, roster=[]):     # ❌ DANGER
@@ -272,7 +272,7 @@ add_student("Ben")     # ['Ana', 'Ben']  😱  the default list PERSISTS across 
 
 ---
 
-## 9 — Aliasing: variables are labels, not boxes  *(Session 2)*
+## 9 — Aliasing: variables are labels, not boxes  *(Session 4)*
 
 ```python
 a = [1, 2, 3]
@@ -291,7 +291,7 @@ b = copy.deepcopy(a)   # ✅ independent even for nested lists/dicts
 
 ---
 
-## 10 — `type()` vs `isinstance()`  *(Session 1)*
+## 10 — `type()` vs `isinstance()`  *(Session 2)*
 
 ```python
 isinstance(x, int)              # ✅ Pythonic; respects inheritance
@@ -304,7 +304,7 @@ type(x) == int                  # works but use `is` for type identity
 
 ---
 
-## 11 — Integer vs float division  *(Session 1)*
+## 11 — Integer vs float division  *(Session 1 / 2)*
 
 ```python
 7 / 2      # 3.5   true division ALWAYS returns a float
@@ -317,7 +317,7 @@ type(x) == int                  # works but use `is` for type identity
 
 ---
 
-## 12 — Strings are immutable; some methods *return*, don't mutate  *(Session 1 / 5)*
+## 12 — Strings are immutable; some methods *return*, don't mutate  *(Session 1 / 9)*
 
 ```python
 s = "  Hello  "
@@ -335,7 +335,7 @@ s = s.strip()      # ✅ reassign to keep the result
 
 ---
 
-## 13 — `range` excludes the stop; off-by-one  *(Session 2)*
+## 13 — `range` excludes the stop; off-by-one  *(Session 3)*
 
 ```python
 list(range(1, 5))      # [1, 2, 3, 4]   ← 5 is NOT included
@@ -346,7 +346,7 @@ list(range(0, 10, 2))  # [0, 2, 4, 6, 8]
 
 ---
 
-## 14 — Modifying a list while iterating it  *(Session 2)*
+## 14 — Modifying a list while iterating it  *(Session 3)*
 
 ```python
 xs = [1, 2, 3, 4]
@@ -359,7 +359,7 @@ xs = [x for x in xs if x % 2 != 0]
 
 ---
 
-## 15 — Files: `"w"` overwrites; cursor exhausts  *(Session 4)*
+## 15 — Files: `"w"` overwrites; cursor exhausts  *(Session 8)*
 
 ```python
 open("data.csv", "w")    # ❗ TRUNCATES the file to empty immediately
@@ -375,7 +375,7 @@ with open("data.csv") as f:
 
 ---
 
-## 16 — Regex: `.` matches *anything*; use raw strings  *(Session 5)*
+## 16 — Regex: `.` matches *anything*; use raw strings  *(Session 9)*
 
 ```python
 import re
@@ -432,7 +432,7 @@ type(x)                          # what type is x?
 | `:^8` | `f"{'hi':^8}"` | `   hi   ` (center) |
 | `:.1%` | `f"{0.873:.1%}"` | `87.3%` |
 
-## Conditionals  *(S2)*
+## Conditionals  *(S3)*
 ```python
 if score >= 90:
     grade = "A"
@@ -450,7 +450,7 @@ match command:                   # Python 3.10+
     case _: ...                  # default
 ```
 
-## Loops  *(S2)*
+## Loops  *(S3)*
 ```python
 for i in range(5): ...                  # 0..4
 for x in items: ...                     # each element
@@ -464,7 +464,7 @@ while True:                             # validation loop
 # break / continue control flow
 ```
 
-## Sequences & slicing  *(S2)*
+## Sequences & slicing  *(S4)*
 ```python
 xs = [1, 2, 3]; xs.append(4); xs[0]; xs[-1]   # last
 xs[1:3]      # [2, 3]   (start inclusive, stop exclusive)
@@ -477,7 +477,7 @@ d.keys(); d.values(); d.items()
 s = {1, 2, 2, 3}                 # set -> {1, 2, 3}  (unique)
 ```
 
-## Comprehensions  *(S2/S5)*
+## Comprehensions  *(S4/S10)*
 ```python
 [x*2 for x in xs]                       # list
 [x for x in xs if x > 0]                # with filter
@@ -486,7 +486,7 @@ s = {1, 2, 2, 3}                 # set -> {1, 2, 3}  (unique)
 (x*x for x in xs)                       # generator (lazy)
 ```
 
-## Sorting  *(S2)*
+## Sorting  *(S4)*
 ```python
 sorted(xs)                              # new sorted list
 sorted(xs, reverse=True)
@@ -495,7 +495,7 @@ sorted(students, key=lambda s: s["gpa"], reverse=True)
 xs.sort()                               # in place (returns None!)
 ```
 
-## Functions  *(S3)*
+## Functions  *(S5)*
 ```python
 def avg(nums: list[float]) -> float:
     """Return the mean of nums."""      # docstring
@@ -508,7 +508,7 @@ func(*my_list)                          # unpack list into args
 func(**my_dict)                         # unpack dict into kwargs
 ```
 
-## Exceptions  *(S4)*
+## Exceptions  *(S7)*
 ```python
 try:
     n = int(value)
@@ -525,7 +525,7 @@ raise ValueError("score must be 1–5")
 assert n > 0, "n must be positive"
 ```
 
-## Files & CSV  *(S4)*
+## Files & CSV  *(S8)*
 ```python
 with open("f.txt") as f:          # read, auto-closes
     text = f.read()
@@ -543,7 +543,7 @@ with open("out.csv", "w", newline="") as f:
     w.writerow({"name": "Ana", "gpa": 3.9})
 ```
 
-## Handy stdlib  *(S4)*
+## Handy stdlib  *(S8)*
 ```python
 import statistics; statistics.mean(xs); statistics.median(xs); statistics.stdev(xs)
 import random; random.choice(xs); random.randint(1, 6); random.shuffle(xs)
@@ -552,7 +552,7 @@ from pathlib import Path; Path("data.csv").exists()
 import json; json.dumps(obj, indent=2); json.loads(text)
 ```
 
-## Regex  *(S5)*
+## Regex  *(S9)*
 ```python
 import re
 re.search(r"pattern", text)      # first match anywhere (or None)
@@ -572,7 +572,7 @@ m.group(1)                        # first capture group
 | `(...)` | capture group |
 | `a\|b` | a or b |
 
-## Classes  *(S5)*
+## Classes  *(S10)*
 ```python
 class Student:
     def __init__(self, name, gpa):

@@ -25,7 +25,7 @@ type(x)                          # what type is x?
 | `:^8` | `f"{'hi':^8}"` | `   hi   ` (center) |
 | `:.1%` | `f"{0.873:.1%}"` | `87.3%` |
 
-## Conditionals  *(S2)*
+## Conditionals  *(S3)*
 ```python
 if score >= 90:
     grade = "A"
@@ -43,7 +43,7 @@ match command:                   # Python 3.10+
     case _: ...                  # default
 ```
 
-## Loops  *(S2)*
+## Loops  *(S3)*
 ```python
 for i in range(5): ...                  # 0..4
 for x in items: ...                     # each element
@@ -57,7 +57,7 @@ while True:                             # validation loop
 # break / continue control flow
 ```
 
-## Sequences & slicing  *(S2)*
+## Sequences & slicing  *(S4)*
 ```python
 xs = [1, 2, 3]; xs.append(4); xs[0]; xs[-1]   # last
 xs[1:3]      # [2, 3]   (start inclusive, stop exclusive)
@@ -70,7 +70,7 @@ d.keys(); d.values(); d.items()
 s = {1, 2, 2, 3}                 # set -> {1, 2, 3}  (unique)
 ```
 
-## Comprehensions  *(S2/S5)*
+## Comprehensions  *(S4/S10)*
 ```python
 [x*2 for x in xs]                       # list
 [x for x in xs if x > 0]                # with filter
@@ -79,7 +79,7 @@ s = {1, 2, 2, 3}                 # set -> {1, 2, 3}  (unique)
 (x*x for x in xs)                       # generator (lazy)
 ```
 
-## Sorting  *(S2)*
+## Sorting  *(S4)*
 ```python
 sorted(xs)                              # new sorted list
 sorted(xs, reverse=True)
@@ -88,7 +88,7 @@ sorted(students, key=lambda s: s["gpa"], reverse=True)
 xs.sort()                               # in place (returns None!)
 ```
 
-## Functions  *(S3)*
+## Functions  *(S5)*
 ```python
 def avg(nums: list[float]) -> float:
     """Return the mean of nums."""      # docstring
@@ -101,7 +101,7 @@ func(*my_list)                          # unpack list into args
 func(**my_dict)                         # unpack dict into kwargs
 ```
 
-## Exceptions  *(S4)*
+## Exceptions  *(S7)*
 ```python
 try:
     n = int(value)
@@ -118,7 +118,7 @@ raise ValueError("score must be 1–5")
 assert n > 0, "n must be positive"
 ```
 
-## Files & CSV  *(S4)*
+## Files & CSV  *(S8)*
 ```python
 with open("f.txt") as f:          # read, auto-closes
     text = f.read()
@@ -136,7 +136,7 @@ with open("out.csv", "w", newline="") as f:
     w.writerow({"name": "Ana", "gpa": 3.9})
 ```
 
-## Handy stdlib  *(S4)*
+## Handy stdlib  *(S8)*
 ```python
 import statistics; statistics.mean(xs); statistics.median(xs); statistics.stdev(xs)
 import random; random.choice(xs); random.randint(1, 6); random.shuffle(xs)
@@ -145,7 +145,7 @@ from pathlib import Path; Path("data.csv").exists()
 import json; json.dumps(obj, indent=2); json.loads(text)
 ```
 
-## Regex  *(S5)*
+## Regex  *(S9)*
 ```python
 import re
 re.search(r"pattern", text)      # first match anywhere (or None)
@@ -165,7 +165,7 @@ m.group(1)                        # first capture group
 | `(...)` | capture group |
 | `a\|b` | a or b |
 
-## Classes  *(S5)*
+## Classes  *(S10)*
 ```python
 class Student:
     def __init__(self, name, gpa):

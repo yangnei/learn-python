@@ -6,7 +6,7 @@
 
 ---
 
-## 1 — Equality `==` vs Identity `is`  *(Session 1)*
+## 1 — Equality `==` vs Identity `is`  *(Session 2)*
 
 | Expression | Result | |
 |---|---|---|
@@ -28,7 +28,7 @@
 
 ---
 
-## 2 — Booleans ARE integers  *(Session 1)*
+## 2 — Booleans ARE integers  *(Session 2)*
 
 ```python
 True == 1            # True   (bool is a subclass of int)
@@ -45,7 +45,7 @@ type(True) is int          # False  (its type is bool, a subtype)
 
 ---
 
-## 3 — Float precision  *(Session 1)*
+## 3 — Float precision  *(Session 2)*
 
 ```python
 0.1 + 0.2            # 0.30000000000000004
@@ -66,7 +66,7 @@ type(True) is int          # False  (its type is bool, a subtype)
 
 ---
 
-## 4 — Comparing across types  *(Session 1)*
+## 4 — Comparing across types  *(Session 2)*
 
 ```python
 5 == "5"     # False   (different types → not equal, but NO error)
@@ -81,7 +81,7 @@ type(True) is int          # False  (its type is bool, a subtype)
 
 ---
 
-## 5 — Sequences compare element-by-element  *(Session 1 / 2)*
+## 5 — Sequences compare element-by-element  *(Session 2 / 4)*
 
 ```python
 [1, 2] == [1, 2]     # True
@@ -95,7 +95,7 @@ type(True) is int          # False  (its type is bool, a subtype)
 
 ---
 
-## 6 — Truthiness (what counts as False)  *(Session 1 / 2)*
+## 6 — Truthiness (what counts as False)  *(Session 2 / 3)*
 
 ```python
 # These are all "falsy":
@@ -108,7 +108,7 @@ bool([0])   # True   ← a non-empty list is truthy, even if it holds a 0
 
 ---
 
-## 7 — `and` / `or` return an operand, not a bool  *(Session 2)*
+## 7 — `and` / `or` return an operand, not a bool  *(Session 3)*
 
 ```python
 5 and 0      # 0      (and → first falsy, or last value)
@@ -121,7 +121,7 @@ bool([0])   # True   ← a non-empty list is truthy, even if it holds a 0
 
 ---
 
-## 8 — Mutable default arguments  *(Session 3)* — the famous one
+## 8 — Mutable default arguments  *(Session 5)* — the famous one
 
 ```python
 def add_student(name, roster=[]):     # ❌ DANGER
@@ -144,7 +144,7 @@ add_student("Ben")     # ['Ana', 'Ben']  😱  the default list PERSISTS across 
 
 ---
 
-## 9 — Aliasing: variables are labels, not boxes  *(Session 2)*
+## 9 — Aliasing: variables are labels, not boxes  *(Session 4)*
 
 ```python
 a = [1, 2, 3]
@@ -163,7 +163,7 @@ b = copy.deepcopy(a)   # ✅ independent even for nested lists/dicts
 
 ---
 
-## 10 — `type()` vs `isinstance()`  *(Session 1)*
+## 10 — `type()` vs `isinstance()`  *(Session 2)*
 
 ```python
 isinstance(x, int)              # ✅ Pythonic; respects inheritance
@@ -176,7 +176,7 @@ type(x) == int                  # works but use `is` for type identity
 
 ---
 
-## 11 — Integer vs float division  *(Session 1)*
+## 11 — Integer vs float division  *(Session 1 / 2)*
 
 ```python
 7 / 2      # 3.5   true division ALWAYS returns a float
@@ -189,7 +189,7 @@ type(x) == int                  # works but use `is` for type identity
 
 ---
 
-## 12 — Strings are immutable; some methods *return*, don't mutate  *(Session 1 / 5)*
+## 12 — Strings are immutable; some methods *return*, don't mutate  *(Session 1 / 9)*
 
 ```python
 s = "  Hello  "
@@ -207,7 +207,7 @@ s = s.strip()      # ✅ reassign to keep the result
 
 ---
 
-## 13 — `range` excludes the stop; off-by-one  *(Session 2)*
+## 13 — `range` excludes the stop; off-by-one  *(Session 3)*
 
 ```python
 list(range(1, 5))      # [1, 2, 3, 4]   ← 5 is NOT included
@@ -218,7 +218,7 @@ list(range(0, 10, 2))  # [0, 2, 4, 6, 8]
 
 ---
 
-## 14 — Modifying a list while iterating it  *(Session 2)*
+## 14 — Modifying a list while iterating it  *(Session 3)*
 
 ```python
 xs = [1, 2, 3, 4]
@@ -231,7 +231,7 @@ xs = [x for x in xs if x % 2 != 0]
 
 ---
 
-## 15 — Files: `"w"` overwrites; cursor exhausts  *(Session 4)*
+## 15 — Files: `"w"` overwrites; cursor exhausts  *(Session 8)*
 
 ```python
 open("data.csv", "w")    # ❗ TRUNCATES the file to empty immediately
@@ -247,7 +247,7 @@ with open("data.csv") as f:
 
 ---
 
-## 16 — Regex: `.` matches *anything*; use raw strings  *(Session 5)*
+## 16 — Regex: `.` matches *anything*; use raw strings  *(Session 9)*
 
 ```python
 import re

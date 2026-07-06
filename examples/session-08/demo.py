@@ -1,0 +1,82 @@
+"""Session 8 demo — Files, Libraries & Research Data.
+
+Run me:  python3 demo.py
+Predict each printed line BEFORE you run.
+"""
+
+import csv
+import json
+import statistics
+from collections import Counter
+from pathlib import Path
+
+HERE = Path(__file__).parent     # so it works no matter where you run it
+
+# --- 1. Read a CSV into a list of dicts ---------------------------------
+with open(HERE / "students.csv", newline="") as f:
+    students = list(csv.DictReader(f))   # each row is a dict keyed by header
+
+print("rows read:", len(students))
+print("first row:", students[0])
+
+# CSV values are STRINGS — convert numbers (recall Session 1!)
+scores = [int(s["score"]) for s in students]
+print("class mean:", statistics.mean(scores))
+print("class stdev:", round(statistics.stdev(scores), 2))
+print("majors tally:", Counter(s["major"] for s in students))   # quick frequency count
+
+# --- 2. Group by major, mean score -------------------------------------
+by_major = {}
+for s in students:
+    by_major.setdefault(s["major"], []).append(int(s["score"]))
+major_means = {m: round(statistics.mean(v), 1) for m, v in by_major.items()}
+print("means by major:", major_means)
+
+# --- 3. Write a summary CSV --------------------------------------------
+with open(HERE / "students_summary.csv", "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=["major", "mean_score", "n"])
+    w.writeheader()
+    for major, vals in by_major.items():
+        w.writerow({"major": major, "mean_score": round(statistics.mean(vals), 1),
+                    "n": len(vals)})
+print("wrote students_summary.csv")
+
+# --- 4. JSON: serialize a Python object to text and back ----------------
+snapshot = {"n": len(students), "mean": statistics.mean(scores), "by_major": major_means}
+(HERE / "snapshot.json").write_text(json.dumps(snapshot, indent=2))   # pathlib write
+restored = json.loads((HERE / "snapshot.json").read_text())           # pathlib read
+print("\nJSON round-trip ok?", restored == snapshot)
+
+# --- 5. Survey: per-item means, skipping dirty values -------------------
+def to_int(x):
+    try:
+        return int(x)
+    except (ValueError, TypeError):
+        return None        # handles "N/A" and "" (Session 7's move)
+
+with open(HERE / "survey.csv", newline="") as f:
+    rows = list(csv.DictReader(f))
+
+items = [c for c in rows[0] if c != "respondent"]
+item_means = {}
+for item in items:
+    vals = [to_int(r[item]) for r in rows]
+    vals = [v for v in vals if v is not None]      # drop missing
+    item_means[item] = round(statistics.mean(vals), 2)
+print("\nper-item survey means:", item_means)
+
+# Two files open at once in a single `with` (read source, write report together):
+with open(HERE / "survey.csv", newline="") as src, \
+     open(HERE / "survey_summary.csv", "w", newline="") as out:
+    rows = list(csv.DictReader(src))
+    w = csv.DictWriter(out, fieldnames=["item", "mean", "n_valid"])
+    w.writeheader()
+    for item in items:
+        valid = [to_int(r[item]) for r in rows if to_int(r[item]) is not None]
+        w.writerow({"item": item, "mean": round(statistics.mean(valid), 2),
+                    "n_valid": len(valid)})
+print("wrote survey_summary.csv")
+
+# --- 6. pathlib: discover files without hard-coding names ---------------
+csvs = sorted(p.stem for p in HERE.glob("*.csv"))   # .stem = filename without extension
+print("\nCSV files here:", csvs)

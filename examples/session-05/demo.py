@@ -1,195 +1,95 @@
-"""
-Session 5 — Regular Expressions, Modules & OOP
+"""Session 5 demo — Functions, Scope & Reusability.
+
 Run me:  python3 demo.py
-Two halves — (A) Regular Expressions & Text Cleaning; (B) Modules, OOP & the Pythonic Toolkit.
-Predict each block, then run it.
+Predict each printed line BEFORE you run.
 """
-
-# ======================================================================
-# PART A — Regular Expressions & Text Cleaning
-# ======================================================================
-
-import re
-
-# --- 1. Validate: does the whole string match the pattern? ---------------
-def valid_university_email(addr: str) -> bool:
-    # \w+ chars, @, domain, literal dot (\.), then "edu"
-    return re.fullmatch(r"\w+@\w+\.edu", addr) is not None
-
-for addr in ["ana@university.edu", "ana@gmail.com", "ana@@x.edu"]:
-    print(f"{addr:22} -> {valid_university_email(addr)}")
-
-# --- 2. Search anywhere; extract pieces with capture groups -------------
-m = re.search(r"([A-Z]{2})(\d{4})", "Course ED1234 meets on Tue")
-print("\ndept:", m.group(1), "| number:", m.group(2), "| whole:", m.group(0))
-
-# --- 3. NAMED groups read better than group(1)/group(2) -----------------
-m = re.search(r"(?P<dept>[A-Z]{2})(?P<num>\d{4})", "ED1234")
-print("named:", m.group("dept"), m.group("num"), "| dict:", m.groupdict())
-
-# --- 4. re.compile + re.VERBOSE: a reusable, self-documenting pattern ----
-COURSE = re.compile(r"""
-    (?P<dept>[A-Z]{2})    # two-letter department
-    (?P<num>\d{4})        # four-digit course number
-""", re.VERBOSE)
-print("compiled findall:", COURSE.findall("Take ED1234 and PS5500 this term"))
-
-# --- 5. The walrus := keeps the match object without a second lookup -----
-if (hit := re.search(r"\d+", "cohort 2026 has 30 students")):
-    print("first number found:", hit.group())     # 2026
-
-# --- 6. The "." trap -----------------------------------------------------
-print('\n"." matches ANY char:', re.search(r".", "a.b").group())   # 'a', not '.'
-print('literal dot with \\.:   ', re.search(r"\.", "a.b").group())  # '.'
-
-# --- 7. Substitute / split / clean text ---------------------------------
-messy = "  too    much\t  space  "
-print("\ncleaned:", repr(re.sub(r"\s+", " ", messy).strip()))
-print("re.split:", re.split(r"\s*,\s*", "a , b,c ,  d"))   # split on commas + stray spaces
-
-# --- 8. Mine free-text survey responses ---------------------------------
-responses = ["loved #python and #stats", "more #python please", "no tags here"]
-tags = []
-for r in responses:
-    tags += re.findall(r"#(\w+)", r)      # findall returns all matches
-print("\nall tags:", tags)
-from collections import Counter
-print("tag counts:", Counter(tags))
-
-# --- 9. Reformat "Last, First" -> "First Last" ---------------------------
-def flip_name(s: str) -> str:
-    m = re.search(r"^(.+),\s*(.+)$", s.strip())
-    return f"{m.group(2)} {m.group(1)}" if m else s
-
-print("\n", flip_name("Curie, Marie"))      # Marie Curie
-
-# --- 10. When NOT to use regex ------------------------------------------
-# For simple splits/trims, string methods are clearer than regex:
-print("\nuse .split():", "a,b,c".split(","))
-print("use .strip():", "  hi  ".strip())
-
-
-# ======================================================================
-# PART B — Modules, OOP & the Pythonic Toolkit
-# ======================================================================
 
 import functools
-import itertools
-from dataclasses import dataclass
 
-from grades import letter_grade, class_average   # import from our own module (grades.py)
+# --- 1. return vs print --------------------------------------------------
+def avg(xs: list[float]) -> float:
+    """Return the mean of xs."""
+    return sum(xs) / len(xs)
 
+def show(xs):
+    print("mean is", sum(xs) / len(xs))
 
-# --- 1. Modules: reuse code from another file ---------------------------
-print("letter for 85:", letter_grade(85))
-print("average:", class_average([91, 58, 73]))
+x = avg([1, 2, 3])      # 2.0  (a value we can keep using)
+y = show([1, 2, 3])     # prints, but...
+print("x =", x, "| y =", y)     # y is None!
 
+# --- 2. defaults, *args, **kwargs ---------------------------------------
+def grade(score, scale=100, passing=60):
+    pct = score / scale
+    return "PASS" if score >= passing else "FAIL", round(pct, 3)
 
-# --- 2. OOP: model a domain entity --------------------------------------
-class Student:
-    def __init__(self, name: str, gpa: float):
-        self.name = name
-        self.gpa = gpa             # runs through the setter below (validates!)
+print(grade(85), grade(40, passing=35))
+print("via **dict:", grade(**{"score": 85, "passing": 80}))  # ** unpacks a dict into kwargs
 
-    def __str__(self) -> str:      # how the object prints
-        return f"{self.name}: {self.gpa} ({self.standing()})"
+def total(*args):              # collect positionals into a tuple
+    return sum(args)
+print("total:", total(1, 2, 3, 4))
 
-    def standing(self) -> str:
-        return "Good" if self.gpa >= 2.0 else "Probation"
+def tag(**kwargs):             # collect keywords into a dict
+    return kwargs
+print("tag:", tag(name="Ana", gpa=3.9))
 
-    @property                       # makes .gpa look like an attribute...
-    def gpa(self) -> float:
-        return self._gpa
+scores = [91, 58, 73]
+print("unpacked into total:", total(*scores))   # * unpacks the list
 
-    @gpa.setter                     # ...but validates on every assignment
-    def gpa(self, value: float):
-        if not 0 <= value <= 4:
-            raise ValueError(f"gpa {value} not in 0-4")
-        self._gpa = value
+# --- 3. Keyword-only arguments (everything after * must be named) -------
+def report(name, *, verbose=False):    # `verbose` can't be passed positionally
+    return f"{name} (full report)" if verbose else name
+print("\n", report("Ana", verbose=True))
+# report("Ana", True)   # would raise TypeError — that's the point: clarity at the call site
 
-    @classmethod                    # an alternate constructor: build from a CSV row
-    def from_row(cls, row: str) -> "Student":
-        name, gpa = row.split(",")
-        return cls(name.strip(), float(gpa))
+# --- 4. A decorator: a function that wraps another function -------------
+def announce(func):
+    @functools.wraps(func)            # keep func's name/docstring on the wrapper
+    def wrapper(*args, **kwargs):     # *args/**kwargs forward ANY signature
+        print(f"  calling {func.__name__}{args}")
+        return func(*args, **kwargs)
+    return wrapper
 
-    @staticmethod                   # a helper that needs no instance/class
-    def is_passing(gpa: float) -> bool:
-        return gpa >= 2.0
+@announce                              # sugar for:  add = announce(add)
+def add(a, b):
+    return a + b
 
+print("\ndecorated:", add(2, 3))
 
-ana = Student("Ana", 3.9)
-print("\n", ana)                    # uses __str__
-print("from_row:", Student.from_row("Ben, 3.4"))     # classmethod constructor
-print("is_passing(1.5)?", Student.is_passing(1.5))   # staticmethod
-try:
-    ana.gpa = 5.0                   # rejected by the setter
-except ValueError as e:
-    print("rejected:", e)
+# --- 5. Closures + nonlocal: a function that remembers state ------------
+def make_counter():
+    count = 0
+    def step():
+        nonlocal count                # rebind the enclosing variable, not a new local
+        count += 1
+        return count
+    return step
 
+tick = make_counter()
+print("\ncounter:", tick(), tick(), tick())   # 1 2 3
 
-# --- 3. Inheritance ------------------------------------------------------
-class GradStudent(Student):
-    def __init__(self, name, gpa, advisor):
-        super().__init__(name, gpa)     # reuse the parent's setup
-        self.advisor = advisor
-    def __str__(self):
-        return super().__str__() + f" — advised by {self.advisor}"
+# --- 6. TRAP: mutable default argument ----------------------------------
+def add_bad(name, roster=[]):       # ❌ shared default
+    roster.append(name)
+    return roster
 
-print("\n", GradStudent("Cara", 3.4, "Dr. Lee"))
+print("\nBUGGY:")
+print(add_bad("Ana"))               # ['Ana']
+print(add_bad("Ben"))               # ['Ana', 'Ben']  <- persists!
 
+def add_ok(name, roster=None):      # ✅
+    if roster is None:
+        roster = []
+    roster.append(name)
+    return roster
 
-# --- 4. @dataclass: __init__, __repr__, __eq__ written for you ----------
-@dataclass
-class Grade:
-    course: str
-    score: int
+print("FIXED:")
+print(add_ok("Ana"))                # ['Ana']
+print(add_ok("Ben"))                # ['Ben']  <- fresh each call
 
-g1, g2 = Grade("ED1234", 91), Grade("ED1234", 91)
-print("\ndataclass repr:", g1)          # Grade(course='ED1234', score=91) — free __repr__
-print("value equality:", g1 == g2)      # True — free __eq__ compares fields
-
-
-# --- 5. match / case: structural pattern matching (Python 3.10+) --------
-def classify(record):
-    match record:
-        case {"gpa": g} if g >= 3.5:        # mapping pattern + guard
-            return "honors"
-        case {"gpa": _}:
-            return "regular"
-        case [first, *_]:                   # sequence pattern, capture the head
-            return f"list starting with {first!r}"
-        case _:                             # wildcard — the default
-            return "unknown"
-
-print("\nclassify:", classify({"gpa": 3.9}), "|", classify([10, 20]), "|", classify(42))
-
-
-# --- 6. The Pythonic toolkit --------------------------------------------
-roster = [Student("Ana", 3.9), Student("Ben", 1.8), Student("Cara", 3.2)]
-
-print("\ngood standing:", [s.name for s in roster if s.gpa >= 2.0])   # comprehension
-print("upper:", list(map(lambda s: s.name.upper(), roster)))         # map
-at_risk = filter(lambda s: s.gpa < 2.0, roster)                      # filter the objects
-print("at risk:", [s.name for s in at_risk])
-print("all passing?", all(s.gpa >= 2.0 for s in roster))            # any/all over a generator
-
-# reduce: fold a sequence down to a single value (here: product of gpas)
-print("gpa product:", round(functools.reduce(lambda a, s: a * s.gpa, roster, 1.0), 2))
-
-# itertools.groupby: group ADJACENT items — so sort by the key first!
-by_standing = sorted(roster, key=lambda s: s.standing())
-for standing, group in itertools.groupby(by_standing, key=lambda s: s.standing()):
-    print(f"  {standing}: {[s.name for s in group]}")
-
-# generator: produce values lazily; great for huge data
-def gpas(students):
-    for s in students:
-        yield s.gpa
-
-gen = gpas(roster)
-print("\nmean gpa:", round(class_average(list(gen)), 2))
-print("second pass:", list(gen))   # [] — a generator is exhausted after one pass
-
-# walrus := : assign and test in one step
-if (n := len(roster)) > 2:
-    print(f"\n{n} students enrolled")
+# --- 7. Scope: UnboundLocalError demo (commented) -----------------------
+# count = 0
+# def bump():
+#     count = count + 1   # UnboundLocalError: assigning makes `count` local
+# Prefer returning a value (or use `nonlocal`/a closure, as in block 5).

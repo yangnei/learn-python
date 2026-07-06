@@ -13,63 +13,63 @@
   (rebind the name), not an assertion of equality. A variable is a **label stuck on an object**,
   not a box that holds a value. This single reframing prevents most aliasing confusion later.
 
-### 2. Types & dynamic typing  *(S1)*
+### 2. Types & dynamic typing  *(S1–S2)*
 - **Maps onto:** measurement levels — nominal/ordinal/interval/ratio. Python's `str`/`bool`/`int`/
   `float` are loosely analogous (categorical vs counted vs continuous).
 - **Where it breaks:** SPSS/R columns have *one declared type per column*; a Python variable can
   hold a string now and an int later. The discipline a column gives you for free, you must supply
-  yourself. This is exactly why the comparison traps in S1 (Part B) exist.
+  yourself. This is exactly why the comparison traps in S2 exist.
 
-### 3. `==` vs `is`  *(S1)*
+### 3. `==` vs `is`  *(S2)*
 - **Maps onto:** the difference between **two questionnaires with identical answers** (equal in
   value) and **the same physical respondent** (identical individual). Two students can have the
   same GPA (`==`) without being the same person (`is`).
 - **Where it breaks:** the analogy is exact for objects, but Python adds an implementation wrinkle
   (small-integer caching) that has no analogue in research — flagged as a "do not rely on this."
 
-### 4. Boolean as a subclass of int (`True == 1`)  *(S1)*
+### 4. Boolean as a subclass of int (`True == 1`)  *(S2)*
 - **Maps onto:** **dummy coding** — you already encode "treatment = 1, control = 0" and then
   *sum* the dummies to count cases. Python literally does this: `sum([True, False, True]) == 2`.
 - **Where it breaks:** in your data the 1/0 is a convention you imposed; in Python it's baked into
   the language, so `True + True == 2` works even when you didn't intend arithmetic on a flag.
 
-### 5. Float precision (`0.1 + 0.2 != 0.3`)  *(S1)*
+### 5. Float precision (`0.1 + 0.2 != 0.3`)  *(S2)*
 - **Maps onto:** **rounding/measurement error**. You already never test two measured scores for
   exact equality; you use tolerances and report to 2 decimals.
 - **Where it breaks:** here the error isn't in the data — it's in how the *computer* stores
   decimals in binary. Same instinct (`math.isclose`, round for display), new cause.
 
-### 6. Lists / dicts / DataFrames  *(S2, S4)*
+### 6. Lists / dicts / DataFrames  *(S4, S8)*
 - **Maps onto:** a `list` of `dict`s is a **tidy dataset**: each dict is a *row/respondent*, each
   key is a *variable/column*. A `dict` alone is one record's variable→value map.
 - **Where it breaks:** a spreadsheet enforces rectangularity; a list of dicts does not — rows can
-  have missing or extra keys, which is the source of many bugs (and why we validate in S4).
+  have missing or extra keys, which is the source of many bugs (and why we validate in S7).
 
-### 7. Functions  *(S3)*
+### 7. Functions  *(S5)*
 - **Maps onto:** a **statistical formula or a coding scheme**: defined once, applied to many cases,
   same rule every time → reproducibility, the thing you care about most as a researcher.
 - **Where it breaks:** functions can carry *hidden state* (mutable defaults, globals) so the "same
-  input → same output" promise can silently fail. That trap (S3) is the whole reason to learn scope.
+  input → same output" promise can silently fail. That trap (S5) is the whole reason to learn scope.
 
-### 8. Exceptions & validation  *(S4)*
+### 8. Exceptions & validation  *(S7)*
 - **Maps onto:** **data cleaning** — out-of-range Likert values, blank cells, "N/A" typed into a
   numeric field. You already have a mental model of dirty data; exceptions are how code reacts to it.
 - **Where it breaks:** cleaning in SPSS is a one-time batch pass; in a program you decide *at runtime*,
   per value, whether to skip, fix, or stop — a more granular control than a recode syntax file.
 
-### 9. Regular expressions  *(S5)*
+### 9. Regular expressions  *(S9)*
 - **Maps onto:** **search-and-filter in a corpus / qualitative coding** — finding every response
   matching a pattern, extracting IDs, normalizing free-text.
 - **Where it breaks:** regex matches *surface form*, not meaning. It's powerful for structure
   (emails, dates, IDs) and treacherous for semantics — the opposite trade-off from human coding.
 
-### 10. Classes / OOP  *(S5)*
+### 10. Classes / OOP  *(S10)*
 - **Maps onto:** an **operational definition / construct** — a `Student` class bundles the
   attributes and behaviors you've decided "count" as a student, like an operationalized variable.
 - **Where it breaks:** a construct is a measurement choice; a class is also *behavior* (methods) and
   *enforced rules* (validation in setters), so it's a construct that can defend its own integrity.
 
-### 11. Recursion  *(S3)*
+### 11. Recursion  *(S6)*
 - **Maps onto:** a **hierarchy / nested structure** — coding schemes with sub-codes, threaded
   discussion data, folder trees of data files, nested JSON survey exports. A procedure "defined in
   terms of itself" mirrors data that contains smaller copies of itself.

@@ -56,7 +56,7 @@ def pdf_practice(heading: str, tasks: str, solution: str) -> str:
     return out
 
 # Sessions that have a lesson deck + practice file (capstone is an appendix).
-N_SESSIONS = 5
+N_SESSIONS = len(_bs.SESSIONS)
 
 _LIST_RE = re.compile(r"^\s*(?:[-*+]\s|\d+\.\s)")
 
@@ -128,8 +128,8 @@ COVER = f"""
   <div class="sub">Learn Python</div>
   <h1>Student Edition</h1>
   <div class="rule"></div>
-  <p style="font-size:12pt;color:#33415c">5 two-hour sessions + capstone · runnable examples ·
-     trap cheat sheets · self-check quizzes</p>
+  <p style="font-size:12pt;color:#33415c">10 one-hour sessions + capstone · runnable examples ·
+     homework · trap cheat sheets · self-check quizzes</p>
   <div class="meta">
      An accelerated, self-study Python course<br>
      for a researcher with no prior coding experience.<br><br>
@@ -157,21 +157,16 @@ def render() -> str:
     # Front matter: the student syllabus.
     sections.append(convert((ROOT / "curriculum" / "syllabus-student.md").read_text()))
 
-    # Each session, two halves: Part A lesson + practice, then Part B lesson + practice.
+    # Each session: the lesson, then practice (in-class + extra + homework), then traps.
     for n in range(1, N_SESSIONS + 1):
-        lesson_a, lesson_b = _bs.split_lesson(
-            strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text()))
+        lesson = strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text())
         practice_path = examples_dir / f"session-{n:02d}" / "practice.md"
-        ta = sa = tb = sb = ""
+        tasks = sol = ""
         if practice_path.exists():
-            ta, sa, tb, sb = _bs.split_practice(practice_path.read_text())
-        sections.append(f'<div class="pagebreak"></div>{convert(lesson_a)}')
-        if ta:
-            sections.append(convert(pdf_practice("Practice — Part A", ta, sa)))
-        if lesson_b:
-            sections.append(f'<div class="pagebreak"></div>{convert(lesson_b)}')
-            if tb:
-                sections.append(convert(pdf_practice("Practice — Part B", tb, sb)))
+            tasks, sol = _bs.split_practice(practice_path.read_text())
+        sections.append(f'<div class="pagebreak"></div>{convert(lesson)}')
+        if tasks:
+            sections.append(convert(pdf_practice("Practice & homework", tasks, sol)))
         traps_md = pdf_traps(n)
         if traps_md:
             sections.append(f'<div class="pagebreak"></div>{convert(traps_md)}')

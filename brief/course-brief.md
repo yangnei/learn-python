@@ -31,10 +31,10 @@ By the end the student can:
 6. Build one small, education-relevant capstone (e.g., a gradebook/survey analyzer).
 
 ## Format & Duration
-- **~12 hours total**, delivered as **5 two-hour sessions** — each covering **two paired topics**
-  (Part A + Part B) — plus an optional 6th capstone session.
-- Each session runs in two halves around a break: Concept → Live Example → Practice (Part A), then
-  the same for Part B, then a combined Traps recap → Summary.
+- **~10 hours total**, delivered as **10 one-hour sessions** — plus an optional 11th capstone
+  session. Every session also assigns **homework (~30–45 min)** outside class time.
+- Each session runs: warm-up (last session's homework + traps) → Concept → Live Example →
+  Practice → Traps recap → Summary + quiz → homework assigned.
 - Two parallel tracks of materials:
   - **Student edition** — clean syllabus, slides, runnable examples, cheat sheets.
   - **Teacher edition** — everything above *plus* timing hints, transition scripts,

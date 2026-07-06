@@ -1,143 +1,148 @@
-# Session 2 — Practice: Control Flow & Data Structures
+# Session 2 — Practice: The Dynamic-Typing Traps
 
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
+Type each solution yourself. **Predict every output before you run it.** Solutions at the bottom.
 
-## Part A — Control Flow: Conditionals & Loops
+## In class
 
-### Task 1 — Grade-band classifier
-Write `letter_grade(score)` returning A/B/C/D/F (90/80/70/60 cutoffs), `"Invalid"` outside 0–100.
-**Test the boundaries:** 90, 89.999, 0, 100, -5, 101.
+### Predict-the-output gauntlet
+For each line, write *why* (one sentence). Predict, then run to check.
 
-### Task 2 — Boolean logic
-1. What is `5 and 0`? `"" or "N/A"`? Why aren't they `True`/`False`?
-2. Rewrite `if attended == True:` the Pythonic way.
-
-### Task 3 — Average + pass/fail (loops)
-Given `names = ["Ana","Ben","Cara","Dev"]` and `scores = [91, 58, 73, 64]`:
-1. Compute the mean with a loop and a running total.
-2. Use `zip` to print `"<name>: PASS"` (≥60) or `"<name>: FAIL"`.
-3. Count the passes with `sum(s >= 60 for s in scores)`.
-
-### Task 4 — Validation loop
-Write a real `while True:` prompt that keeps asking until the user types an integer 0–100.
-
-### Task 5 — Trap check
-Why does this skip elements, and what's the fix?
 ```python
-xs = [1, 2, 3, 4]
-for x in xs:
-    if x % 2 == 0:
-        xs.remove(x)
+True + True            # 2     — bools are ints; True is 1
+3 == 3.0               # True  — numbers compare by value
+0.1 + 0.2 == 0.3       # False — binary float rounding
+5 == "5"               # False — different types, no error
+5 > "5"                # 💥    — can't ORDER int vs str
+[1,2] == (1,2)         # False — list vs tuple are different types
+bool("0")              # True  — non-empty string is truthy
+x=[1]; y=x; x.append(2); y   # [1,2] — y is an alias of x
 ```
+
+### Build `clean_score()`
+Write a function that safely turns a value into a float on a 0–100 scale:
+
+```python
+def clean_score(value):
+    """
+    Accept 87, 87.0, or "87" and return 87.0 (a float).
+    - Reject anything outside 0..100 with a clear message (return None).
+    - Compare floats safely (no exact ==).
+    """
+```
+Test it on: `87`, `87.0`, `"87"`, `"eighty"`, `120`, `True`.
+*What does `True` do, and why? (Hint: bool is an int...)*
 
 ### Bonus — Pythonic idiom drill
 Cover the `# ->` answers, predict each line, then run.
 
 ```python
-nums = [80, 92, 45]
-print(all(n >= 60 for n in nums))    # -> False   (45 fails)
-print(any(n >= 90 for n in nums))    # -> True    (92 passes)
-print(92 in nums, 60 in nums)        # -> True False
+x = int("257"); y = int("257")
+print(x == y, x is y)                # -> True False   (equal value, different objects)
+print(float("nan") == float("nan"))  # -> False        (NaN equals nothing, not even itself)
 ```
 
-## Part B — Data Structures: list, tuple, dict, set
+## Extra practice (in class, if you're ahead)
 
-Start from:
+### E1 — isinstance drill
+Predict each, then run:
 ```python
-roster = [
-    {"name": "Ana", "score": 91}, {"name": "Ben", "score": 58},
-    {"name": "Cara", "score": 73}, {"name": "Dev", "score": 64},
-]
+isinstance(True, int)
+type(True) is int
+isinstance(3.0, int)
+isinstance("3", (int, float))
+isinstance(3, (int, float))
 ```
 
-### Task 1 — Rank
-Print names sorted by score, highest first.
+### E2 — Same value, same object?
+Without running: after `a = [1, 2]; b = [1, 2]; c = a`, what are `a == b`, `a is b`,
+`a is c`? Now `c.append(3)` — what is `a`? Run and check all four.
 
-### Task 2 — Map (dict comprehension)
-Build `{name: score}` in one line.
+## Homework (before Session 3)
 
-### Task 3 — Group
-Build `{"pass": [...names...], "fail": [...names...]}` using a loop.
+*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
 
-### Task 4 — Dedup
-From `["A","B","A","C","B"]`, get the distinct values and how many there are.
+### H1 — Trap journal
+From today's ~18 traps, pick the **five** that surprised you most. For each, write down:
+the one-line code, your wrong expectation, and *why* Python answers differently — one
+sentence, your own words. (This journal is the seed of your personal cheat sheet.)
 
-### Task 5 — Aliasing
-Show that `b = roster` then `roster.append({...})` also changes `b`. Then make `b` an
-independent copy so it doesn't. (Hint: nested dicts → `copy.deepcopy`.)
+### H2 — `approx_equal(a, b, tol=1e-9)`
+Write the float comparison you'll use instead of `==` from now on; it must make
+`approx_equal(0.1 + 0.2, 0.3)` come out `True`. Do it once by hand (`abs`), once with
+`math.isclose`.
 
-### Bonus — Pythonic idiom drill
-Cover the `# ->` answers, predict each line, then run.
-
-```python
-head, *tail = [10, 20, 30, 40]
-print(head, tail)                    # -> 10 [20, 30, 40]   (star-unpacking)
-print({"a": 1} | {"b": 2})           # -> {'a': 1, 'b': 2}  (dict union, 3.9+)
-print({1, 2, 3} & {2, 3, 4})         # -> {2, 3}            (set intersection)
-print(list(zip(*[(1, 2), (3, 4)])))  # -> [(1, 3), (2, 4)]  (transpose)
-```
+### H3 — `is_missing(x)`
+Return `True` **only** for `None` — not for `0`, `0.0`, `""`, or `False`. Prove it on all
+five. (Hint: this is exactly what `is` is for.)
 
 ---
 
 ## Solutions
 
-### Part A — Control Flow: Conditionals & Loops
+### In class
 
 ```python
-# 1
-def letter_grade(score):
-    if not 0 <= score <= 100: return "Invalid"
-    for cutoff, g in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
-        if score >= cutoff: return g
-    return "F"
-# 90->A, 89.999->B, 0->F, 100->A, -5->Invalid, 101->Invalid
+import math
 
-# 2
-# 5 and 0 -> 0 ; "" or "N/A" -> "N/A"  (and/or return an operand, not a bool)
-result = "pass" if attended else "absent"     # and just `if attended:`
+def clean_score(value):
+    # Reject bools explicitly — they'd sneak through as ints (True == 1).
+    if isinstance(value, bool):
+        print(f"Rejected {value!r}: looks like a flag, not a score.")
+        return None
+    try:
+        score = float(value)              # handles int, float, and numeric strings
+    except (ValueError, TypeError):
+        print(f"Rejected {value!r}: not a number.")
+        return None
+    if not 0 <= score <= 100:
+        print(f"Rejected {value!r}: out of range 0–100.")
+        return None
+    return score
 
-# 3
-total = 0
-for s in scores: total += s
-print(total / len(scores))                    # 71.5
-for name, score in zip(names, scores):
-    print(f"{name}: {'PASS' if score >= 60 else 'FAIL'}")
-print("passes:", sum(s >= 60 for s in scores))   # 3
+for v in [87, 87.0, "87", "eighty", 120, True]:
+    print(v, "->", clean_score(v))
+# 87->87.0, 87.0->87.0, "87"->87.0, "eighty"->None, 120->None, True->None
+```
+Key lesson: `float(True)` is `1.0`, so without the explicit bool check a flag would
+pass as a valid score. This is the `bool ⊂ int` trap in a real function.
 
-# 4
-while True:
-    raw = input("Score 0–100: ")
-    if raw.isdigit() and 0 <= int(raw) <= 100:
-        print("Got", int(raw)); break
-    print("Try again.")
+### Extra practice
 
-# 5  Removing while iterating shifts indices, so elements get skipped.
-xs = [x for x in xs if x % 2 != 0]            # build a new list instead -> [1, 3]
+```python
+# E1
+isinstance(True, int)          # True  — bool is a subclass of int
+type(True) is int              # False — the exact type is bool
+isinstance(3.0, int)           # False — float is not an int subclass
+isinstance("3", (int, float))  # False — a numeric-LOOKING string is still a str
+isinstance(3, (int, float))    # True  — the tuple means "any of these"
+
+# E2
+a == b   # True  — same values
+a is b   # False — two separate list objects
+a is c   # True  — c is another label on a's object
+# after c.append(3): a == [1, 2, 3] — mutating through c shows through a
 ```
 
-### Part B — Data Structures: list, tuple, dict, set
+### Homework
+
+H1 — any five, e.g.: `0.1 + 0.2 == 0.3` (binary floats), `True == 1` (bool ⊂ int),
+`5 == "5"` (no cross-type conversion), `[1, 2] == (1, 2)` (list ≠ tuple), `is` on equal
+lists (identity ≠ equality). The *why* in your own words matters more than the pick.
 
 ```python
-# 1
-print([s["name"] for s in sorted(roster, key=lambda s: s["score"], reverse=True)])
-# ['Ana', 'Cara', 'Dev', 'Ben']
+# H2
+import math
 
-# 2
-name_to_score = {s["name"]: s["score"] for s in roster}
+def approx_equal(a, b, tol=1e-9):
+    return abs(a - b) <= tol
+    # or: return math.isclose(a, b, abs_tol=tol)
 
-# 3
-groups = {"pass": [], "fail": []}
-for s in roster:
-    groups["pass" if s["score"] >= 60 else "fail"].append(s["name"])
+print(approx_equal(0.1 + 0.2, 0.3))   # True
 
-# 4
-vals = ["A","B","A","C","B"]
-distinct = set(vals); print(distinct, len(distinct))   # {'A','B','C'} 3
+# H3
+def is_missing(x):
+    return x is None          # identity — only None itself passes
 
-# 5
-import copy
-b = roster                       # alias
-roster.append({"name": "Eve", "score": 80})
-# b now also has Eve. To stay independent:
-b = copy.deepcopy(roster)        # changes to roster no longer touch b
+for v in [None, 0, 0.0, "", False]:
+    print(repr(v), "->", is_missing(v))   # only None -> True
 ```

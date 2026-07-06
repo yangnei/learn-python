@@ -60,15 +60,15 @@ variable viewer and debugger.
 **Run a script:** save your code as `name.py`, then in a terminal run `python name.py` (Windows)
 or `python3 name.py` (macOS/Linux).
 
-**Install a package** (e.g. for the Session 4 pandas teaser): `pip install pandas` (or `pip3`).
+**Install a package** (e.g. for the Session 8 pandas teaser): `pip install pandas` (or `pip3`).
 
 ## Visualize what your code does — Python Tutor
 **<https://pythontutor.com/>** — paste code and **step through it line by line**, watching
 variables, the call stack, and which names point at which objects. It's the single best tool for
 the things this course keeps warning you about:
-- **aliasing** — see `b = a` make both names point at the *same* list (Session 2),
-- the **mutable-default-argument** bug (Session 3),
-- the **recursion call stack** building up and unwinding (Session 3).
+- **aliasing** — see `b = a` make both names point at the *same* list (Session 4),
+- the **mutable-default-argument** bug (Session 5),
+- the **recursion call stack** building up and unwinding (Session 6).
 
 Whenever you think *"wait, why did that happen?"* — drop the snippet into Python Tutor.
 
@@ -89,7 +89,7 @@ ask it to slow down and walk you through it.
 
 ## Other handy tools
 - **regex101.com** (<https://regex101.com/>) — build and *explain* regular expressions
-  interactively, with a live match view (Session 5). Set the flavor to **Python**.
+  interactively, with a live match view (Session 9). Set the flavor to **Python**.
 - **Official docs** — the [Python Tutorial](https://docs.python.org/3/tutorial/) and the
   [Library Reference](https://docs.python.org/3/library/). Bookmark both.
 - **Google Colab** (<https://colab.research.google.com/>) — run Python notebooks in the browser,

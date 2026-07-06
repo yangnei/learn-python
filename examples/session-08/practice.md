@@ -1,0 +1,151 @@
+# Session 8 — Practice: Files, Libraries & Research Data
+
+Type each solution yourself. **Predict every output before you run it.** Solutions at the bottom.
+
+## In class
+
+Files provided: `students.csv`, `survey.csv`.
+
+### Task 1 — Read & summarize students
+Read `students.csv` with `csv.DictReader`. Remember the values are **strings** — convert
+`score` to `int`. Print the class mean and median with the `statistics` module.
+
+### Task 2 — Mean by major
+Build `{major: mean_score}`. (Hint: `dict.setdefault(key, []).append(...)`.)
+
+### Task 3 — Clean & summarize the survey
+`survey.csv` has `"N/A"` and blanks in numeric columns. For each `q*` item, compute the
+mean of the **valid** values only, and how many were valid. Write `survey_summary.csv`
+with columns `item,mean,n_valid`.
+
+### Task 4 — pandas teaser (optional)
+If `pandas` is installed: `pd.read_csv("students.csv")["score"].describe()`. Compare the
+mean to your hand-computed one.
+
+### Trap check
+What happens if you accidentally open `students.csv` with mode `"w"` before reading it?
+
+### Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+import json
+s = json.dumps({"n": 3, "ok": True})
+print(s)                             # -> {"n": 3, "ok": true}   (Python True -> JSON true)
+print(json.loads(s)["ok"])           # -> True                   (and back to a Python bool)
+```
+
+## Extra practice (in class, if you're ahead)
+
+### E1 — One more column
+Extend the survey summary: add a `pct_valid` column (share of rows with a usable value),
+formatted to one decimal.
+
+### E2 — pathlib mini-tour
+With `from pathlib import Path`: does `students.csv` exist? How many bytes is it
+(`.stat().st_size`)? List every `.csv` in this folder (`.glob`).
+
+## Homework (before Session 9)
+
+*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
+
+### H1 — Attendance report (the whole pipeline)
+Create `attendance.csv` yourself: a `name` column plus five `s1..s5` columns of 0/1, about
+six rows — and sneak in one dirty cell (`"?"`). Then: read it with `DictReader`, compute
+each student's attendance rate (skip dirty cells; remember that summing 0/1 ints just
+works), and write `attendance_report.csv` with `name,rate,n_valid` via `DictWriter`.
+Everything inside `with open(...)`.
+
+### H2 — JSON round-trip
+`json.dump` your per-item survey means to `summary.json` (use `indent=2`), read it back
+with `json.load`, and verify `loaded == original`. Open the file in your editor — what
+happened to `True`?
+
+### H3 — Your own data
+Point the pipeline at ANY CSV from your own work (export one from Excel/Sheets if
+needed): read it, count the rows, compute one mean, print a two-line report. Note the
+first dirty value you hit and how you handled it — into the bug log it goes.
+
+---
+
+## Solutions
+
+### In class
+
+See `demo.py` in this folder — it implements Tasks 1–3 exactly. Key lines:
+
+```python
+scores = [int(s["score"]) for s in students]     # convert strings!
+statistics.mean(scores)                           # 75.5
+
+by_major = {}
+for s in students:
+    by_major.setdefault(s["major"], []).append(int(s["score"]))
+
+def to_int(x):
+    try: return int(x)
+    except (ValueError, TypeError): return None   # handles N/A and ""
+```
+
+Trap: opening with `"w"` **truncates the file to empty immediately** — your data is gone
+before you ever read it. Use `"r"` (the default) to read.
+
+### Extra practice
+
+```python
+# E1 — inside the loop over survey items
+vals = [to_int(r[item]) for r in rows]
+good = [v for v in vals if v is not None]
+writer.writerow({"item": item,
+                 "mean": round(statistics.mean(good), 2),
+                 "n_valid": len(good),
+                 "pct_valid": f"{100 * len(good) / len(vals):.1f}"})
+
+# E2
+from pathlib import Path
+p = Path("students.csv")
+print(p.exists())                      # True (in this folder)
+print(p.stat().st_size)                # size in bytes
+print(sorted(Path(".").glob("*.csv"))) # every CSV here
+```
+
+### Homework
+
+```python
+# H1
+import csv
+
+with open("attendance.csv", newline="") as f:
+    rows = list(csv.DictReader(f))
+
+report = []
+for r in rows:
+    marks = []
+    for key in list(r)[1:]:            # every column after "name"
+        try:
+            marks.append(int(r[key]))
+        except ValueError:
+            pass                       # skip the dirty cell — but count it as invalid
+    rate = sum(marks) / len(marks) if marks else 0.0
+    report.append({"name": r["name"], "rate": round(rate, 2), "n_valid": len(marks)})
+
+with open("attendance_report.csv", "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=["name", "rate", "n_valid"])
+    w.writeheader()
+    w.writerows(report)
+
+# H2
+import json
+
+original = {"q1": 4.2, "q2": 3.8, "all_valid": False}
+with open("summary.json", "w") as f:
+    json.dump(original, f, indent=2)
+with open("summary.json") as f:
+    loaded = json.load(f)
+print(loaded == original)   # True — and in the file, Python's False is written as
+                            # JSON's false (lowercase): JSON is its own language.
+```
+
+H3 — a pattern, not a fixed answer: `rows = list(csv.DictReader(f))` inside a `with`,
+`len(rows)` for the count, one column through a `to_int`/`to_float` cleaner for the mean.
+The first dirty value and its exception belong in your bug log.

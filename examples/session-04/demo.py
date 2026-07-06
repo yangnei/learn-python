@@ -1,169 +1,89 @@
-"""
-Session 4 — Exceptions, Files & Research Data
+"""Session 4 demo — Data Structures.
+
 Run me:  python3 demo.py
-Two halves — (A) Exceptions & Defensive Code; (B) Files, Libraries & Research Data.
-Predict each block, then run it.
+Predict each printed line BEFORE you run.
 """
 
-# ======================================================================
-# PART A — Exceptions & Defensive Code
-# ======================================================================
+import copy
+from collections import Counter, defaultdict
 
-# --- 1. try / except: convert what you can ------------------------------
-def safe_int(value):
-    """Return int(value) or None if it can't be parsed."""
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return None
+# --- 1. A list of dicts is a tidy dataset -------------------------------
+roster = [
+    {"name": "Ana",  "major": "Education",  "score": 91},
+    {"name": "Ben",  "major": "Psychology", "score": 58},
+    {"name": "Cara", "major": "Education",  "score": 73},
+    {"name": "Dev",  "major": "Sociology",  "score": 64},
+]
 
-for v in ["42", "N/A", "", None, "7"]:
-    print(f"safe_int({v!r}) = {safe_int(v)}")
+# --- 2. Slicing + star-unpacking ----------------------------------------
+xs = [10, 20, 30, 40]
+print("xs[1:3]:", xs[1:3], "| xs[-1]:", xs[-1], "| xs[::-1]:", xs[::-1])
+first, *rest = xs                 # grab the head; *rest soaks up the tail
+*lead, last = xs                  # or the other way round
+print("first:", first, "| rest:", rest, "| last:", last)
 
-# --- 2. Your own exception type, and raising it -------------------------
-class LikertError(ValueError):
-    """Raised when a value isn't a valid 1–5 Likert response."""
+# --- 3. Sorting by a key (and a tuple key for tie-breaks) ---------------
+top = sorted(roster, key=lambda s: s["score"], reverse=True)
+print("\nRanked:", [s["name"] for s in top])
+# Sort by major (A->Z), then by score (high->low) within each major:
+by_major_then_score = sorted(roster, key=lambda s: (s["major"], -s["score"]))
+print("major then score:", [(s["major"], s["name"]) for s in by_major_then_score])
+print("top scorer:", max(roster, key=lambda s: s["score"])["name"])   # max with key=
 
-def clean_likert(n):
-    """Return n if it's a valid 1–5 Likert int, else raise LikertError."""
-    if isinstance(n, bool) or not isinstance(n, int):
-        raise LikertError(f"{n!r} is not an integer")
-    if not 1 <= n <= 5:
-        raise LikertError(f"{n} is outside 1–5")
-    return n
+# --- 4. Comprehensions (list, dict, AND set) ----------------------------
+name_to_score = {s["name"]: s["score"] for s in roster}      # dict comp
+passers = [s["name"] for s in roster if s["score"] >= 60]    # filtered list
+majors = {s["major"] for s in roster}                        # set comp (unique)
+print("\nmap:", name_to_score)
+print("passers:", passers)
+print("distinct majors:", majors)
 
-# --- 3. clean a dirty survey column, keeping a rejection log ------------
-raw_responses = ["5", "3", "N/A", "7", "", "1", "two", "4"]
-clean, rejected = [], []
-for r in raw_responses:
-    n = safe_int(r)
-    try:
-        clean.append(clean_likert(n))        # may raise LikertError
-    except LikertError as e:                 # catching the base ValueError works too
-        rejected.append((r, str(e)))
+# --- 5. dict methods: .get() and .items() -------------------------------
+print("\nget present:", name_to_score.get("Ana"))            # 91
+print("get missing:", name_to_score.get("Zoe", "n/a"))       # default, no KeyError
+for name, score in name_to_score.items():                    # iterate key+value
+    print(f"  {name} = {score}")
 
-print("\nclean:", clean)
-print("rejected:")
-for original, why in rejected:
-    print(f"  {original!r}: {why}")
+# --- 6. Grouping: setdefault, defaultdict, and Counter ------------------
+buckets = defaultdict(list)        # auto-creates an empty list per new key
+for s in roster:
+    buckets["pass" if s["score"] >= 60 else "fail"].append(s["name"])
+print("\nbuckets:", dict(buckets))
+print("majors tally:", Counter(s["major"] for s in roster))  # counts in one line
 
-# --- 4. Exception chaining: keep the original cause with `raise ... from` -
-def parse_score(text):
-    try:
-        return int(text)
-    except ValueError as e:
-        raise LikertError(f"bad score {text!r}") from e   # preserves the __cause__
+# --- 7. Merging dicts (two ways) ----------------------------------------
+defaults = {"scale": 100, "passing": 60}
+overrides = {"passing": 50}
+print("\nmerged {**a,**b}:", {**defaults, **overrides})      # later wins
+print("merged a | b    :", defaults | overrides)             # Python 3.9+ union
 
-try:
-    parse_score("oops")
-except LikertError as e:
-    print("\nraised:", e, "| caused by:", repr(e.__cause__))
+# --- 8. Sets: dedup + set algebra ---------------------------------------
+took_stats = {"Ana", "Ben", "Cara"}
+took_python = {"Ana", "Dev"}
+print("\nboth courses:", took_stats & took_python)           # intersection
+print("either course:", took_stats | took_python)            # union
+print("stats only:   ", took_stats - took_python)            # difference
+print("exactly one:  ", took_stats ^ took_python)            # symmetric difference
 
-# --- 5. else / finally ---------------------------------------------------
-def parse(value):
-    try:
-        n = int(value)
-    except ValueError:
-        return "bad"
-    else:
-        return f"ok:{n}"          # only when no exception
-    finally:
-        pass                       # cleanup would go here (e.g., close a file)
+# --- 9. Tuples + zip(*...) to transpose ---------------------------------
+matrix = [(1, 2, 3), (4, 5, 6)]      # 2 rows x 3 cols
+print("\ntransposed:", list(zip(*matrix)))   # [(1,4),(2,5),(3,6)] — rows<->cols
 
-print("\n", parse("10"), parse("x"))
+# --- 10. TRAP: aliasing -------------------------------------------------
+a = [1, 2, 3]
+b = a                 # alias — SAME list
+a.append(4)
+print("\nalias b:", b)          # [1, 2, 3, 4]  (changed!)
 
-# --- 6. assert: a cheap internal sanity check ---------------------------
-def mean(xs):
-    assert xs, "mean() needs at least one value"   # AssertionError if xs is empty
-    return sum(xs) / len(xs)
+c = a.copy()          # independent shallow copy
+a.append(5)
+print("copy c:", c)             # [1, 2, 3, 4]  (unaffected)
 
-print("mean:", mean([2, 4, 6]))
-
-# --- 7. TRAP: bare except hides real bugs (don't do this) ---------------
-# try:
-#     risky()
-# except:            # ❌ catches EVERYTHING, even Ctrl+C and typos
-#     pass           # ❌ and silently swallows the error
-# Always: except SpecificError as e: ...
-
-
-# ======================================================================
-# PART B — Files, Libraries & Research Data
-# ======================================================================
-
-import csv
-import json
-import statistics
-from collections import Counter
-from pathlib import Path
-
-HERE = Path(__file__).parent     # so it works no matter where you run it
-
-# --- 1. Read a CSV into a list of dicts ---------------------------------
-with open(HERE / "students.csv", newline="") as f:
-    students = list(csv.DictReader(f))   # each row is a dict keyed by header
-
-print("rows read:", len(students))
-print("first row:", students[0])
-
-# CSV values are STRINGS — convert numbers (recall Session 1!)
-scores = [int(s["score"]) for s in students]
-print("class mean:", statistics.mean(scores))
-print("class stdev:", round(statistics.stdev(scores), 2))
-print("majors tally:", Counter(s["major"] for s in students))   # quick frequency count
-
-# --- 2. Group by major, mean score -------------------------------------
-by_major = {}
-for s in students:
-    by_major.setdefault(s["major"], []).append(int(s["score"]))
-major_means = {m: round(statistics.mean(v), 1) for m, v in by_major.items()}
-print("means by major:", major_means)
-
-# --- 3. Write a summary CSV --------------------------------------------
-with open(HERE / "students_summary.csv", "w", newline="") as f:
-    w = csv.DictWriter(f, fieldnames=["major", "mean_score", "n"])
-    w.writeheader()
-    for major, vals in by_major.items():
-        w.writerow({"major": major, "mean_score": round(statistics.mean(vals), 1),
-                    "n": len(vals)})
-print("wrote students_summary.csv")
-
-# --- 4. JSON: serialize a Python object to text and back ----------------
-snapshot = {"n": len(students), "mean": statistics.mean(scores), "by_major": major_means}
-(HERE / "snapshot.json").write_text(json.dumps(snapshot, indent=2))   # pathlib write
-restored = json.loads((HERE / "snapshot.json").read_text())           # pathlib read
-print("\nJSON round-trip ok?", restored == snapshot)
-
-# --- 5. Survey: per-item means, skipping dirty values -------------------
-def to_int(x):
-    try:
-        return int(x)
-    except (ValueError, TypeError):
-        return None        # handles "N/A" and "" (this session, Part A)
-
-with open(HERE / "survey.csv", newline="") as f:
-    rows = list(csv.DictReader(f))
-
-items = [c for c in rows[0] if c != "respondent"]
-item_means = {}
-for item in items:
-    vals = [to_int(r[item]) for r in rows]
-    vals = [v for v in vals if v is not None]      # drop missing
-    item_means[item] = round(statistics.mean(vals), 2)
-print("\nper-item survey means:", item_means)
-
-# Two files open at once in a single `with` (read source, write report together):
-with open(HERE / "survey.csv", newline="") as src, \
-     open(HERE / "survey_summary.csv", "w", newline="") as out:
-    rows = list(csv.DictReader(src))
-    w = csv.DictWriter(out, fieldnames=["item", "mean", "n_valid"])
-    w.writeheader()
-    for item in items:
-        valid = [to_int(r[item]) for r in rows if to_int(r[item]) is not None]
-        w.writerow({"item": item, "mean": round(statistics.mean(valid), 2),
-                    "n_valid": len(valid)})
-print("wrote survey_summary.csv")
-
-# --- 6. pathlib: discover files without hard-coding names ---------------
-csvs = sorted(p.stem for p in HERE.glob("*.csv"))   # .stem = filename without extension
-print("\nCSV files here:", csvs)
+# Nested data needs deepcopy:
+grid_bad = [[0] * 3] * 3        # 3 refs to ONE row
+grid_bad[0][0] = 9
+print("shared-row grid:", grid_bad)   # [[9,0,0],[9,0,0],[9,0,0]]  😱
+grid_ok = [[0] * 3 for _ in range(3)]
+grid_ok[0][0] = 9
+print("independent grid:", grid_ok)   # [[9,0,0],[0,0,0],[0,0,0]]
+_ = copy.deepcopy(grid_ok)            # deepcopy duplicates every nested level

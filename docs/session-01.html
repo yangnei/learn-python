@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>(function(){try{var k="lp.theme",t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t="light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
-<title>Session 1 — Running Python, Types &amp; the Type Traps</title>
+<title>Session 1 — Running Python, Variables &amp; Types</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Space+Grotesk:wght@500;600;700&display=swap">
@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
 </head>
 <body data-page="session-01">
-<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" class="active" data-page="session-01" title="Running Python, Types &amp; the Type Traps">S1</a><a href="session-02.html" data-page="session-02" title="Control Flow &amp; Data Structures">S2</a><a href="session-03.html" data-page="session-03" title="Functions, Scope &amp; Recursion">S3</a><a href="session-04.html" data-page="session-04" title="Exceptions, Files &amp; Research Data">S4</a><a href="session-05.html" data-page="session-05" title="Regular Expressions, Modules &amp; OOP">S5</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a><button class="theme-toggle" type="button" aria-label="Switch light or dark theme" title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span><span class="ti-sun" aria-hidden="true">&#9728;</span></button></nav></div></header>
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" class="active" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Recursion &amp; Recursive Thinking">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a><button class="theme-toggle" type="button" aria-label="Switch light or dark theme" title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span><span class="ti-sun" aria-hidden="true">&#9728;</span></button></nav></div></header>
 <main>
 
 <article>
@@ -23,19 +23,10 @@
 </aside>
   <div id="lesson-a" class="md"></div>
 
-  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-01-a.ipynb">
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-01.ipynb">
     <div class="nb-slot-bar">
-      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — Part A</button>
-      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-01-a.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
-    </div>
-    <div class="nb-embed" hidden></div>
-  </section>
-  <div id="lesson-b" class="md"></div>
-
-  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-01-b.ipynb">
-    <div class="nb-slot-bar">
-      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — Part B</button>
-      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-01-b.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — run this session's notebook</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-01.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
     </div>
     <div class="nb-embed" hidden></div>
   </section>
@@ -71,16 +62,9 @@
 </main>
 <script type="text/markdown" id="lesson-a-md">
 # Session 1
-## Running Python, Types & the Type Traps
-
-*Learn Python — a two-hour session, in two halves.*
-
-**Part A:** Running Python, Variables & Types  ·  **Part B:** The Dynamic-Typing Traps
-
----
-
-# Part A
 ## Running Python, Variables & Types
+
+*Learn Python — Session 1 of 10 · one hour.*
 
 ---
 
@@ -205,87 +189,17 @@ ValueError: invalid literal for int() with base 10: 'thirty'
 
 ## Summary
 You can run code, name values, convert types, format output, and read an error.
-**Next:** *Part B of this session* — the dynamic-typing traps.
-</script>
-<script type="text/markdown" id="lesson-b-md">
-# Part B
-## The Dynamic-Typing Traps
+**Next:** Session 2 — the dynamic-typing traps.
 
 ---
 
-## A name is just a label
+## Homework (before Session 2)
 
-Python won't lock a name to a type — it can point at an `int` now and a
-`str` later. That freedom is powerful, but it creates **traps** where the
-result contradicts your intuition.
+*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-01/practice.md` → **Homework**.*
 
-> This half is hands-on. Every rule below has a one-line, runnable trap in
-> **Traps — predict, then run** at the bottom of the page. Predict first,
-> then reveal.
-
----
-
-## `==` value, `is` identity
-
-- `==` asks "same value?" — almost always what you want.
-- `is` asks "same object?" — use it only for `None` (and `True`/`False`).
-- `b = a` does **not** copy: both names point at one list, so mutating `a`
-  shows through `b`. Copy with `list(a)` or `a[:]`.
-
-🧠 Same GPA = `==`. Same student = `is`.
-
----
-
-## Booleans are integers
-
-- `bool` is a *subtype* of `int`, so `True` behaves as `1` and `False` as `0`.
-- That means `5 + True` works, and `sum(flags)` counts how many are `True`.
-- Identity still differs, and `isinstance(True, int)` is true while
-  `type(True) is int` is not.
-
-🧠 Dummy coding (1/0) baked right into the language.
-
----
-
-## Numbers: int, float, division
-
-- `/` **always** returns a float (`4 / 2` is `2.0`); `//` floors **toward −∞**.
-- `3 == 3.0` compares by value, but decimals are stored in **binary**, so
-  `0.1 + 0.2` is not exactly `0.3`.
-- Never test two floats with `==` — use `math.isclose(a, b)`. (You already
-  never compare two measured scores for exact equality; same instinct.)
-
----
-
-## Comparing across types
-
-- `==` / `!=` across types returns `False` and never crashes.
-- `<` / `>` across incompatible types raises **TypeError** — the computer can
-  ask "same?" but can't *rank* text against numbers.
-- A list and a tuple with the same contents are **never equal**; sequences
-  compare element by element.
-
----
-
-## Truthiness
-
-- Falsy: `0  0.0  ""  []  {}  set()  None`. Truthy: everything else —
-  including `"0"`, `"False"`, and `[0]`.
-- Idiom: `if scores:` rather than `if len(scores) > 0:`.
-- But convert user text first — `"0"` is truthy.
-
----
-
-## Now spring the traps
-
-Open **Traps — predict, then run** below: ~18 one-line traps. For each one,
-**say your prediction out loud, then run it** to reveal the real result and
-the reason behind it.
-
-Then in `examples/session-01/practice.md`: write `clean_score(value)` that
-accepts `5`, `5.0`, or `"5"` and returns a float, rejecting nonsense — safely.
-
-**Next:** Control flow & data structures.
+1. **Unit converter** — a script that asks for a value and reports it converted, nicely f-string formatted.
+2. **Traceback drill** — break three lines on purpose; for each, read the last line and name the error.
+3. **Type-prediction table** — predict `type(...)` for ten expressions, then check in the REPL.
 
 </script>
 <script type="text/markdown" id="traps-md">
@@ -297,16 +211,16 @@ Read each snippet and decide what it does **before** you reveal the answer. To r
 **1.**
 
 ```python
-ana_scores = [88, 91]
-ben_scores = [88, 91]
-ana_scores is ben_scores
+score = '5'
+bonus = '3'   # what input() would hand you
+score + bonus
 ```
 
 <details><summary>Reveal the result</summary>
 
-&rarr; `False`
+&rarr; `'53'`
 
-`==` compares VALUES (and `ana_scores == ben_scores` is True); `is` compares IDENTITY — whether they are the same object in memory. Ana's and Ben's lists just happen to match. Use `==` for values and keep `is` for `None`.
+These are strings (as `input()` always returns): `+` concatenates text. Convert first: `int(score) + int(bonus)`.
 
 </details>
 
@@ -317,17 +231,15 @@ ana_scores is ben_scores
 **2.**
 
 ```python
-roster = ['Ana', 'Ben']
-backup = roster
-roster.append('Cara')
-backup
+age = 21
+'Age: ' + age
 ```
 
 <details><summary>Reveal the result</summary>
 
-&rarr; `['Ana', 'Ben', 'Cara']`
+&rarr; `TypeError: can only concatenate str (not "int") to str`
 
-`backup = roster` does not copy: both names point at one list, so appending through `roster` shows up in `backup` too. Copy with `list(roster)` or `roster[:]`.
+You can't glue text to a number with `+`. Use an f-string — `f"Age: {age}"` — or `print('Age:', age)`.
 
 </details>
 
@@ -338,15 +250,15 @@ backup
 **3.**
 
 ```python
-attended = True
-attended == 1
+gpa = 3.9
+int(gpa)
 ```
 
 <details><summary>Reveal the result</summary>
 
-&rarr; `True`
+&rarr; `3`
 
-`bool` is a subclass of `int`: `True == 1` and `False == 0`, which is why a spreadsheet's 1/0 lines up with Python's True/False.
+`int()` truncates toward zero, it doesn't round. Use `round(gpa)` when you mean rounding.
 
 </details>
 
@@ -357,285 +269,16 @@ attended == 1
 **4.**
 
 ```python
-score = 5
-bonus = True   # earned a bonus point?
-score + bonus
+name = 'ada'
+name.upper()
+name
 ```
 
 <details><summary>Reveal the result</summary>
 
-&rarr; `6`
+&rarr; `'ada'`
 
-`True` acts as `1` (and `False` as `0`) in arithmetic — a quick way to add a bonus point for a flag.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**5.**
-
-```python
-passed = [True, False, True, True]   # did each student pass?
-sum(passed)
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `3`
-
-Summing booleans counts the `True`s — a handy way to count how many students passed.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**6.**
-
-```python
-homework = 0.1
-exam = 0.2   # their weights in the final grade
-homework + exam
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `0.30000000000000004`
-
-Floats are stored in binary, where 0.1 and 0.2 have no exact representation, so the tiny errors add up.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**7.**
-
-```python
-weight = 0.1 + 0.2   # homework + exam
-weight == 0.3
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `False`
-
-Because `0.1 + 0.2` is `0.30000000000000004`. Never test computed scores with `==`; use `math.isclose(a, b)`.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**8.**
-
-```python
-missing_score = float('nan')
-missing_score == missing_score
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `False`
-
-`NaN` (a missing/invalid score) is defined to equal nothing, not even itself. Test it with `math.isnan(x)`.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**9.**
-
-```python
-total = 7   # two students' scores added up
-total / 2
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `3.5`
-
-`/` is always float (true) division, so the mean comes out as `3.5`. Use `//` when you want a whole number.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**10.**
-
-```python
-penalty = -7   # points to spread over 2 assignments
-penalty // 2
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `-4`
-
-`//` floors toward negative infinity, not toward zero, so `-7 // 2 == -4` (it deducts 4 from each, not 3).
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**11.**
-
-```python
-score = '5'   # read from a CSV
-score == 5
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `False`
-
-Python does no automatic text/number conversion, so a CSV string and a number are simply unequal (no error). Convert first: `int(score) == 5`.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**12.**
-
-```python
-score = '5'
-5 > score
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `TypeError: '>' not supported between instances of 'int' and 'str'`
-
-Ordering a number against text raises TypeError — there is no sensible order. Convert first: `5 > int(score)`.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**13.**
-
-```python
-scores_list = [88, 91]
-scores_tuple = (88, 91)
-scores_list == scores_tuple
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `False`
-
-A list never equals a tuple, whatever the contents.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**14.**
-
-```python
-passed = True
-type(passed) is int
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `False`
-
-`type()` is exact, and `passed`'s type is `bool`, not `int`. Use `isinstance` when you want subclass-aware checks.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**15.**
-
-```python
-passed = True
-isinstance(passed, int)
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `True`
-
-`isinstance` respects subclassing, and `bool` IS a kind of `int`.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**16.**
-
-```python
-answer = '0'   # what a student typed on the survey
-bool(answer)
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `True`
-
-Any NON-EMPTY string is truthy, including '0' and 'False'. Only the empty string is falsy — so convert survey text before testing it.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**17.**
-
-```python
-submissions = []
-bool(submissions)
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `False`
-
-Empty containers (`[]`, `{}`, `''`, `0`, `None`) are all falsy, which is why `if submissions:` reads as 'are there any?'.
-
-</details>
-
-</div>
-
-<div class="trap">
-
-**18.**
-
-```python
-id_from_csv = int('257')
-id_from_form = int('257')   # the same student ID, parsed twice
-id_from_csv is id_from_form
-```
-
-<details><summary>Reveal the result</summary>
-
-&rarr; `False`
-
-CPython pre-caches small ints (-5..256), so `is` accidentally looks True there; 257 built at runtime are separate objects. Compare values with `==`, never `is`.
+Strings are immutable: `.upper()` RETURNS a new string and leaves the original alone. Assign it back: `name = name.upper()`.
 
 </details>
 
@@ -643,23 +286,17 @@ CPython pre-caches small ints (-5..256), so `is` accidentally looks True there; 
 
 </script>
 <script type="text/markdown" id="quiz-md">
-### Quiz — Running Python, Types & the Type Traps
-*Part A — Variables & Types*
+### Quiz — Running Python, Variables & Types
 1. What type does `input("x: ")` return, always?
 2. What does `"5" + "3"` evaluate to? How do you get `8`? And what is `int(3.9)`?
-
-*Part B — The Dynamic-Typing Traps*
-3. `a = [1,2]; b = [1,2]` — is `a == b`? is `a is b`? Why?
-4. What is `True + True`? Why?
-5. Is `0.1 + 0.2 == 0.3` True or False? How should you compare them?
-6. What does `5 == "5"` give? What about `5 > "5"`?
+3. What does `f"{0.873:.1%}"` produce?
+4. In a traceback, which line do you read first — and what two things does it tell you?
 
 <details><summary>Show answers</summary>
 
-**Answers:** 1. `str`. 2. `"53"`; use `int("5") + int("3")`; `int(3.9)` is `3` (truncates).
-3. `==` True (same value), `is` False (different objects). 4. `2` (bool is a subclass of int).
-5. False; use `math.isclose(0.1+0.2, 0.3)` (or round). 6. `False`; `5 > "5"` raises `TypeError`
-(can't order int vs str).
+**Answers:** 1. `str`. 2. `"53"`; use `int("5") + int("3")`; `int(3.9)` is `3` (truncates,
+doesn't round). 3. `"87.3%"`. 4. The **last** line: the exception's name (what kind of
+problem) and the message (the offending value or detail).
 
 </details>
 </script>

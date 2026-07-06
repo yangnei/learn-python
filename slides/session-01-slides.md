@@ -1,20 +1,13 @@
 ---
 marp: true
-title: "Session 1 — Running Python, Types & the Type Traps"
+title: "Session 1 — Running Python, Variables & Types"
 paginate: true
 ---
 
 # Session 1
-## Running Python, Types & the Type Traps
-
-*Learn Python — a two-hour session, in two halves.*
-
-**Part A:** Running Python, Variables & Types  ·  **Part B:** The Dynamic-Typing Traps
-
----
-
-# Part A
 ## Running Python, Variables & Types
+
+*Learn Python — Session 1 of 10 · one hour.*
 
 ---
 
@@ -139,85 +132,14 @@ ValueError: invalid literal for int() with base 10: 'thirty'
 
 ## Summary
 You can run code, name values, convert types, format output, and read an error.
-**Next:** *Part B of this session* — the dynamic-typing traps.
+**Next:** Session 2 — the dynamic-typing traps.
 
 ---
 
-# Part B
-## The Dynamic-Typing Traps
+## Homework (before Session 2)
 
----
+*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-01/practice.md` → **Homework**.*
 
-## A name is just a label
-
-Python won't lock a name to a type — it can point at an `int` now and a
-`str` later. That freedom is powerful, but it creates **traps** where the
-result contradicts your intuition.
-
-> This half is hands-on. Every rule below has a one-line, runnable trap in
-> **Traps — predict, then run** at the bottom of the page. Predict first,
-> then reveal.
-
----
-
-## `==` value, `is` identity
-
-- `==` asks "same value?" — almost always what you want.
-- `is` asks "same object?" — use it only for `None` (and `True`/`False`).
-- `b = a` does **not** copy: both names point at one list, so mutating `a`
-  shows through `b`. Copy with `list(a)` or `a[:]`.
-
-🧠 Same GPA = `==`. Same student = `is`.
-
----
-
-## Booleans are integers
-
-- `bool` is a *subtype* of `int`, so `True` behaves as `1` and `False` as `0`.
-- That means `5 + True` works, and `sum(flags)` counts how many are `True`.
-- Identity still differs, and `isinstance(True, int)` is true while
-  `type(True) is int` is not.
-
-🧠 Dummy coding (1/0) baked right into the language.
-
----
-
-## Numbers: int, float, division
-
-- `/` **always** returns a float (`4 / 2` is `2.0`); `//` floors **toward −∞**.
-- `3 == 3.0` compares by value, but decimals are stored in **binary**, so
-  `0.1 + 0.2` is not exactly `0.3`.
-- Never test two floats with `==` — use `math.isclose(a, b)`. (You already
-  never compare two measured scores for exact equality; same instinct.)
-
----
-
-## Comparing across types
-
-- `==` / `!=` across types returns `False` and never crashes.
-- `<` / `>` across incompatible types raises **TypeError** — the computer can
-  ask "same?" but can't *rank* text against numbers.
-- A list and a tuple with the same contents are **never equal**; sequences
-  compare element by element.
-
----
-
-## Truthiness
-
-- Falsy: `0  0.0  ""  []  {}  set()  None`. Truthy: everything else —
-  including `"0"`, `"False"`, and `[0]`.
-- Idiom: `if scores:` rather than `if len(scores) > 0:`.
-- But convert user text first — `"0"` is truthy.
-
----
-
-## Now spring the traps
-
-Open **Traps — predict, then run** below: ~18 one-line traps. For each one,
-**say your prediction out loud, then run it** to reveal the real result and
-the reason behind it.
-
-Then in `examples/session-01/practice.md`: write `clean_score(value)` that
-accepts `5`, `5.0`, or `"5"` and returns a float, rejecting nonsense — safely.
-
-**Next:** Control flow & data structures.
+1. **Unit converter** — a script that asks for a value and reports it converted, nicely f-string formatted.
+2. **Traceback drill** — break three lines on purpose; for each, read the last line and name the error.
+3. **Type-prediction table** — predict `type(...)` for ten expressions, then check in the REPL.

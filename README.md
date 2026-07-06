@@ -5,7 +5,8 @@ experience** but strong self-learning skills. The pace is accelerated and the co
 deliberately front-loaded with the **easily-missed language fundamentals** (the dynamic-typing
 "traps") that beginners skip and later get bitten by.
 
-- **Length:** **5 two-hour sessions** (~12 hours), each covering **two paired topics**, + an optional 6th capstone session.
+- **Length:** **10 one-hour sessions** (~10 hours) + an optional 11th capstone session. Every
+  session also assigns **homework (~30–45 min)** that doesn't count toward class time.
 - **Two editions:** a clean **student** track and a **teacher** track (timing, transitions, misconceptions).
 - **Everything original.** All prose, slides, code, and cheat sheets here were written for this learner.
 
@@ -82,9 +83,9 @@ learn-python/
 │   ├── syllabus-teacher.md         ← TEACHER edition (timing, transitions, Socratic prompts)
 │   └── connection-map.md           ← Python ⇄ education-research bridges (personalization)
 ├── slides/
-│   └── session-01..05-slides.md    ← Marp slide decks (one per session, two halves each)
+│   └── session-01..10-slides.md    ← Marp slide decks (one per session)
 ├── examples/
-│   └── session-01..05/             ← runnable demo.py + practice.md (+ CSVs in S4, grades.py in S5)
+│   └── session-01..10/             ← runnable demo.py + practice.md (+ CSVs in S8, grades.py in S10)
 ├── cheatsheets/
 │   ├── traps-and-gotchas.md        ← the quirks, wrong-vs-right, all verified
 │   ├── quick-reference.md          ← syntax you'll forget
@@ -93,9 +94,9 @@ learn-python/
 │   ├── quizzes.md                  ← per-session quizzes + answer keys
 │   └── capstone-project.md         ← the Gradebook & Survey Analyzer
 ├── docs/                           ← STUDENT interactive website (GitHub Pages)
-│   ├── index.html, session-01..05.html, cheatsheets.html
+│   ├── index.html, session-01..10.html, cheatsheets.html
 │   ├── learn-python-student.pdf    ← downloadable student edition (offline reading)
-│   ├── notebooks/session-01..05.ipynb  ← one Jupyter notebook per session
+│   ├── notebooks/session-01..10.ipynb  ← one Jupyter notebook per session (+ -try/-traps)
 │   ├── jupyter/                    ← hosted JupyterLite app (run notebooks in-browser)
 │   └── assets/ (style.css, app.js) ← Pyodide-powered runnable code, quizzes, progress
 ├── output/
@@ -108,15 +109,23 @@ learn-python/
     └── build_student_pdf.py        ← regenerates the student PDF
 ```
 
-## The 5 sessions at a glance (two paired topics each)
-| # | Title | Part A · Part B |
-|---|---|---|
-| 1 | Running Python, Types & the Type Traps | Variables & types · the dynamic-typing traps |
-| 2 | Control Flow & Data Structures | conditionals & loops · list/tuple/dict/set |
-| 3 | Functions, Scope & Recursion | functions & scope · recursion |
-| 4 | Exceptions, Files & Research Data | exceptions & validation · files, CSV & libraries |
-| 5 | Regular Expressions, Modules & OOP | regex & text cleaning · modules, OOP & the Pythonic toolkit |
-| 6 | Capstone (optional) | Gradebook & Survey Analyzer, end to end |
+## The 10 sessions at a glance (one hour each, + homework)
+| # | Title |
+|---|---|
+| 1 | Running Python, Variables & Types |
+| 2 | The Dynamic-Typing Traps |
+| 3 | Control Flow: Conditionals & Loops |
+| 4 | Data Structures |
+| 5 | Functions, Scope & Reusability |
+| 6 | Recursion & Recursive Thinking |
+| 7 | Exceptions & Defensive Code |
+| 8 | Files, Libraries & Research Data |
+| 9 | Regular Expressions & Text Cleaning |
+| 10 | Modules, OOP & the Pythonic Toolkit |
+| 11 | Capstone (optional) — Gradebook & Survey Analyzer, end to end |
+
+The sessions run in five natural pairs (types→traps, control flow→data structures,
+functions→recursion, exceptions→files, regex→modules/OOP); each pair shares a through-line.
 
 ## How to render the slides (optional)
 The decks are plain Markdown with `---` slide breaks and Marp front-matter. To export to
@@ -124,19 +133,19 @@ HTML/PDF: `npx @marp-team/marp-cli slides/session-01-slides.md -o session-01.htm
 They also read fine as-is in any Markdown viewer.
 
 ## How to run the examples
-Each `examples/session-XX/demo.py` is self-contained (two halves, Part A + Part B):
+Each `examples/session-XX/demo.py` is self-contained:
 ```bash
-cd examples/session-01 && python3 demo.py     # types + the traps
-cd examples/session-04 && python3 demo.py     # reads the bundled CSVs (Part B)
+cd examples/session-01 && python3 demo.py     # variables & types
+cd examples/session-08 && python3 demo.py     # reads the bundled CSVs
 ```
-Requires Python 3.11+. The only optional third-party packages are `pytest` (Session 4 test)
-and `pandas` (Session 4 teaser); everything else is the standard library.
+Requires Python 3.11+. The only optional third-party packages are `pytest` (Session 7 test)
+and `pandas` (Session 8 teaser); everything else is the standard library.
 
 ## Scaling to the available time
-- **~10 hours:** drop the Pythonic-toolkit tour in S5 Part B and the pandas/json teaser in S4;
-  keep both halves' core of every session.
-- **~12 hours:** run S1–S5 as written, two hours each (recommended).
-- **~14 hours:** add the S6 capstone.
+- **~8 hours:** merge S1+S2 and S3+S4 into two fast 90-minute sessions and trim the S10
+  toolkit tour and the S8 pandas/json teaser.
+- **~10 hours:** run S1–S10 as written, one hour each (recommended).
+- **~12 hours:** add the S11 capstone.
 
 ## Note
 All instructional content in this package — prose, slides, code, cheat sheets, and quizzes —

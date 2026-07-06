@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){try{var k="lp.theme",t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t="light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<title>Session 9 — Regular Expressions &amp; Text Cleaning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
+</head>
+<body data-page="session-09">
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability">S5</a><a href="session-06.html" data-page="session-06" title="Recursion &amp; Recursive Thinking">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data">S8</a><a href="session-09.html" class="active" data-page="session-09" title="Regular Expressions &amp; Text Cleaning">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit">S10</a><a href="cheatsheets.html">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a><button class="theme-toggle" type="button" aria-label="Switch light or dark theme" title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span><span class="ti-sun" aria-hidden="true">&#9728;</span></button></nav></div></header>
+<main>
+
+<article>
+  
+<aside class="nb-bar">
+  <a class="nb-btn nb-primary" href="notebooks/session-09.ipynb" download>&#8595; Download this session (.ipynb)</a>
+  <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener">Open a blank notebook in Colab &#8599;</a>
+</aside>
+  <div id="lesson-a" class="md"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-09.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Practice — run this session's notebook</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-09.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+  <div id="traps" class="md"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-09-traps.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Traps — predict, then run</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-09-traps.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-09-try.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; Try it yourself</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-09-try.ipynb" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+  <h2>Check yourself</h2>
+<div id="quiz" class="md"></div>
+  <div class="page-foot">
+    <button id="complete-btn" class="complete-btn" type="button">Mark this session complete</button>
+    <div class="foot-nav">
+      <a href="session-08.html">&larr; Prev</a>
+      <a href="session-10.html">Next &rarr;</a>
+    </div>
+    <p class="dl-line"><a class="dl-btn" href="learn-python-student.pdf" download>&#8595; Download the full course (PDF)</a></p>
+  </div>
+</article>
+
+</main>
+<script type="text/markdown" id="lesson-a-md">
+# Session 9
+## Regular Expressions & Text Cleaning
+
+*Learn Python — Session 9 of 10 · one hour.*
+
+---
+
+## Why a researcher cares
+
+- Validate IDs, emails, dates before they pollute your data.
+- Extract structured bits from free text (codes, names, numbers).
+- Clean and normalize open-ended survey responses.
+- A first pass at **qualitative coding** (find every response matching a pattern).
+
+🧠 Like search-and-filter over a corpus — but it matches *form*, not meaning.
+
+---
+
+## Always use raw strings
+
+```python
+import re
+re.search(r"\d+", "id 42")     # r"..." = raw string
+```
+
+Without `r"..."`, Python eats the backslashes (`\d` → error/garbage).
+**Rule:** every regex pattern is a raw string.
+
+---
+
+## The survival tokens
+
+| Token | Matches |
+|---|---|
+| `.` | **any** char (except newline) |
+| `\d \w \s` | digit / word-char / whitespace |
+| `\D \W \S` | the negations |
+| `+ * ?` | 1+, 0+, 0-or-1 |
+| `{m}` `{m,n}` | exactly m / between m and n |
+| `^ $` | start / end of string |
+| `[abc]` `[^abc]` | any in set / none in set |
+| `(...)` | capture group |
+| `a\|b` | a or b |
+
+---
+
+## The `.` trap
+
+```python
+re.search(r".", "a.b").group()    # 'a'  — ANY char, not a dot!
+re.search(r"\.", "a.b").group()   # '.'  — escape it for a literal dot
+```
+
+Escape the specials when you mean them literally: `\. \^ \$ \* \+ \? \( \) \[ \] \{ \} \|`
+
+---
+
+## The four functions you need
+
+```python
+re.search(pattern, s)     # first match ANYWHERE -> match or None
+re.fullmatch(pattern, s)  # the WHOLE string must match -> validation
+re.findall(pattern, s)    # list of ALL matches
+re.sub(pattern, repl, s)  # replace matches -> cleaning
+```
+
+`re.IGNORECASE` flag for case-insensitive: `re.search(p, s, re.IGNORECASE)`.
+
+---
+
+## Validate (fullmatch anchors both ends)
+
+```python
+def valid_university_email(addr):
+    return re.fullmatch(r"\w+@\w+\.edu", addr) is not None
+
+valid_university_email("ana@university.edu")   # True
+valid_university_email("ana@gmail.com")        # False
+valid_university_email("ana@@x.edu")           # False
+```
+
+---
+
+## Extract with capture groups
+
+```python
+m = re.search(r"([A-Z]{2})(\d{4})", "Course ED1234 meets Tue")
+m.group(0)   # "ED1234"  whole match
+m.group(1)   # "ED"      dept
+m.group(2)   # "1234"    number
+```
+
+`m` is `None` if nothing matched — check before `.group()`.
+
+---
+
+## Clean & mine free text
+
+```python
+re.sub(r"\s+", " ", messy).strip()        # collapse whitespace
+re.findall(r"#(\w+)", "love #python #stats")   # ['python', 'stats']
+
+from collections import Counter
+Counter(re.findall(r"#(\w+)", corpus))    # theme frequencies
+```
+
+Reformat with groups: `re.sub(r"^(.+),\s*(.+)$", r"\2 \1", "Curie, Marie")` → `"Marie Curie"`.
+
+---
+
+## When NOT to use regex
+
+```python
+"a,b,c".split(",")     # simple split — no regex needed
+"  hi  ".strip()       # trim — no regex needed
+text.replace("X", "Y") # fixed substring — no regex needed
+```
+
+Regex shines for *variable* patterns. For fixed strings, plain methods read better.
+
+---
+
+## Your turn
+
+`examples/session-09/practice.md`:
+1. Email validator. 2. Extract dept+number. 3. Collapse whitespace.
+4. Count hashtags across responses. 5. Flip `"Last, First"`. 6. One case to use `.split()` instead.
+
+---
+
+## Traps recap
+
+- `.` matches **any** char — use `\.` for a literal dot.
+- Forgetting `r"..."` breaks your backslashes.
+- `re.search` returns `None` on no match — guard before `.group()`.
+- Don't use regex where a string method is clearer.
+
+## Summary
+You can validate, extract, and clean real-world text.
+**Next:** Session 10 — modules, OOP & the Pythonic toolkit.
+
+---
+
+## Homework (before Session 10)
+
+*Outside class — it doesn't count toward the hour. Full specs + solutions: `examples/session-09/practice.md` → **Homework**.*
+
+1. **Pattern drill** — student IDs, US phone numbers, ISO dates: one `fullmatch` pattern each.
+2. **Messy-name cleanup** — normalize a scraped name column with `re.sub`.
+3. **Domain harvest** — extract every email domain from a block of text.
+
+</script>
+<script type="text/markdown" id="traps-md">
+## Traps — predict, then reveal
+Read each snippet and decide what it does **before** you reveal the answer. To run and tinker with them line by line, open **&#9656; Traps — predict, then run** just below.
+
+<div class="trap">
+
+**1.**
+
+```python
+import re
+m = re.match(r'\[(.+)\]', '[ED101][ED102]')
+m.group(1)
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `'ED101][ED102'`
+
+`+` is greedy — it grabs as much as it can. Use `+?` for the shortest match: `r'\[(.+?)\]'`.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**2.**
+
+```python
+import re
+bool(re.match(r'\d+', 'cohort2026'))
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `False`
+
+`re.match` anchors at the START of the string. Use `re.search` to find a match anywhere.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**3.**
+
+```python
+import re
+re.fullmatch(r'grades.csv', 'gradesXcsv') is not None
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `True`
+
+`.` matches ANY character, so `gradesXcsv` fits the pattern. Escape it — `r'grades\.csv'` — when you mean a literal dot.
+
+</details>
+
+</div>
+
+</script>
+<script type="text/markdown" id="quiz-md">
+### Quiz — Regular Expressions & Text Cleaning
+1. In regex, what does `.` match? How do you match a literal dot?
+2. Why write regex patterns as raw strings `r"..."`?
+3. What does `re.search` return when there's no match, and what must you do before
+   `.group()`?
+4. `re.search` vs `re.fullmatch` — which one is for validation, and why?
+
+<details><summary>Show answers</summary>
+
+**Answers:** 1. Any character (except newline); use `\.` for a literal dot. 2. So
+backslashes aren't treated as Python string escapes. 3. It returns `None`; check `if m:`
+before `m.group()` or you'll hit an `AttributeError`. 4. `fullmatch` — it anchors both
+ends, so the *whole* string must fit the pattern; `search` would accept a valid-looking
+fragment inside garbage.
+
+</details>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

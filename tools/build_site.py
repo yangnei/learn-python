@@ -25,20 +25,29 @@ traps = importlib.util.module_from_spec(_traps_spec)
 _traps_spec.loader.exec_module(traps)
 
 SESSIONS = [
-    (1, "Running Python, Types & the Type Traps",
-     "Run code & the core types; then == vs is, True==1, float precision, 5=='5'.", False),
-    (2, "Control Flow & Data Structures",
-     "if/elif/else, chained comparisons, for/while, enumerate/zip; list/tuple/dict/set, comprehensions, aliasing.", False),
-    (3, "Functions, Scope & Recursion",
-     "params, *args/**kwargs, scope, the mutable-default bug; base/recursive case, the call stack, nested data.", False),
-    (4, "Exceptions, Files & Research Data",
-     "try/except, raising, validating dirty input; open/with, CSV, statistics, the pandas teaser.", False),
-    (5, "Regular Expressions, Modules & OOP",
-     "patterns, groups, re.sub; import modules, a class with @property, generators/map/filter/walrus.", False),
+    (1, "Running Python, Variables & Types",
+     "REPL vs script, the five core types, input()/print(), f-strings, casting, reading a traceback.", False),
+    (2, "The Dynamic-Typing Traps",
+     "== vs is, True==1, float precision, 5=='5', truthiness, isinstance — the core of the course.", False),
+    (3, "Control Flow: Conditionals & Loops",
+     "if/elif/else, chained comparisons, and/or, for/while, range, break/continue, enumerate/zip.", False),
+    (4, "Data Structures",
+     "list/tuple/dict/set, slicing, a list of dicts as a dataset, comprehensions, sorting, aliasing.", False),
+    (5, "Functions, Scope & Reusability",
+     "def, parameters, *args/**kwargs, return vs print, LEGB scope, type hints, the mutable-default bug.", False),
+    (6, "Recursion & Recursive Thinking",
+     "base + recursive case, the call stack, recursion vs iteration, nested data, RecursionError.", False),
+    (7, "Exceptions & Defensive Code",
+     "try/except/else/finally, raise, EAFP vs LBYL, assert, a first pytest test.", False),
+    (8, "Files, Libraries & Research Data",
+     "open/with, file modes, CSV as dicts, json, statistics/datetime/pathlib, the pandas teaser.", False),
+    (9, "Regular Expressions & Text Cleaning",
+     "raw strings, the survival tokens, search/fullmatch/findall/sub, capture groups.", False),
+    (10, "Modules, OOP & the Pythonic Toolkit",
+     "import & the __main__ guard, classes with @property, inheritance, generators, map/filter, walrus.", False),
 ]
 
-# Editable, in-browser-runnable snippets per TOPIC (Pyodide-safe: no file I/O, no input()).
-# These keys are the original 10 topics; they're merged onto the 5 two-hour sessions below.
+# Editable, in-browser-runnable snippets per session (Pyodide-safe: no file I/O, no input()).
 _TOPIC_PLAYGROUNDS: dict[int, list[dict]] = {
     1: [{"title": "types_and_fstrings.py", "code": '''\
 # Edit me, then press Run. Predict the output first!
@@ -317,11 +326,8 @@ print("fib(35):", fib(35))             # 9227465 — try removing @cache, then w
 '''}],
 }
 
-# Merge the per-topic snippets onto the five 2-hour sessions (each = two topics).
-PLAYGROUNDS: dict[int, list[dict]] = {
-    n: _TOPIC_PLAYGROUNDS.get(a, []) + _TOPIC_PLAYGROUNDS.get(b, [])
-    for n, (a, b) in {1: (1, 2), 2: (3, 4), 3: (5, 6), 4: (7, 8), 5: (9, 10)}.items()
-}
+# One session = one topic, so the per-topic snippets map straight onto sessions.
+PLAYGROUNDS: dict[int, list[dict]] = _TOPIC_PLAYGROUNDS
 
 CDN = {
     "marked": "https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js",
@@ -336,7 +342,7 @@ STUDENT_PDF = "learn-python-student.pdf"
 # (built by tools/build_jupyterlite.sh), both served from docs/. The Colab launcher reads
 # the .ipynb straight from the GitHub repo, so these must match the live repo path.
 GH_OWNER, GH_REPO, GH_BRANCH = "yangnei", "learn-python", "main"
-NB_DIR = "notebooks"          # docs/notebooks/session-NN{,-a,-b}.ipynb + scratch.ipynb
+NB_DIR = "notebooks"          # docs/notebooks/session-NN{,-try,-traps}.ipynb
 LITE_DIR = "jupyter"          # docs/jupyter/  (JupyterLite static app)
 # Colab's blank-notebook launcher (the top-of-page button + the scratch slot).
 COLAB_BLANK = "https://colab.research.google.com/#create=true"
@@ -516,37 +522,19 @@ def build_index() -> str:
     return page_shell("Learn Python — Home", "index", body, "")
 
 
-def split_lesson(lesson_md: str) -> tuple[str, str]:
-    """Split a merged (frontmatter-stripped) deck into Part A / Part B markdown.
+def split_practice(practice_md: str) -> tuple[str, str]:
+    """Return (tasks, solutions) from a practice file.
 
-    Decks are joined by `---` slide separators with `# Part B` opening the second half.
-    """
-    parts = re.split(r"\n+-{3,}[ \t]*\n+(?=# Part B\b)", lesson_md, maxsplit=1)
-    if len(parts) == 2:
-        return parts[0].rstrip(), parts[1].lstrip()
-    return lesson_md, ""
-
-
-def split_practice(practice_md: str) -> tuple[str, str, str, str]:
-    """Return (tasks_a, solutions_a, tasks_b, solutions_b) from a merged practice file.
-
-    Layout: title/intro, `## Part A`, `## Part B`, `---`, `## Solutions` with
-    `### Part A` / `### Part B` subsections.
+    Layout: an H1 + intro line, then the task sections (`## In class`,
+    `## Extra practice`, `## Homework`), then `---` and `## Solutions`.
     """
     m = re.search(r"(?m)^##\s+Solutions?\s*$", practice_md)
     tasks_region = practice_md[:m.start()] if m else practice_md
-    sol_region = practice_md[m.end():] if m else ""
-
-    tb = re.split(r"(?m)^##\s+Part B\b.*$", tasks_region, maxsplit=1)
-    ta = re.split(r"(?m)^##\s+Part A\b.*$", tb[0], maxsplit=1)
-    tasks_a = (ta[1] if len(ta) == 2 else tb[0]).strip()
-    tasks_b = re.sub(r"\n-{3,}\s*$", "", tb[1]).strip() if len(tb) == 2 else ""
-
-    sb = re.split(r"(?m)^###\s+Part B\b.*$", sol_region, maxsplit=1)
-    sa = re.split(r"(?m)^###\s+Part A\b.*$", sb[0], maxsplit=1)
-    sol_a = (sa[1] if len(sa) == 2 else "").strip()
-    sol_b = (sb[1] if len(sb) == 2 else "").strip()
-    return tasks_a, sol_a, tasks_b, sol_b
+    solutions = practice_md[m.end():].strip() if m else ""
+    first = re.search(r"(?m)^##\s+", tasks_region)
+    tasks = tasks_region[first.start():] if first else tasks_region
+    tasks = re.sub(r"\n-{3,}\s*$", "", tasks.rstrip()).strip()
+    return tasks, solutions
 
 
 def practice_part_md(heading: str, tasks: str, solution: str) -> str:
@@ -574,35 +562,26 @@ def traps_section_md(n: int) -> str:
 
 
 def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quizzes_text: str) -> str:
-    lesson_a, lesson_b = split_lesson(strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text()))
+    lesson = strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text())
     quiz = session_quiz_md(quizzes_text, n)
     quiz_block = (f'<h2>Check yourself</h2>\n<div id="quiz" class="md"></div>' if quiz else "")
     stem = f"session-{n:02d}"
 
-    # The practice for each half, the trap lab, and the open scratch all live in embedded,
-    # runnable notebooks rather than on the page: lazy-loaded JupyterLite slots.
-    slot_a = embed_slot("Practice — Part A", lite_for(f"{stem}-a"), colab_for(f"{stem}-a"))
-    slot_b = embed_slot("Practice — Part B", lite_for(f"{stem}-b"), colab_for(f"{stem}-b"))
+    # The practice, the trap lab, and the open scratch all live in embedded, runnable
+    # notebooks rather than on the page: lazy-loaded JupyterLite slots.
+    slot_practice = embed_slot("Practice — run this session's notebook",
+                               lite_for(stem), colab_for(stem))
     slot_traps = embed_slot("Traps — predict, then run", lite_for(f"{stem}-traps"), colab_for(f"{stem}-traps"))
     slot_try = embed_slot("Try it yourself", lite_for(f"{stem}-try"), colab_for(f"{stem}-try"))
 
     traps_md = traps_section_md(n)
     traps_html = ('  <div id="traps" class="md"></div>\n' + f'{slot_traps}\n') if traps_md else ""
 
-    if lesson_b:   # the normal case: two interleaved halves
-        lesson_html = (
-            '  <div id="lesson-a" class="md"></div>\n'
-            f'{slot_a}\n'
-            '  <div id="lesson-b" class="md"></div>\n'
-            f'{slot_b}\n'
-            f'{traps_html}'
-            f'{slot_try}')
-        md_blocks = [md_script("lesson-a-md", lesson_a),
-                     md_script("lesson-b-md", lesson_b)]
-    else:          # fallback: single lesson, both practice notebooks after it
-        lesson_html = ('  <div id="lesson-a" class="md"></div>\n'
-                       f'{slot_a}\n{slot_b}\n{traps_html}{slot_try}')
-        md_blocks = [md_script("lesson-a-md", lesson_a)]
+    lesson_html = ('  <div id="lesson-a" class="md"></div>\n'
+                   f'{slot_practice}\n'
+                   f'{traps_html}'
+                   f'{slot_try}')
+    md_blocks = [md_script("lesson-a-md", lesson)]
 
     if traps_md:
         md_blocks.append(md_script("traps-md", traps_md))

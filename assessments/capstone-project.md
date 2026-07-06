@@ -1,12 +1,12 @@
 # Capstone Project — Gradebook & Survey Analyzer
 
-**Time:** ~2 hours (Session 6). **Role:** the student drives; the teacher coaches with questions.
+**Time:** ~2 hours (Session 11). **Role:** the student drives; the teacher coaches with questions.
 **Goal:** independently build one end-to-end program on realistic education data, exercising
 every fundamental from the course.
 
 ## The brief
 Write a program `analyzer.py` that:
-1. **Reads** `students.csv` and `survey.csv` (reuse the files from `examples/session-04/`).
+1. **Reads** `students.csv` and `survey.csv` (reuse the files from `examples/session-08/`).
 2. **Cleans & validates** the data:
    - Convert score/Likert strings to numbers; skip/flag `"N/A"`, blanks, out-of-range values.
    - Reject impossible scores (outside 0–100) and Likert values outside 1–5.
@@ -21,20 +21,20 @@ Write a program `analyzer.py` that:
 
 ## Required techniques (checklist — hits the whole course)
 - [ ] f-strings & type conversion (S1)
-- [ ] correct comparisons; `math.isclose` or rounding where floats are compared (S1)
-- [ ] conditionals / chained comparisons + loops with `enumerate`/`zip` (S2)
-- [ ] list of dicts + a comprehension + a dict (S2)
-- [ ] functions with docstrings + type hints; **no mutable default args** (S3)
-- [ ] `try/except` to survive dirty values; no bare `except:` (S4)
-- [ ] `csv.DictReader`/`DictWriter`, `statistics`, `with open(...)` (S4)
-- [ ] a module or a small class (S5); optionally a regex validation (S5)
+- [ ] correct comparisons; `math.isclose` or rounding where floats are compared (S2)
+- [ ] conditionals / chained comparisons + loops with `enumerate`/`zip` (S3)
+- [ ] list of dicts + a comprehension + a dict (S4)
+- [ ] functions with docstrings + type hints; **no mutable default args** (S5)
+- [ ] `try/except` to survive dirty values; no bare `except:` (S7)
+- [ ] `csv.DictReader`/`DictWriter`, `statistics`, `with open(...)` (S8)
+- [ ] a module or a small class (S10); optionally a regex validation (S9)
 
 ## Stretch goals (pick any)
 - Validate student emails/IDs with a regex.
 - Add a `Student` class with a validating `@property` and use it to hold each record.
 - Use a **generator** to stream rows if the file were huge.
 - Read a **nested** export (e.g., grades grouped by class → student → attempts) and total it with
-  a **recursive** `deep_sum` (S3).
+  a **recursive** `deep_sum` (S6).
 - Add a `--top N` command-line argument with `sys.argv` or `argparse`.
 - Sort and print the top/bottom 3 students by score.
 

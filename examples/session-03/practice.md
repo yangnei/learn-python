@@ -1,160 +1,173 @@
-# Session 3 — Practice: Functions & Recursion
+# Session 3 — Practice: Control Flow: Conditionals & Loops
 
-This 2-hour session has two halves. Do **Part A** after the first topic, **Part B** after the second. Predict every output before you run it.
+Type each solution yourself. **Predict every output before you run it.** Solutions at the bottom.
 
-## Part A — Functions, Scope & Reusability
+## In class
 
-### Task 1 — Grade-functions module
-Write three functions with docstrings and type hints:
-- `class_average(scores: list[float]) -> float`
-- `letter_grade(score: float) -> str`  (reuse Session 3)
-- `pass_rate(scores: list[float], passing: float = 60) -> float`  (fraction passing, 0–1)
+### Task 1 — Grade-band classifier
+Write `letter_grade(score)` returning A/B/C/D/F (90/80/70/60 cutoffs), `"Invalid"` outside 0–100.
+**Test the boundaries:** 90, 89.999, 0, 100, -5, 101.
 
-Use bool-summing for `pass_rate` (recall `sum(s >= passing for s in scores)`).
+### Task 2 — Boolean logic
+1. What is `5 and 0`? `"" or "N/A"`? Why aren't they `True`/`False`?
+2. Rewrite `if attended == True:` the Pythonic way.
 
-### Task 2 — Reproduce & fix the mutable-default bug
-Write `add_note(text, notes=[])` that appends and returns. Call it three times and watch
-the list grow. Then fix it with the `None` pattern and prove each call starts fresh.
+### Task 3 — Average + pass/fail (loops)
+Given `names = ["Ana","Ben","Cara","Dev"]` and `scores = [91, 58, 73, 64]`:
+1. Compute the mean with a loop and a running total.
+2. Use `zip` to print `"<name>: PASS"` (≥60) or `"<name>: FAIL"`.
+3. Count the passes with `sum(s >= 60 for s in scores)`.
 
-### Task 3 — *args summary
-Write `summary(*scores)` that returns a dict `{"n":..., "mean":..., "max":..., "min":...}`.
-Call it both as `summary(91, 58, 73)` and as `summary(*my_list)`.
+### Task 4 — Validation loop
+Write a real `while True:` prompt that keeps asking until the user types an integer 0–100.
+
+### Task 5 — Trap check
+Why does this skip elements, and what's the fix?
+```python
+xs = [1, 2, 3, 4]
+for x in xs:
+    if x % 2 == 0:
+        xs.remove(x)
+```
 
 ### Bonus — Pythonic idiom drill
 Cover the `# ->` answers, predict each line, then run.
 
 ```python
-def f(a, *, b):          # everything after * is keyword-only
-    return a, b
-print(f(1, b=2))                     # -> (1, 2)
-print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into arguments)
+nums = [80, 92, 45]
+print(all(n >= 60 for n in nums))    # -> False   (45 fails)
+print(any(n >= 90 for n in nums))    # -> True    (92 passes)
+print(92 in nums, 60 in nums)        # -> True False
 ```
 
-## Part B — Recursion & Recursive Thinking
+## Extra practice (in class, if you're ahead)
 
-### Task 1 — Recursive total
-Write `total(scores)` that sums a list of scores **with recursion** (no loop):
-`scores[0] + total(rest)`, with the empty list as the base case. Name the base
-case out loud first. Test `total([91, 58, 73])` and `total([])`.
+### E1 — Refactor to chained comparisons
+Rewrite each with one chained comparison:
+1. `if x >= 0 and x <= 100:`
+2. `if lo < value and value < hi:`
+3. `if a == b and b == c:`
 
-### Task 2 — Recursion vs iteration
-Write `reverse(s)` that reverses a string recursively. Then write the loop version.
-Which reads more clearly to you? Test `reverse("data")`.
+### E2 — Countdown
+Print 10 → 1 then `Go!` — once with `range`, once with `while`. Mind the off-by-one at
+**both** ends.
 
-### Task 3 — Flatten nested data
-Write `flatten(xs)` that turns a list-of-lists (nested to any depth) into one flat list:
-`flatten([1, [2, [3, 4]], 5])` → `[1, 2, 3, 4, 5]`. This is the move for nested JSON/exports.
+## Homework (before Session 4)
 
-### Task 4 — How deep does it go?
-Write `depth(xs)` returning how deeply a list is nested:
-`depth([1, [2, [3, [4]]]])` → `4`, `depth([1, 2, 3])` → `1`, `depth(5)` → `0`.
+*~30–45 minutes, outside class — it doesn't count toward the hour. Try everything before peeking at the solutions.*
 
-### Task 5 — Trap check
-1. Why does this raise `RecursionError`, and what's the fix?
-   ```python
-   def f(n):
-       return n + f(n - 1)
-   ```
-2. This returns `None` instead of a number — why?
-   ```python
-   def orderings(n):
-       if n <= 1:
-           return 1
-       n * orderings(n - 1)
-   ```
-3. Name one case where a plain loop is the better choice over recursion.
+### H1 — Attendance labeler
+Write `label(pct)` → `"perfect"` (exactly 100), `"good"` (≥ 80), `"at risk"` (≥ 50), else
+`"critical"`; `"invalid"` outside 0–100. Loop over
+`[100, 92.5, 80, 79.9, 50, 12, -3, 104]` printing `pct -> label`. **Test every boundary.**
 
-### Bonus — Pythonic idiom drill
-One decorator makes exponential recursion instant by remembering past calls.
+### H2 — Number-guessing game
+Set `secret = 37`. Loop: ask for a guess (validate it's an integer 1–100 — reuse today's
+validation-loop pattern), print `higher` / `lower` / `got it in N tries`. Count attempts.
 
-```python
-import functools
-
-@functools.cache                     # memoize: each n is computed once
-def fib(n):
-    return n if n < 2 else fib(n - 1) + fib(n - 2)
-print(fib(35))                       # -> 9227465   (try this WITHOUT @cache... then wait)
-```
+### H3 — Leap-year checker
+`is_leap(year)`: divisible by 4, except centuries unless divisible by 400 — as **one**
+boolean expression. Verify: 2024 → True, 1900 → False, 2000 → True, 2026 → False.
 
 ---
 
 ## Solutions
 
-### Part A — Functions, Scope & Reusability
-
-```python
-def class_average(scores: list[float]) -> float:
-    """Mean of scores."""
-    return sum(scores) / len(scores)
-
-def letter_grade(score: float) -> str:
-    """A/B/C/D/F by 90/80/70/60 cutoffs."""
-    for cutoff, letter in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
-        if score >= cutoff:
-            return letter
-    return "F"
-
-def pass_rate(scores: list[float], passing: float = 60) -> float:
-    """Fraction of scores >= passing (0..1)."""
-    return sum(s >= passing for s in scores) / len(scores)
-
-# Task 2
-def add_note(text, notes=None):     # fixed version
-    if notes is None:
-        notes = []
-    notes.append(text)
-    return notes
-
-# Task 3
-def summary(*scores):
-    return {"n": len(scores), "mean": sum(scores)/len(scores),
-            "max": max(scores), "min": min(scores)}
-print(summary(91, 58, 73))
-print(summary(*[91, 58, 73]))
-```
-
-### Part B — Recursion & Recursive Thinking
+### In class
 
 ```python
 # 1
-def total(scores):
-    if not scores:                  # base case: empty list sums to 0
-        return 0
-    return scores[0] + total(scores[1:])   # first score + total of the rest
-print(total([91, 58, 73]), total([]))      # 222 0
+def letter_grade(score):
+    if not 0 <= score <= 100: return "Invalid"
+    for cutoff, g in [(90,"A"),(80,"B"),(70,"C"),(60,"D")]:
+        if score >= cutoff: return g
+    return "F"
+# 90->A, 89.999->B, 0->F, 100->A, -5->Invalid, 101->Invalid
 
 # 2
-def reverse(s):
-    if s == "":                     # base case: empty string
-        return ""
-    return reverse(s[1:]) + s[0]    # all-but-first, reversed, then first
-print(reverse("data"))             # "atad"
-# loop version: "".join(reversed(s))  — usually clearer for flat strings
+# 5 and 0 -> 0 ; "" or "N/A" -> "N/A"  (and/or return an operand, not a bool)
+result = "pass" if attended else "absent"     # and just `if attended:`
 
 # 3
-def flatten(xs):
-    out = []
-    for x in xs:
-        if isinstance(x, list):
-            out.extend(flatten(x))  # recurse into the sub-list
-        else:
-            out.append(x)
-    return out
-print(flatten([1, [2, [3, 4]], 5]))   # [1, 2, 3, 4, 5]
+total = 0
+for s in scores: total += s
+print(total / len(scores))                    # 71.5
+for name, score in zip(names, scores):
+    print(f"{name}: {'PASS' if score >= 60 else 'FAIL'}")
+print("passes:", sum(s >= 60 for s in scores))   # 3
 
 # 4
-def depth(xs):
-    if not isinstance(xs, list):
-        return 0                              # a non-list has no nesting
-    return 1 + max((depth(x) for x in xs), default=0)
-print(depth([1, [2, [3, [4]]]]), depth([1, 2, 3]), depth(5))   # 4 1 0
+while True:
+    raw = input("Score 0–100: ")
+    if raw.isdigit() and 0 <= int(raw) <= 100:
+        print("Got", int(raw)); break
+    print("Try again.")
 
-# 5
-# 1) No reachable base case -> the calls never stop -> stack overflows.
-#    Fix: add `if n == 0: return 0` (or n <= 0) at the top.
-# 2) The recursive case computes n*fact(n-1) but never RETURNs it,
-#    so the function falls off the end and returns None. Add `return`.
-# 3) A loop is better when the work is a simple flat sequence, or when the
-#    depth could exceed ~1000 (Python has no tail-call optimization, so deep
-#    recursion hits RecursionError where a loop would be fine).
+# 5  Removing while iterating shifts indices, so elements get skipped.
+xs = [x for x in xs if x % 2 != 0]            # build a new list instead -> [1, 3]
+```
+
+### Extra practice
+
+```python
+# E1
+0 <= x <= 100
+lo < value < hi
+a == b == c
+
+# E2
+for n in range(10, 0, -1):    # start 10, stop BEFORE 0, step -1
+    print(n)
+print("Go!")
+
+n = 10
+while n >= 1:
+    print(n)
+    n -= 1
+print("Go!")
+```
+
+### Homework
+
+```python
+# H1
+def label(pct):
+    if not 0 <= pct <= 100:
+        return "invalid"
+    if pct == 100:
+        return "perfect"
+    if pct >= 80:
+        return "good"
+    if pct >= 50:
+        return "at risk"
+    return "critical"
+
+for pct in [100, 92.5, 80, 79.9, 50, 12, -3, 104]:
+    print(pct, "->", label(pct))
+# 100 perfect · 92.5 good · 80 good · 79.9 at risk · 50 at risk · 12 critical ·
+# -3 invalid · 104 invalid
+
+# H2
+secret, tries = 37, 0
+while True:
+    raw = input("Guess 1-100: ")
+    if not (raw.isdigit() and 1 <= int(raw) <= 100):
+        print("Whole number 1-100, try again.")
+        continue
+    tries += 1
+    guess = int(raw)
+    if guess < secret:
+        print("higher")
+    elif guess > secret:
+        print("lower")
+    else:
+        print(f"got it in {tries} tries")
+        break
+
+# H3
+def is_leap(year):
+    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+
+print(is_leap(2024), is_leap(1900), is_leap(2000), is_leap(2026))
+# True False True False
 ```
