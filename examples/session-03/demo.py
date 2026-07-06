@@ -106,3 +106,27 @@ for s in scores[1:]:
     if s > best:
         best = s
 print("best-so-far:", best, "(same as max():", max(scores), ")")
+
+# --- deeper 5: if vs elif — the double-label bug ----------------------------
+score = 95
+print("stacked ifs (bug) — every matching branch fires:")
+if score >= 60:
+    print("  passing")
+if score >= 80:
+    print("  strong")
+if score >= 90:
+    print("  excellent")
+print("elif ladder — first hit wins:")
+if score >= 90:
+    print("  excellent")
+elif score >= 80:
+    print("  strong")
+elif score >= 60:
+    print("  passing")
+
+# --- deeper 6: return the test itself ----------------------------------------
+def is_passing(score):
+    return score >= 60            # the comparison already IS a bool
+
+print("is_passing(72):", is_passing(72), "  is_passing(41):", is_passing(41))
+print("passing only:", [s for s in [72, 41, 90] if is_passing(s)])   # bare — no == True

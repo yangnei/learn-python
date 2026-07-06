@@ -91,10 +91,11 @@ mutable vs immutable + `id()`, exact arithmetic with `Decimal`.
    off-by-one; run the `while True:` validation loop.
 3. Iterate Pythonically with `enumerate`/`zip` instead of `range(len(...))`.
 
-**Going deeper (second hour):** the ternary, `match/case`, `for/else`, nested loops,
-the named loop patterns (accumulator, counter, best-so-far, sentinel).
-**Trap focus:** `if x == True`; `range(1,5)` excludes 5; mutating a list while iterating
-it; `range(len(...))`.
+**Going deeper (second hour):** the ternary, the boolean-return idiom, `match/case`,
+`for/else`, nested loops, the named loop patterns (accumulator, counter, best-so-far,
+sentinel).
+**Trap focus:** `if x == True`; stacked `if`s that all fire where an `elif` ladder was
+meant; `range(1,5)` excludes 5; mutating a list while iterating it; `range(len(...))`.
 **Homework:** attendance labeler (boundary testing); number-guessing game; leap-year
 checker.
 

@@ -122,13 +122,15 @@ Each session has:
 
 **The clock (120 min)**
 - **0:00–0:05 — Warm-up.** S2 homework: two trap-journal entries; quiz `approx_equal(0.1+0.2, 0.3)`.
-- **0:05–0:30 — Core concept.** `if/elif/else`; **chained comparisons**; `and/or/not`, short-circuit, operand-return; `while` (+ infinite-loop demo); `for ... in`; `range` off-by-one; `break`/`continue`; the `while True:` validation pattern; `enumerate`/`zip` vs `range(len(...))`.
+- **0:05–0:30 — Core concept.** `if/elif/else` — and `if` vs `elif` (stacked `if`s are
+  independent questions that ALL fire; show the double-label bug); **chained comparisons**; `and/or/not`, short-circuit, operand-return; `while` (+ infinite-loop demo); `for ... in`; `range` off-by-one; `break`/`continue`; the `while True:` validation pattern; `enumerate`/`zip` vs `range(len(...))`.
 - **0:30–0:42 — Live I.** Likert→label classifier; roster average two ways; the "ask until valid" loop.
 - **0:42–1:00 — Practice I.** Grade-band classifier (**test every boundary**: 89.999/90/90.001), logic drill, `zip` pass/fail, validation loop, the mutate-while-iterating trap.
 - **1:00–1:08 — Break.**
-- **1:08–1:30 — Deeper concept.** The ternary (tiny choices only); `match/case` (same-value-vs-literals ladders); `for/else` (search without a flag); nested loops (`break` exits inner only → function-and-`return` escape); the named patterns: accumulator, counter, best-so-far, sentinel.
+- **1:08–1:30 — Deeper concept.** The ternary (tiny choices only); the boolean-return
+  idiom (`return score >= 60` — hand the comparison straight back, use it bare in `if`); `match/case` (same-value-vs-literals ladders); `for/else` (search without a flag); nested loops (`break` exits inner only → function-and-`return` escape); the named patterns: accumulator, counter, best-so-far, sentinel.
 - **1:30–1:40 — Live II.** Demo deeper sections: `match/case` classifier, `for/else` first-failing, nested sections×students, best-so-far.
-- **1:40–1:53 — Practice II.** `match/case` rewrite (then: which reads better, and why?); `for/else` search; best-and-worst in one pass.
+- **1:40–1:53 — Practice II.** `match/case` rewrite (then: which reads better, and why?); `for/else` search; best-and-worst in one pass; the return-the-test rewrite.
 - **1:53–2:00 — Recap + quiz + homework.** `if x == True` → `if x`; `range` excludes stop; name your pattern before you type. Quiz S3.
 
 **Transitions**
@@ -146,6 +148,7 @@ Each session has:
 - "`x = 5 and 0` — what's `x`? Why isn't it `True`/`False`?"
 - "When does the `else` on a `for` run? What bookkeeping does it delete?"
 - "Which of the four patterns is your grade-average loop? Your validation loop?"
+- "A 95 printed three labels. What question did each `if` actually ask?"
 
 **Cut line:** drop nested loops and the ternary slide (they resurface naturally); keep `match/case`, `for/else`, and both practice blocks.
 **Homework:** attendance labeler · number-guessing game · leap-year checker.

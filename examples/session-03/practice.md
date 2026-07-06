@@ -30,6 +30,15 @@ for x in xs:
         xs.remove(x)
 ```
 
+### Task 6 — The double-label bug
+This is meant to print ONE label, but a 95 prints three. Explain why, then fix it
+**without changing any condition**:
+```python
+if score >= 60: print("passing")
+if score >= 80: print("strong")
+if score >= 90: print("excellent")
+```
+
 ### Bonus — Pythonic idiom drill
 Cover the `# ->` answers, predict each line, then run.
 
@@ -63,6 +72,22 @@ print `"everyone passed"` — **without** a `found` flag.
 ### D3 — Best AND worst, one pass
 Track best-so-far and worst-so-far through a single loop over
 `[73, 91, 58, 84]` (no `max()`/`min()`). Print both.
+
+### D4 — Return the test itself
+Rewrite each as a single `return` line, then call one of them bare in an `if`
+(no `== True`):
+```python
+def is_passing(score):
+    if score >= 60:
+        return True
+    else:
+        return False
+
+def is_full_class(roster):
+    if len(roster) >= 30:
+        return True
+    return False
+```
 
 ## Homework (before Session 4)
 
@@ -117,6 +142,15 @@ while True:
 
 # 5  Removing while iterating shifts indices, so elements get skipped.
 xs = [x for x in xs if x % 2 != 0]            # build a new list instead -> [1, 3]
+
+# 6  Three separate ifs are three independent questions — 95 answers yes to all.
+#    Chain them, most specific first, so only the FIRST hit runs:
+if score >= 90:
+    print("excellent")
+elif score >= 80:
+    print("strong")
+elif score >= 60:
+    print("passing")
 ```
 
 ### In class — going deeper
@@ -170,6 +204,18 @@ for s in scores[1:]:
     if s < worst:
         worst = s
 print("best:", best, "worst:", worst)    # 91 58
+```
+
+```python
+# D4
+def is_passing(score):
+    return score >= 60             # the comparison already IS the bool
+
+def is_full_class(roster):
+    return len(roster) >= 30
+
+if is_passing(72):                 # bare — never `== True`
+    print("through!")
 ```
 
 ### Homework

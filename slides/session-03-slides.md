@@ -24,6 +24,21 @@ Indentation defines the block. Only the **first** true branch runs.
 
 ---
 
+## `if` vs `elif` — not interchangeable
+
+```python
+# BUG: three separate ifs — a 95 prints ALL THREE labels
+if score >= 60: print("passing")
+if score >= 80: print("strong")
+if score >= 90: print("excellent")
+```
+
+- Stacked `if`s are **independent questions** — overlapping conditions all fire.
+- `elif` makes them **one question with branches**: first hit wins, the rest are skipped.
+- Stack `if`s only when several can *legitimately* be true at once.
+
+---
+
 ## Comparison + chained comparisons
 
 `==`  `!=`  `<`  `<=`  `>`  `>=`
@@ -119,6 +134,7 @@ while True:
 1. Grade-band classifier — test the boundaries (89.999 / 90 / 90.001).
 2. Average a roster and label each student PASS/FAIL with `zip`.
 3. A robust "ask until valid" loop.
+4. The double-label bug — three stacked `if`s that should be one ladder.
 
 ---
 
@@ -135,6 +151,23 @@ print(f"{name}: {'✔' if attended else '✘'}")
 ```
 
 For **tiny** choices only. If it needs two reads, use a real `if`.
+
+---
+
+## Return the test itself
+
+```python
+def is_passing(score):        # clunky
+    if score >= 60:
+        return True
+    return False
+
+def is_passing(score):        # Pythonic — the comparison already IS a bool
+    return score >= 60
+```
+
+Then use it bare: `if is_passing(s):` — never `if is_passing(s) == True:`.
+🧠 Same for any yes/no helper: `is_valid`, `is_missing`, `is_full` — one `return` line each.
 
 ---
 
@@ -200,12 +233,14 @@ Recognizing these turns "staring at a blank editor" into "picking a skeleton".
 ## Your turn — round 2
 
 `examples/session-03/practice.md` → **In class — going deeper**:
-a `match/case` rewrite, a `for/else` search, and best-so-far without `max()`.
+a `match/case` rewrite, a `for/else` search, best-so-far without `max()`, and the
+return-the-test rewrite.
 ---
 
 ## Traps recap
 
 - `if x == True` → just `if x:`; use `x is None` (not `== None`).
+- Stacked `if`s are independent questions — they ALL fire; `elif` makes one ladder.
 - `=` (assign) vs `==` (compare) — classic typo.
 - `range(1, 5)` excludes 5; test your boundaries.
 - Don't modify a list while looping it; prefer `enumerate`/`zip` over `range(len(...))`.

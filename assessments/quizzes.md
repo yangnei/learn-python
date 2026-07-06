@@ -43,11 +43,12 @@ use `math.isclose(0.1 + 0.2, 0.3)` or round. 4. `False` (no error); `5 > "5"` ra
 4. What goes wrong when you `remove` items from a list while looping over it — and what's
    the fix?
 5. When does the `else` clause on a `for` loop run?
+6. With `score = 95`, three stacked `if score >= 60 / 80 / 90:` prints run — what happens, and what one keyword fixes it?
 
 **Answers:** 1. `if 90 <= x < 100:`. 2. `0` and `"hi"` — `and`/`or` return an *operand*,
 not a bool. 3. `[1, 2, 3, 4]` (5 excluded — off-by-one). 4. Removal shifts the remaining
 indices, so elements get skipped; build a new list instead
-(`[x for x in xs if keep(x)]`) or iterate over a copy. 5. Only when the loop finishes **without** `break` — the "searched everything, found nothing" branch.
+(`[x for x in xs if keep(x)]`) or iterate over a copy. 5. Only when the loop finishes **without** `break` — the "searched everything, found nothing" branch. 6. All three labels print (each `if` is an independent question); chaining with `elif` makes one ladder where only the first hit runs.
 
 ---
 
