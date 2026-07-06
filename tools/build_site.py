@@ -47,6 +47,31 @@ SESSIONS = [
      "modules & __main__, classes with @property, generators — then dunders, dataclasses, classmethods, pipelines.", False),
 ]
 
+
+# Chinese titles/descriptions for the UI language toggle (content stays English).
+ZH_SESSIONS: dict[int, tuple[str, str]] = {
+    1: ("运行 Python、变量与类型",
+        "REPL 与脚本、五大核心类型、f-string、类型转换、读懂报错——进阶：运算符、字符串方法、import math。"),
+    2: ("动态类型陷阱",
+        "== 与 is、True==1、浮点精度、真值判断、isinstance——进阶：None、类型转换、nan、Decimal。"),
+    3: ("控制流：条件与循环",
+        "if/elif/else、链式比较、for/while、enumerate/zip——进阶：三元表达式、match/case、for/else、循环模式。"),
+    4: ("数据结构",
+        "list/tuple/dict/set、切片、推导式、别名陷阱——进阶：Counter、defaultdict、集合运算、多键排序。"),
+    5: ("函数、作用域与复用",
+        "def、*args/**kwargs、作用域、可变默认值陷阱——进阶：闭包、装饰器入门、doctest。"),
+    6: ("递归与递归思维",
+        "基例与递归步、调用栈、嵌套数据——进阶：记忆化、二分查找、树形数据、显式栈。"),
+    7: ("异常与防御式编程",
+        "try/except、raise、EAFP、第一个 pytest 测试——进阶：异常层级、raise from、logging、参数化测试。"),
+    8: ("文件、库与研究数据",
+        "open/with、CSV 字典读写、statistics——进阶：pathlib、编码、JSON、datetime、随机种子、pandas 预览。"),
+    9: ("正则表达式与文本清洗",
+        "原始字符串、search/fullmatch/findall/sub、分组——进阶：标志位、compile、VERBOSE、惰性匹配、函数替换。"),
+    10: ("模块、面向对象与 Python 惯用法",
+         "模块与 __main__、@property 类、生成器——进阶：双下方法、dataclass、classmethod、生成器管道。"),
+}
+
 # Editable, in-browser-runnable snippets per session (Pyodide-safe: no file I/O, no input()).
 _TOPIC_PLAYGROUNDS: dict[int, list[dict]] = {
     1: [{"title": "types_and_fstrings.py", "code": '''\
@@ -364,18 +389,19 @@ def notebook_bar(n: int) -> str:
     download = f"{NB_DIR}/session-{n:02d}.ipynb"
     return f"""
 <aside class="nb-bar">
-  <a class="nb-btn nb-primary" href="{download}" download>&#8595; Download this session (.ipynb)</a>
-  <a class="nb-btn" href="{COLAB_BLANK}" target="_blank" rel="noopener">Open a blank notebook in Colab &#8599;</a>
+  <a class="nb-btn nb-primary" href="{download}" download data-i18n-html="nb.download">&#8595; Download this session (.ipynb)</a>
+  <a class="nb-btn" href="{COLAB_BLANK}" target="_blank" rel="noopener" data-i18n-html="nb.blank">Open a blank notebook in Colab &#8599;</a>
 </aside>"""
 
 
-def embed_slot(label: str, lite_src: str, colab_url: str) -> str:
+def embed_slot(label: str, zh_label: str, lite_src: str, colab_url: str) -> str:
     """A lazy-loading notebook slot: a Run button (embeds JupyterLite) + a Colab link."""
     return f"""
   <section class="nb-slot" data-nb-src="{lite_src}">
     <div class="nb-slot-bar">
-      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false">&#9656; {label}</button>
-      <a class="nb-btn" href="{colab_url}" target="_blank" rel="noopener">Open in Colab &#8599;</a>
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false"
+              data-label-en="&#9656; {label}" data-label-zh="&#9656; {zh_label}">&#9656; {label}</button>
+      <a class="nb-btn" href="{colab_url}" target="_blank" rel="noopener" data-i18n-html="slot.colab">Open in Colab &#8599;</a>
     </div>
     <div class="nb-embed" hidden></div>
   </section>"""
@@ -435,13 +461,17 @@ def md_script(el_id: str, md: str) -> str:
 
 
 def nav_html(active: str) -> str:
-    links = [f'<a href="index.html"{" class=\"active\"" if active=="index" else ""}>Home</a>']
+    links = [f'<a href="index.html"{" class=\"active\"" if active=="index" else ""} data-i18n="nav.home">Home</a>']
     for n, title, _desc, _key in SESSIONS:
         page = f"session-{n:02d}"
         cls_attr = ' class="active"' if active == page else ""
-        links.append(f'<a href="{page}.html"{cls_attr} data-page="{page}" title="{html.escape(title)}">S{n}</a>')
-    links.append(f'<a href="cheatsheets.html"{" class=\"active\"" if active=="cheats" else ""}>Cheat sheets</a>')
+        zh_title = ZH_SESSIONS[n][0]
+        links.append(f'<a href="{page}.html"{cls_attr} data-page="{page}" title="{html.escape(title)}" '
+                     f'data-title-en="{html.escape(title)}" data-title-zh="{html.escape(zh_title)}">S{n}</a>')
+    links.append(f'<a href="cheatsheets.html"{" class=\"active\"" if active=="cheats" else ""} data-i18n="nav.cheats">Cheat sheets</a>')
     links.append(f'<a class="dl" href="{STUDENT_PDF}" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a>')
+    links.append('<button class="lang-toggle" type="button" aria-label="Switch language / 切换语言" '
+                 'title="English / 中文">中文</button>')
     links.append('<button class="theme-toggle" type="button" aria-label="Switch light or dark theme" '
                  'title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span>'
                  '<span class="ti-sun" aria-hidden="true">&#9728;</span></button>')
@@ -483,13 +513,14 @@ def build_index() -> str:
     cards = []
     for n, title, desc, _key in SESSIONS:
         page = f"session-{n:02d}"
+        zh_t, zh_d = ZH_SESSIONS[n]
         cards.append(
             f'<a class="card" href="{page}.html" data-page="{page}">'
             f'<span class="done">✓</span>'
-            f'<div class="n">Session {n:02d}</div>'
-            f'<div class="t">{html.escape(title)}</div>'
-            f'<div class="d">{html.escape(desc)}</div>'
-            f'<div class="go">Open <span aria-hidden="true">&rarr;</span></div></a>')
+            f'<div class="n" data-sess-n="{n}">Session {n:02d}</div>'
+            f'<div class="t" data-en="{html.escape(title)}" data-zh="{html.escape(zh_t)}">{html.escape(title)}</div>'
+            f'<div class="d" data-en="{html.escape(desc)}" data-zh="{html.escape(zh_d)}">{html.escape(desc)}</div>'
+            f'<div class="go" data-i18n-html="card.open">Open <span aria-hidden="true">&rarr;</span></div></a>')
     body = f"""
 <section class="hero">
   <h1 class="hero-title">Learn <span class="py">Python</span></h1>
@@ -503,20 +534,20 @@ def build_index() -> str:
 <span class="p">&gt;&gt;&gt;</span> 5 == "5"
 <span class="o">False</span></pre>
   </figure>
-  <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download>&#8595; Download the full course (PDF)</a>
-  <span class="dl-note">— all sessions, practice, and cheat sheets for offline reading.</span></p>
+  <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download data-i18n-html="dl.full">&#8595; Download the full course (PDF)</a>
+  <span class="dl-note" data-i18n="hero.note">— all sessions, practice, and cheat sheets for offline reading.</span></p>
 </section>
 
-<h2 class="sec">The sessions</h2>
+<h2 class="sec" data-i18n="idx.sessions">The sessions</h2>
 <div class="cards">{''.join(cards)}</div>
 
-<h2 class="sec">Keep these open</h2>
+<h2 class="sec" data-i18n="idx.keep">Keep these open</h2>
 <ul class="resources">
-  <li><strong>New to Python?</strong> <a href="cheatsheets.html#setup">Set up your computer &amp; learning tools</a> — install per-OS (or run in the browser, no install), plus Python&nbsp;Tutor, regex101, and how to use AI to learn.</li>
-  <li><a href="cheatsheets.html">Traps &amp; Gotchas cheat sheet</a> — the quirks, wrong-vs-right (start here, Session&nbsp;2).</li>
-  <li><a href="cheatsheets.html#quick-reference">Quick syntax reference</a> and <a href="cheatsheets.html#glossary">plain-language glossary</a>.</li>
-  <li><strong>Prefer notebooks?</strong> <a href="{LITE_DIR}/lab/index.html" target="_blank" rel="noopener">Open all sessions as Jupyter notebooks in your browser</a> — a full Jupyter, no install. Each session page also links Colab and a <code>.ipynb</code> download.</li>
-  <li><a href="{STUDENT_PDF}" download>The whole course as a PDF</a> — for reading offline or printing.</li>
+  <li data-i18n-html="res.setup"><strong>New to Python?</strong> <a href="cheatsheets.html#setup">Set up your computer &amp; learning tools</a> — install per-OS (or run in the browser, no install), plus Python&nbsp;Tutor, regex101, and how to use AI to learn.</li>
+  <li data-i18n-html="res.traps"><a href="cheatsheets.html">Traps &amp; Gotchas cheat sheet</a> — the quirks, wrong-vs-right (start here, Session&nbsp;2).</li>
+  <li data-i18n-html="res.quick"><a href="cheatsheets.html#quick-reference">Quick syntax reference</a> and <a href="cheatsheets.html#glossary">plain-language glossary</a>.</li>
+  <li data-i18n-html="res.nb"><strong>Prefer notebooks?</strong> <a href="{LITE_DIR}/lab/index.html" target="_blank" rel="noopener">Open all sessions as Jupyter notebooks in your browser</a> — a full Jupyter, no install. Each session page also links Colab and a <code>.ipynb</code> download.</li>
+  <li data-i18n-html="res.pdf"><a href="{STUDENT_PDF}" download>The whole course as a PDF</a> — for reading offline or printing.</li>
 </ul>
 """
     return page_shell("Learn Python — Home", "index", body, "")
@@ -564,15 +595,16 @@ def traps_section_md(n: int) -> str:
 def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quizzes_text: str) -> str:
     lesson = strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text())
     quiz = session_quiz_md(quizzes_text, n)
-    quiz_block = (f'<h2>Check yourself</h2>\n<div id="quiz" class="md"></div>' if quiz else "")
+    quiz_block = (f'<h2 data-i18n="check">Check yourself</h2>\n<div id="quiz" class="md"></div>' if quiz else "")
     stem = f"session-{n:02d}"
 
     # The practice, the trap lab, and the open scratch all live in embedded, runnable
     # notebooks rather than on the page: lazy-loaded JupyterLite slots.
-    slot_practice = embed_slot("Practice — run this session's notebook",
+    slot_practice = embed_slot("Practice — run this session's notebook", "练习 —— 运行本课笔记本",
                                lite_for(stem), colab_for(stem))
-    slot_traps = embed_slot("Traps — predict, then run", lite_for(f"{stem}-traps"), colab_for(f"{stem}-traps"))
-    slot_try = embed_slot("Try it yourself", lite_for(f"{stem}-try"), colab_for(f"{stem}-try"))
+    slot_traps = embed_slot("Traps — predict, then run", "陷阱 —— 先预测，再运行",
+                            lite_for(f"{stem}-traps"), colab_for(f"{stem}-traps"))
+    slot_try = embed_slot("Try it yourself", "动手试试", lite_for(f"{stem}-try"), colab_for(f"{stem}-try"))
 
     traps_md = traps_section_md(n)
     traps_html = ('  <div id="traps" class="md"></div>\n' + f'{slot_traps}\n') if traps_md else ""
@@ -594,10 +626,10 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
   <div class="page-foot">
     <button id="complete-btn" class="complete-btn" type="button">Mark this session complete</button>
     <div class="foot-nav">
-      {'<a href="session-%02d.html">&larr; Prev</a>' % (n-1) if n > 1 else '<a href="index.html">&larr; Home</a>'}
-      {'<a href="session-%02d.html">Next &rarr;</a>' % (n+1) if n < len(SESSIONS) else '<a href="cheatsheets.html">Cheat sheets &rarr;</a>'}
+      {'<a href="session-%02d.html" data-i18n-html="foot.prev">&larr; Prev</a>' % (n-1) if n > 1 else '<a href="index.html" data-i18n-html="foot.home">&larr; Home</a>'}
+      {'<a href="session-%02d.html" data-i18n-html="foot.next">Next &rarr;</a>' % (n+1) if n < len(SESSIONS) else '<a href="cheatsheets.html" data-i18n-html="foot.cheats">Cheat sheets &rarr;</a>'}
     </div>
-    <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download>&#8595; Download the full course (PDF)</a></p>
+    <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download data-i18n-html="dl.full">&#8595; Download the full course (PDF)</a></p>
   </div>
 </article>
 """

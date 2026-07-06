@@ -133,14 +133,105 @@ function buildPlaygrounds(){
   });
 }
 
+
+/* ---------- language toggle (EN / 中文): UI chrome only ---------- */
+const LANG_KEY = "lp.lang";
+function getLang(){
+  try{
+    const q = new URLSearchParams(location.search).get("lang");
+    if(q === "zh" || q === "en"){ localStorage.setItem(LANG_KEY, q); return q; }
+    return localStorage.getItem(LANG_KEY) === "zh" ? "zh" : "en";
+  }catch{ return "en"; }
+}
+/* Chinese strings for chrome elements; English is recovered from the markup itself. */
+const I18N_ZH = {
+  "nav.home": "首页", "nav.cheats": "速查表", "check": "自我检测",
+  "hero.note": "—— 全部课程、练习与速查表，可离线阅读。",
+  "idx.sessions": "课程列表", "idx.keep": "常备资源",
+  "dl.full": "&#8595; 下载完整课程（PDF）",
+  "nb.download": "&#8595; 下载本课（.ipynb）",
+  "nb.blank": "在 Colab 中打开空白笔记本 &#8599;",
+  "slot.colab": "在 Colab 中打开 &#8599;",
+  "card.open": '打开 <span aria-hidden="true">&rarr;</span>',
+  "foot.prev": "&larr; 上一课", "foot.next": "下一课 &rarr;",
+  "foot.home": "&larr; 首页", "foot.cheats": "速查表 &rarr;",
+  "res.setup": '<strong>第一次用 Python？</strong> <a href="cheatsheets.html#setup">先配置电脑与学习工具</a> —— 各系统安装指南（或直接在浏览器运行、免安装），还有 Python&nbsp;Tutor、regex101，以及如何用 AI 辅助学习。',
+  "res.traps": '<a href="cheatsheets.html">陷阱与坑速查表</a> —— 每个怪癖的错误写法 vs 正确写法（第 2 课起常备）。',
+  "res.quick": '<a href="cheatsheets.html#quick-reference">语法速查</a>和<a href="cheatsheets.html#glossary">通俗术语表</a>。',
+  "res.nb": '<strong>偏好笔记本？</strong> <a href="jupyter/lab/index.html" target="_blank" rel="noopener">在浏览器中以 Jupyter 笔记本打开全部课程</a> —— 完整 Jupyter、免安装。每课页面也有 Colab 链接和 <code>.ipynb</code> 下载。',
+  "res.pdf": '<a href="learn-python-student.pdf" download>整套课程 PDF</a> —— 离线阅读或打印。',
+};
+/* generated-inside-markdown strings, translated after render (both directions) */
+const CONTENT_I18N = [
+  ["Quiz", "测验"], ["Show answers", "查看答案"],
+  ["Traps — predict, then reveal", "陷阱 —— 先预测，再揭晓"],
+  ["Reveal the result", "查看结果"],
+];
+function translateRendered(){
+  const zh = getLang() === "zh";
+  document.querySelectorAll(".md h1, .md h2, .md h3, .md summary").forEach(el=>{
+    const txt = el.textContent.trim();
+    for(const [en, zhs] of CONTENT_I18N){
+      if(zh && txt === en){ el.textContent = zhs; return; }
+      if(!zh && txt === zhs){ el.textContent = en; return; }
+    }
+    let m;
+    if(zh && (m = txt.match(/^Session (\d+)$/))) el.textContent = `第 ${+m[1]} 课`;
+    else if(!zh && (m = txt.match(/^第 (\d+) 课$/))) el.textContent = `Session ${m[1]}`;
+  });
+}
+function applyLang(){
+  const zh = getLang() === "zh";
+  document.documentElement.lang = zh ? "zh-CN" : "en";
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    if(!("orig" in el.dataset)) el.dataset.orig = el.textContent;
+    const z = I18N_ZH[el.dataset.i18n];
+    el.textContent = (zh && z) ? z : el.dataset.orig;
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>{
+    if(!("orig" in el.dataset)) el.dataset.orig = el.innerHTML;
+    const z = I18N_ZH[el.dataset.i18nHtml];
+    el.innerHTML = (zh && z) ? z : el.dataset.orig;
+  });
+  document.querySelectorAll("[data-en][data-zh]").forEach(el=>{
+    el.textContent = zh ? el.dataset.zh : el.dataset.en;
+  });
+  document.querySelectorAll("[data-sess-n]").forEach(el=>{
+    const n = +el.dataset.sessN;
+    el.textContent = zh ? `第 ${n} 课` : `Session ${String(n).padStart(2, "0")}`;
+  });
+  document.querySelectorAll("[data-title-en][data-title-zh]").forEach(el=>{
+    el.title = zh ? el.dataset.titleZh : el.dataset.titleEn;
+  });
+  document.querySelectorAll("[data-nb-embed]").forEach(btn=>{
+    const open = btn.getAttribute("aria-expanded") === "true";
+    btn.textContent = open ? (zh ? "▾ 收起笔记本" : "▾ Hide notebook")
+                           : (zh ? btn.dataset.labelZh : btn.dataset.labelEn);
+  });
+  const lt = document.querySelector(".lang-toggle");
+  if(lt) lt.textContent = zh ? "EN" : "中文";
+  if(window._completeRefresh) window._completeRefresh();
+  translateRendered();
+}
+function setupLang(){
+  const btn = document.querySelector(".lang-toggle");
+  if(btn) btn.addEventListener("click", ()=>{
+    try{ localStorage.setItem(LANG_KEY, getLang() === "zh" ? "en" : "zh"); }catch{}
+    applyLang();
+  });
+  applyLang();
+}
+
 /* ---------- completion button + nav checks ---------- */
 function setupCompletion(){
   const btn = document.getElementById("complete-btn");
   const pageId = document.body.dataset.page;
   if(btn && pageId){
-    const refresh = ()=>{ const d=isDone(pageId);
+    const refresh = ()=>{ const d=isDone(pageId), zh=getLang()==="zh";
       btn.classList.toggle("is-done", d);
-      btn.textContent = d ? "✓ Completed — click to unmark" : "Mark this session complete"; };
+      btn.textContent = d ? (zh ? "✓ 已完成 —— 点击取消" : "✓ Completed — click to unmark")
+                          : (zh ? "标记本课完成" : "Mark this session complete"); };
+    window._completeRefresh = refresh;
     refresh();
     btn.addEventListener("click", ()=>{ setDone(pageId, !isDone(pageId)); refresh(); markNav(); });
   }
@@ -178,7 +269,6 @@ function setupNotebookEmbed(){
     const holder = slot && slot.querySelector(".nb-embed");
     if(!slot || !holder) return;
     const src = slot.getAttribute("data-nb-src");
-    const label = btn.textContent;   // e.g. "▸ Practice — Part A"
     btn.addEventListener("click", ()=>{
       const opening = holder.hasAttribute("hidden");
       if(opening){
@@ -189,11 +279,11 @@ function setupNotebookEmbed(){
         }
         holder.removeAttribute("hidden");
         btn.setAttribute("aria-expanded","true");
-        btn.textContent = "▾ Hide notebook";
+        btn.textContent = getLang() === "zh" ? "▾ 收起笔记本" : "▾ Hide notebook";
       } else {
         holder.setAttribute("hidden","");
         btn.setAttribute("aria-expanded","false");
-        btn.textContent = label;
+        btn.textContent = getLang() === "zh" ? btn.dataset.labelZh : btn.dataset.labelEn;
       }
     });
   });
@@ -209,4 +299,5 @@ document.addEventListener("DOMContentLoaded", ()=>{
   setupNotebookEmbed();
   setupCompletion();
   setupTheme();
+  setupLang();
 });
