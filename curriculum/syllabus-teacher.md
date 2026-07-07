@@ -23,6 +23,10 @@ Each session has:
 - **Cut line** — the first thing to drop if you're running over.
 - **Homework** — what to assign at the close (specs live in `examples/session-NN/practice.md` → *Homework*).
 
+For the exhaustive point-by-point tick-list of what each session must land (every concept,
+trap, practice task, and homework item, split core/deeper), print **Appendix A — the
+Session-by-Session Coverage Checklist** and keep it next to the clock.
+
 ## The standard clock (adapt per session below)
 - **0:00–0:05 — Warm-up.** Previous homework debrief + misconceptions log. Don't re-teach — quiz.
 - **0:05–0:30 — Core concept.**

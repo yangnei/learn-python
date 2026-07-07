@@ -246,6 +246,187 @@ accepts `5`, `5.0`, or `"5"` and returns a float, rejecting nonsense — safely.
 3. **`is_missing(x)`** — tell `None` apart from `0`, `""`, and `False`, correctly.
 
 </script>
+<script type="text/markdown" id="lesson-a-zh-md">
+# 第 2 课
+## 动态类型陷阱
+
+---
+
+## 名字只是标签
+
+Python 不会把名字锁定在某个类型上——它现在可以指向 `int`，
+过会儿又指向 `str`。这种自由很强大，但也造出了**陷阱**：
+结果会和你的直觉相反。
+
+> 本课全程动手。下面每条规则在页面底部的
+> **陷阱 —— 先预测，再运行** 里都有一行可运行的对应代码。
+> 先预测，再揭晓。
+
+---
+
+## `==` 比值，`is` 比身份
+
+- `==` 问"值相同吗？"——几乎永远是你想要的。
+- `is` 问"是同一个对象吗？"——只用于 `None`（以及 `True`/`False`）。
+- `b = a` **不会**复制：两个名字指向同一个列表，改 `a` 会"透过" `b` 显现。
+  复制要用 `list(a)` 或 `a[:]`。
+
+🧠 GPA 相同 = `==`。是同一个学生 = `is`。
+
+---
+
+## 布尔值就是整数
+
+- `bool` 是 `int` 的*子类型*，所以 `True` 表现为 `1`，`False` 表现为 `0`。
+- 这意味着 `5 + True` 能算，`sum(flags)` 能数出有多少个 `True`。
+- 但身份仍然不同：`isinstance(True, int)` 为真，而 `type(True) is int` 为假。
+
+🧠 相当于语言里内置了哑变量编码（1/0）。
+
+---
+
+## 数字：int、float、除法
+
+- `/` **永远**返回浮点数（`4 / 2` 是 `2.0`）；`//` 向**负无穷**取整。
+- `3 == 3.0` 按值比较相等，但小数以**二进制**存储，
+  所以 `0.1 + 0.2` 并不精确等于 `0.3`。
+- 永远不要用 `==` 比较两个浮点数——用 `math.isclose(a, b)`。
+  （你本来也从不对两个测量分数做精确相等判断，直觉是一样的。）
+
+---
+
+## 跨类型比较
+
+- 跨类型的 `==` / `!=` 返回 `False`，从不报错。
+- 跨不兼容类型的 `<` / `>` 会抛出 **TypeError**——计算机能回答"相同吗？"，
+  却无法给文本和数字*排大小*。
+- 内容相同的列表和元组**永远不相等**；序列是逐元素比较的。
+
+---
+
+## 真值判断（truthiness）
+
+- 假值：`0  0.0  ""  []  {}  set()  None`。真值：其余一切——
+  包括 `"0"`、`"False"` 和 `[0]`。
+- 惯用写法：`if scores:` 而不是 `if len(scores) > 0:`。
+- 但用户输入的文本要先转换——`"0"` 是真值。
+
+---
+
+# 更进一步
+## None、类型转换与精确小数
+
+---
+
+## `None`，讲透它
+
+- `None` 表示**缺失**——"这里没有值"——不是零，也不是空。
+- 用身份判断：`if x is None:`（永远不要写 `== None`）。
+- 没有 `return` 的函数返回的就是 `None`（第 5 课还会遇到它）。
+- 三种不同的"没有"：`None`（缺失）· `""`（空文本）· `0`（真实的零）。
+  问卷里的空格是 `None` 性质的；得 0 分的学生不是缺失。
+
+---
+
+## 类型转换矩阵
+
+| 调用 | 结果 |
+|---|---|
+| `int("42")` | `42` |
+| `int("4.2")` | 💥 `ValueError` |
+| `float("4.2")` | `4.2` |
+| `int(4.9)` | `4`（截断） |
+| `int(float("4.2"))` | `4` —— 两步走 |
+| `str(4.2)` | `"4.2"`（任何东西都能转成 str） |
+
+**规则：在入口处转换，只转一次**——数据一进来，就把类型定对。
+
+---
+
+## `nan` 与 `inf`
+
+```python
+bad = float("nan")     # "not a number" —— 失败/缺失的数值
+bad == bad             # False！NaN 不等于任何东西
+import math
+math.isnan(bad)        # True —— 唯一可靠的检测
+float("inf") > 10**100 # True —— 无穷大胜过一切
+```
+
+NaN 会出现在真实的数据管道里（pandas 用它表示缺失单元格）——现在就认识它。
+
+---
+
+## 可变 vs 不可变
+
+| 不可变（改不了） | 可变（可以改） |
+|---|---|
+| `int, float, bool, str, tuple, None` | `list, dict, set` |
+
+```python
+id(x)    # 对象的身份编号 —— `is` 实际比较的就是它
+```
+
+不可变对象可以放心共享；可变对象会产生**别名**（`b = a` 是共享！）。
+这正是第 4 课的头号陷阱——现在你知道了*为什么*。
+
+---
+
+## 浮点数不够用时：`Decimal`
+
+```python
+from decimal import Decimal
+Decimal("0.1") + Decimal("0.2") == Decimal("0.3")   # True！
+```
+
+- 精确的十进制运算——要**从字符串**构造，不要从浮点数。
+- 用于金钱，以及任何 `isclose` 不能接受的记账场合。
+- 代价：更啰嗦、更慢——日常默认仍然是浮点数。
+- （还有 `fractions.Fraction`：精确的分数，如 `Fraction(1, 3)`。）
+
+---
+
+## 链式比较，再看一眼
+
+```python
+1 <= likert <= 5        # 两端都检查 —— 读起来像数学
+a == b == c             # 三者全相等
+```
+
+但不要链 `is`，也不要耍小聪明混用运算符——只在读起来*恰好*像你
+想表达的数学时才用链式。
+
+---
+
+## 轮到你了——第二轮
+
+`examples/session-02/practice.md` → **In class — going deeper**：
+类型转换预测表、用 `Decimal` 重算 `0.1 + 0.2`，以及能区分
+`None` / `""` / `0` 的 `describe(x)`。
+
+---
+
+## 现在，踩响这些陷阱
+
+打开下方的 **陷阱 —— 先预测，再运行**：约 18 个单行陷阱。对每一个，
+**先大声说出你的预测，再运行**，看真实结果和背后的原因。
+
+然后在 `examples/session-02/practice.md` 里：写 `clean_score(value)`，
+安全地接受 `5`、`5.0` 或 `"5"` 并返回浮点数，拒绝一切无意义输入。
+
+**下一课：** 第 3 课——控制流：条件与循环。
+
+---
+
+## 课后作业（第 3 课之前）
+
+*课外完成——不计入课堂时间。完整题目 + 参考答案：`examples/session-02/practice.md` → **Homework**。*
+
+1. **陷阱日志** —— 挑出最让你意外的 5 个陷阱，各用一句自己的话解释原因。
+2. **`approx_equal(a, b)`** —— 从今往后替代 `==` 的浮点数比较函数。
+3. **`is_missing(x)`** —— 正确地把 `None` 和 `0`、`""`、`False` 区分开。
+
+</script>
 <script type="text/markdown" id="traps-md">
 ## Traps — predict, then reveal
 Read each snippet and decide what it does **before** you reveal the answer. To run and tinker with them line by line, open **&#9656; Traps — predict, then run** just below.
@@ -600,6 +781,360 @@ CPython pre-caches small ints (-5..256), so `is` accidentally looks True there; 
 </div>
 
 </script>
+<script type="text/markdown" id="traps-zh-md">
+## 陷阱 —— 先预测，再揭晓
+先读每段代码、想好它会做什么，**再**揭晓答案。想逐行运行、随手改动它们，请打开下方的 **▸ 陷阱 —— 先预测，再运行**。
+
+<div class="trap">
+
+**1.**
+
+```python
+ana_scores = [88, 91]
+ben_scores = [88, 91]
+ana_scores is ben_scores
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `False`
+
+`==` 比较**值**（`ana_scores == ben_scores` 为 True）；`is` 比较**身份**——是否是内存中的同一个对象。Ana 和 Ben 的列表只是恰好相同。比值用 `==`，`is` 留给 `None`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**2.**
+
+```python
+roster = ['Ana', 'Ben']
+backup = roster
+roster.append('Cara')
+backup
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `['Ana', 'Ben', 'Cara']`
+
+`backup = roster` 不会复制：两个名字指向同一个列表，通过 `roster` 追加也会在 `backup` 里出现。复制用 `list(roster)` 或 `roster[:]`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**3.**
+
+```python
+attended = True
+attended == 1
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `True`
+
+`bool` 是 `int` 的子类：`True == 1`、`False == 0`——这正是电子表格里的 1/0 与 Python 的 True/False 对得上的原因。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**4.**
+
+```python
+score = 5
+bonus = True   # earned a bonus point?
+score + bonus
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `6`
+
+算术中 `True` 相当于 `1`（`False` 相当于 `0`）——给标志加一分的快捷方式。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**5.**
+
+```python
+passed = [True, False, True, True]   # did each student pass?
+sum(passed)
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `3`
+
+对布尔值求和就是数 `True` 的个数——统计多少学生通过的顺手办法。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**6.**
+
+```python
+homework = 0.1
+exam = 0.2   # their weights in the final grade
+homework + exam
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `0.30000000000000004`
+
+浮点数按二进制存储，0.1 和 0.2 都没有精确表示，小误差累加了。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**7.**
+
+```python
+weight = 0.1 + 0.2   # homework + exam
+weight == 0.3
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `False`
+
+因为 `0.1 + 0.2` 是 `0.30000000000000004`。永远别用 `==` 检验计算出的分数；用 `math.isclose(a, b)`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**8.**
+
+```python
+missing_score = float('nan')
+missing_score == missing_score
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `False`
+
+`NaN`（缺失/无效的数）定义为不等于任何东西，连自己都不等于。用 `math.isnan(x)` 检测。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**9.**
+
+```python
+total = 7   # two students' scores added up
+total / 2
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `3.5`
+
+`/` 永远是浮点（真）除法，所以平均值算出来是 `3.5`。想要整数用 `//`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**10.**
+
+```python
+penalty = -7   # points to spread over 2 assignments
+penalty // 2
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `-4`
+
+`//` 向负无穷取整，不是向零，所以 `-7 // 2 == -4`（每人扣 4 分，不是 3 分）。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**11.**
+
+```python
+score = '5'   # read from a CSV
+score == 5
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `False`
+
+Python 不做文本/数字的自动转换，CSV 里的字符串和数字就是不相等（也不报错）。先转换：`int(score) == 5`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**12.**
+
+```python
+score = '5'
+5 > score
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `TypeError: '>' not supported between instances of 'int' and 'str'`
+
+数字和文本排大小会抛 TypeError——不存在合理的顺序。先转换：`5 > int(score)`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**13.**
+
+```python
+scores_list = [88, 91]
+scores_tuple = (88, 91)
+scores_list == scores_tuple
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `False`
+
+列表永远不等于元组，内容一样也不行。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**14.**
+
+```python
+passed = True
+type(passed) is int
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `False`
+
+`type()` 是精确匹配，而 `passed` 的类型是 `bool`，不是 `int`。要认子类就用 `isinstance`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**15.**
+
+```python
+passed = True
+isinstance(passed, int)
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `True`
+
+`isinstance` 尊重子类关系，而 `bool` 确实**是**一种 `int`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**16.**
+
+```python
+answer = '0'   # what a student typed on the survey
+bool(answer)
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `True`
+
+任何**非空**字符串都是真值，包括 '0' 和 'False'。只有空字符串是假值——所以问卷文本要先转换再判断。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**17.**
+
+```python
+submissions = []
+bool(submissions)
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `False`
+
+空容器（`[]`、`{}`、`''`、`0`、`None`）都是假值，所以 `if submissions:` 读作"有没有内容？"。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**18.**
+
+```python
+id_from_csv = int('257')
+id_from_form = int('257')   # the same student ID, parsed twice
+id_from_csv is id_from_form
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `False`
+
+CPython 预缓存了小整数（-5..256），在那个范围里 `is` 会碰巧看似 True；运行时构造的 257 是两个不同对象。比值永远用 `==`，绝不用 `is`。
+
+</details>
+
+</div>
+
+</script>
 <script type="text/markdown" id="quiz-md">
 ### Quiz — The Dynamic-Typing Traps
 1. `a = [1,2]; b = [1,2]` — is `a == b`? Is `a is b`? Why?
@@ -616,6 +1151,26 @@ CPython pre-caches small ints (-5..256), so `is` accidentally looks True there; 
 use `math.isclose(0.1 + 0.2, 0.3)` or round. 4. `False` (no error); `5 > "5"` raises
 `TypeError` — Python can't *order* int vs str. 5. `""`, `[]`, `None`, `0.0` are falsy;
 `"0"` and `[0]` are truthy (non-empty). 6. `Decimal` stores base-10 digits exactly, so there's no binary rounding; built from a float (`Decimal(0.1)`) it would inherit the float's error.
+
+</details>
+</script>
+<script type="text/markdown" id="quiz-zh-md">
+### Quiz — 动态类型陷阱
+1. `a = [1,2]; b = [1,2]` —— `a == b` 吗？`a is b` 吗？为什么？
+2. `True + True` 是什么？为什么？
+3. `0.1 + 0.2 == 0.3` 是 True 还是 False？*应该*怎么比较？
+4. `5 == "5"` 给出什么？`5 > "5"` 呢？
+5. 下面哪些是假值：`"0"`、`""`、`[0]`、`[]`、`None`、`0.0`？
+6. 为什么 `Decimal("0.1") + Decimal("0.2") == Decimal("0.3")` 成立而浮点版不成立——为什么必须从字符串构造 Decimal？
+
+<details><summary>Show answers</summary>
+
+**答案：** 1. `==` 为 True（值相同），`is` 为 False（内存中是不同对象）。
+2. `2`——bool 是 int 的子类（`True` 相当于 `1`）。3. False（二进制浮点舍入）；
+用 `math.isclose(0.1 + 0.2, 0.3)` 或先取整。4. `False`（不报错）；`5 > "5"` 抛
+`TypeError`——Python 无法给 int 和 str *排大小*。5. `""`、`[]`、`None`、`0.0` 是假值；
+`"0"` 和 `[0]` 是真值（非空）。6. `Decimal` 精确存储十进制数位，没有二进制舍入；
+从浮点数构造（`Decimal(0.1)`）会把浮点误差原样继承进来。
 
 </details>
 </script>

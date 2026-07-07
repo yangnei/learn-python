@@ -46,9 +46,10 @@ def normalize_lists(md: str) -> str:
 # Main document + appendices a teacher needs in one place.
 PARTS = [
     ("curriculum/syllabus-teacher.md", None),
-    ("curriculum/course-outline.md", "Appendix A — Master Course Outline"),
-    ("curriculum/connection-map.md", "Appendix B — Connection Map (education-research bridges)"),
-    ("assessments/quizzes.md", "Appendix C — Per-Session Quizzes & Answer Keys"),
+    ("curriculum/coverage-checklist.md", "Appendix A — Session-by-Session Coverage Checklist"),
+    ("curriculum/course-outline.md", "Appendix B — Master Course Outline"),
+    ("curriculum/connection-map.md", "Appendix C — Connection Map (education-research bridges)"),
+    ("assessments/quizzes.md", "Appendix D — Per-Session Quizzes & Answer Keys"),
 ]
 
 PRINT_CSS = """

@@ -655,6 +655,643 @@ For a learner who knows research but not code. Each term: what it is, in one bre
 - **REPL** — the interactive `>>>` prompt where you type one line at a time.
 
 </script>
+<script type="text/markdown" id="cheats-zh-md">
+# 速查表
+
+跳转：[环境配置与工具](#setup) · [陷阱与坑](#traps) · [语法速查](#quick-reference) · [术语表](#glossary)
+
+<div id="setup"></div>
+
+# 环境配置与工具
+
+在自己电脑上运行 Python 所需的一切——外加让学习提速的工具（和 AI 使用习惯）。
+
+## 最快起步：什么都不装
+本站每个示例都能**在浏览器里**运行——直接按 **Run** 就行。无需安装，
+前几课用它正合适。想处理*自己的文件*时，再按下面的步骤本地安装 Python。
+
+## 用 Jupyter 笔记本学整门课
+每一课同时也是一个 **Jupyter 笔记本**——同样的示例和练习，做成可以逐格运行的文档。
+三种用法，选顺手的：
+
+- **浏览器里、免安装** —— 打开在线 JupyterLite 工作台：
+  <https://yangnei.github.io/learn-python/jupyter/lab/index.html>。是真正的 Jupyter，
+  完全在你的浏览器里运行；改动保存在本地浏览器中，什么都不会上传。
+  每课页面也有直接打开该课笔记本的按钮。
+- **Google Colab** —— 每课页面有 **Open in Colab** 按钮（免费，跑在 Google 云端，
+  需要 Google 账号）。想存到 Drive 或做更重的数据工作时很方便。
+- **本地 Jupyter** —— 装好 Python 后（见下）：`pip install jupyterlab`，运行
+  `jupyter lab`，打开你从课程页面下载的 `.ipynb`。
+
+**笔记本怎么开：** 点一个单元格，按 **Shift + Enter** 运行并跳到下一格。运行前先预测
+输出——惊讶就是课程本身——然后改一改、再运行，做实验。
+
+**自动补全与装库：** 按 **Tab** 补全名字，**Shift + Tab** 弹出函数帮助。要加包，
+*在单元格里*运行 `%pip install <名字>`（如 `%pip install pandas`）。浏览器版
+（JupyterLite）只支持兼容 Pyodide 的包——`pandas`、`numpy`、`matplotlib` 这些大件都行——
+安装只在本次会话有效，内核重启后重跑那一格。本地 Jupyter 或 Colab 里，
+`%pip install` 对该环境是永久的。
+
+## 安装 Python（按你的系统选）
+
+**Windows**
+- 官方安装包：<https://www.python.org/downloads/windows/> —— 第一屏**勾选
+  "Add python.exe to PATH"**，再点 *Install Now*。
+- （备选）Microsoft Store → 搜索 **Python 3.12**。
+- 验证成功——打开 **PowerShell** 运行：`python --version`
+- 官方指南：<https://docs.python.org/3/using/windows.html>
+
+**macOS**
+- 官方安装包：<https://www.python.org/downloads/macos/>
+- （备选）[Homebrew](https://brew.sh/)：`brew install python`
+- 验证成功——打开**终端**运行：`python3 --version`
+- 官方指南：<https://docs.python.org/3/using/mac.html>
+
+**Linux**
+- 通常已预装。若没有：`sudo apt install python3 python3-pip`（Debian/Ubuntu）或
+  `sudo dnf install python3`（Fedora）。
+- 验证成功：`python3 --version`
+- 官方指南：<https://docs.python.org/3/using/unix.html>
+
+**编辑器：** 安装 **VS Code**（<https://code.visualstudio.com/>）和微软出品的
+**Python 扩展**。图文教程：<https://code.visualstudio.com/docs/python/python-tutorial>。
+想要更轻量的？**Thonny**（<https://thonny.org/>）是自带变量查看器和调试器的新手 IDE。
+
+**运行脚本：** 代码存成 `name.py`，然后在终端运行 `python name.py`（Windows）
+或 `python3 name.py`（macOS/Linux）。
+
+**装第三方包**（比如第 8 课的 pandas 预告）：`pip install pandas`（或 `pip3`）。
+
+## 亲眼看代码怎么跑 —— Python Tutor
+**<https://pythontutor.com/>** —— 贴上代码，**逐行单步执行**，实时看到变量、调用栈，
+以及哪个名字指着哪个对象。对本课程反复告诫的那些坑，它是最好的可视化工具：
+- **别名** —— 亲眼看 `b = a` 让两个名字指向*同一个*列表（第 4 课），
+- **可变默认参数** bug（第 5 课），
+- **递归调用栈**的堆起与展开（第 6 课）。
+
+每当你想"等等，这为什么会这样？"——把代码片段丢进 Python Tutor。
+
+## 用 AI 学习（但别让它替你干活）
+AI 助手（Claude 等）是巨大的加速器——*前提是让它解释，而不是让它写*。
+每个答案都要自己敲。适合本课程的提示词：
+- **"给初学者总结这页文档，只要我需要的 5 件事：\<贴文本或 URL\>"** ——
+  把密不透风的参考页变成能用的东西。
+- **"解释这个报错和最可能的原因，指出是哪一行：\<贴回溯信息\>"**
+- **"先预测这段代码打印什么，再解释为什么：\<代码\>"** —— 然后自己运行、对答案。
+  这种先预测再运行的习惯*就是*本课程的方法论。
+- **"按本课程的陷阱清单审查我的函数——同一 vs 相等、别名、可变默认值、差一错误——
+  但不要替我重写。"**
+- **"给我 3 道更难的同类练习，答案先藏起来。"**
+
+经验法则：**让它解释，别让它代劳。** 如果它甩给你一段你读不懂每一行的代码，
+让它慢下来逐行讲。
+
+## 其他称手工具
+- **regex101.com**（<https://regex101.com/>）—— 交互式构建并*解释*正则表达式，
+  带实时匹配视图（第 9 课）。记得把 flavor 设为 **Python**。
+- **官方文档** —— [Python 教程](https://docs.python.org/3/tutorial/)和
+  [标准库参考](https://docs.python.org/3/library/)。都收藏好。
+- **Google Colab**（<https://colab.research.google.com/>）—— 浏览器里跑 Python 笔记本，
+  免安装；开始做真实数据工作后的自然一步。
+- 本站的**[陷阱与坑](#traps)**速查表——整门课都开着它。
+
+
+---
+
+<div id="traps"></div>
+
+# Python 陷阱与坑 —— 主速查表
+
+> 咬新手（也咬不少老手）的语言怪癖。以下每个行为都在 CPython 3.11+ 上实际运行并
+> 验证过。看**惊讶**一栏、盖住**原因/修法**，先预测。
+> 整门课程都把它开着。
+
+---
+
+## 1 — 相等 `==` vs 同一 `is`  *(第 2 课)*
+
+| 表达式 | 结果 | |
+|---|---|---|
+| `a = [1,2]; b = [1,2]; a == b` | `True` | **值**相同 |
+| `a = [1,2]; b = [1,2]; a is b` | `False` | 内存中是不同的**对象** |
+| `a = [1,2]; b = a; a is b` | `True` | `b` 是*同一个*对象（别名） |
+
+- **`==`** 问"值相同吗？"——几乎永远是你想要的。
+- **`is`** 问"是同一个对象吗？"——**只**用于 `None`、`True`、`False`：
+  ```python
+  if x is None:        # ✅ 正确
+  if x == None:        # ⚠️ 能跑，但不地道 —— 用 `is`
+  ```
+- **身份的小怪癖（千万别依赖）：** CPython 缓存小整数（−5 到 256）并驻留部分字符串，
+  所以 `a = 256; b = 256; a is b` 为 `True`，到 `257` 就可能是 `False`。
+  这是实现细节。**比值，永远用 `==`。**
+
+🧠 *桥接：* GPA 相同的两名学生是 `==`；同一名学生才是 `is`。
+
+---
+
+## 2 — 布尔值就是整数  *(第 2 课)*
+
+```python
+True == 1            # True   （bool 是 int 的子类）
+False == 0           # True
+5 + True             # 6      对，布尔值能做算术
+sum([True, False, True])   # 2   ← 数出 True 的个数
+isinstance(True, int)      # True
+type(True) is int          # False  （它的类型是 bool，一个子类型）
+```
+- **善用它：** `sum(conditions)` 是数"多少个为真"的 Python 惯用法。
+- **陷阱：** 尽管 `True == 1`，`True is 1` 却是 `False`（不同对象）。用 `==` 比较。
+
+🧠 *桥接：* 这就是语言内置的哑变量编码（1/0）——对标志求和就是在数个案。
+
+---
+
+## 3 — 浮点精度  *(第 2 课)*
+
+```python
+0.1 + 0.2            # 0.30000000000000004
+0.1 + 0.2 == 0.3     # False  😱
+```
+- **原因：** 小数以二进制存储；大多数小数无法精确表示。不是 Python 的 bug——每门语言都这样。
+- **修法：**
+  ```python
+  import math
+  math.isclose(0.1 + 0.2, 0.3)     # True   ← 用容差比较浮点数
+  round(0.1 + 0.2, 2) == 0.3       # True   ← 或者取整后展示/比较
+  from decimal import Decimal       # 真正需要时用精确十进制（金钱、成绩）
+  Decimal("0.1") + Decimal("0.2")  # Decimal('0.3')
+  ```
+- **法则：** 永远不要用 `==` 检验计算出的浮点数。用 `math.isclose`（或 `round`）。
+
+🧠 *桥接：* 你本来就从不对两个测量分数做精确相等判断——直觉相同，原因换了
+（二进制存储，不是测量误差）。
+
+---
+
+## 4 — 跨类型比较  *(第 2 课)*
+
+```python
+5 == "5"     # False   （类型不同 → 不相等，但不报错）
+5 == 5.0     # True    （int 与 float 按数值比较）
+5 > "5"      # 💥 TypeError: '>' not supported between 'int' and 'str'
+```
+- 不相干类型之间的**相等（`==`/`!=`）** → 直接 `False`，从不崩溃。
+- 不兼容类型之间的**排序（`<`、`>`、`<=`、`>=`）** → **`TypeError`**。
+- **修法：** 先转换。`int("5") == 5` → `True`。排序前用 `isinstance` 把关。
+
+🧠 *桥接：* 计算机能跨类型回答"是不是一样？"，却无法给文本和数字*排名*——它们没有共同量尺。
+
+---
+
+## 5 — 序列逐元素比较  *(第 2 / 4 课)*
+
+```python
+[1, 2] == [1, 2]     # True
+[1, 2] == (1, 2)     # False   ← 列表 vs 元组：类型不同，永不相等
+(1, 2) < (1, 3)      # True    ← 逐位置比较（字典序）
+"apple" < "banana"   # True    ← 字符串逐字符比较（近似字母序）
+[1, 2] < [1, 2, 3]   # True    ← 前缀算"小于"
+```
+- **陷阱：** 内容完全相同的 `list` 和 `tuple` **永远不 `==`**——类型有一票否决权。
+- 列表/元组/字符串从左到右比较；第一个不同的元素定胜负。
+
+---
+
+## 6 — 真值判断（什么算 False）  *(第 2 / 3 课)*
+
+```python
+# 这些都是"假值"：
+bool(0) bool(0.0) bool("") bool([]) bool({}) bool(set()) bool(None)   # 全是 False
+bool("0")   # True！ ← 非空字符串是真值，"0" 也不例外
+bool([0])   # True   ← 非空列表是真值，哪怕装的是个 0
+```
+- **惯用法：** 直接判断"空不空"——`if scores:` 而不是 `if len(scores) > 0:`；
+  `if name:` 而不是 `if name != "":`。
+- **陷阱：** 字符串 `"0"` 和 `"False"` 都是**真值**。用户输入先转换再判断。
+
+---
+
+## 7 — `and` / `or` 返回操作数，不是布尔值  *(第 3 课)*
+
+```python
+5 and 0      # 0      （and → 第一个假值，否则最后一个值）
+0 or "hi"    # "hi"   （or → 第一个真值，否则最后一个值）
+"" or "N/A"  # "N/A"  ← 顺手的默认值惯用法
+```
+- **善用它：** `name = user_input or "Anonymous"` 提供默认值。
+- **陷阱：** 别写 `if x == True`，直接 `if x:`。另外 `and`/`or` 短路——右侧可能
+  根本不运行，别把副作用藏在那里。
+
+---
+
+## 8 — 可变默认参数  *(第 5 课)* —— 大名鼎鼎的那个
+
+```python
+def add_student(name, roster=[]):     # ❌ 危险
+    roster.append(name)
+    return roster
+
+add_student("Ana")     # ['Ana']
+add_student("Ben")     # ['Ana', 'Ben']  😱  默认列表跨调用一直存在
+```
+- **原因：** 默认的 `[]` 只在函数*定义*时创建**一次**，之后每次调用都复用它。
+- **修法：**
+  ```python
+  def add_student(name, roster=None):   # ✅
+      if roster is None:
+          roster = []
+      roster.append(name)
+      return roster
+  ```
+- **法则：** 永远不要用可变默认值（`[]`、`{}`、`set()`）。用 `None`，在函数体内创建。
+
+---
+
+## 9 — 别名：变量是标签，不是盒子  *(第 4 课)*
+
+```python
+a = [1, 2, 3]
+b = a            # b 是同一个列表，不是副本
+a.append(4)
+b                # [1, 2, 3, 4]  😱  b 也变了
+
+b = a.copy()     # ✅ 现在 b 是独立的（浅）副本
+import copy
+b = copy.deepcopy(a)   # ✅ 连嵌套的列表/字典也独立
+```
+- **陷阱：** `grid = [[0] * 3] * 3` 造出**同一行的三个引用**——改 `grid[0][0]` 三行全变。
+  要用 `[[0]*3 for _ in range(3)]`。
+- **法则：** 赋值从不复制。`=` 只是给同一个对象再绑一个名字。
+
+🧠 *桥接：* 变量是贴在对象上的便利贴，不是装着值的容器。
+
+---
+
+## 10 — `type()` vs `isinstance()`  *(第 2 课)*
+
+```python
+isinstance(x, int)              # ✅ 地道；尊重继承
+isinstance(x, (int, float))     # ✅ "x 是某种数字吗？"
+type(x) is int                  # 只认精确类型；很少是你要的
+type(x) == int                  # 能跑，但类型身份请用 `is`
+```
+- **陷阱：** `isinstance(True, int)` 为 `True`（bool 是 int 的子类型）。必须排除布尔时，
+  用 `type(x) is int` 或 `isinstance(x, int) and not isinstance(x, bool)`。
+
+---
+
+## 11 — 整数除法 vs 浮点除法  *(第 1 / 2 课)*
+
+```python
+7 / 2      # 3.5   真除法永远返回浮点数
+7 // 2     # 3     整除（向 −∞ 取整）
+-7 // 2    # -4    ← 是向下取整，不是向零截断！
+7 % 2      # 1     取余 —— 用 % 2 判断奇偶
+7 / 0      # 💥 ZeroDivisionError
+```
+- **陷阱：** `/` 即使结果是整数也给浮点数（`4 / 2` 是 `2.0`）。要整数结果用 `//`。
+
+---
+
+## 12 — 字符串不可变；有些方法*返回*而不*修改*  *(第 1 / 9 课)*
+
+```python
+s = "  Hello  "
+s.strip()          # "Hello"   ← 返回一个新字符串
+s                  # "  Hello  "  ← s 原封不动
+s = s.strip()      # ✅ 想留住结果就赋回去
+```
+- **陷阱：** `s.strip()` / `s.replace(...)` / `s.upper()` 对 `s` 毫无作用，除非重新赋值。
+- 对比：列表方法如 `.append()`/`.sort()` **就地**修改并返回 `None`：
+  ```python
+  nums = [3, 1, 2]
+  nums = nums.sort()    # ❌ nums 现在是 None！ .sort() 返回 None
+  nums.sort()           # ✅ 就地排序；想要新列表用 sorted(nums)
+  ```
+
+---
+
+## 13 — `range` 不含终点；差一错误  *(第 3 课)*
+
+```python
+list(range(1, 5))      # [1, 2, 3, 4]   ← 不包含 5
+list(range(5))         # [0, 1, 2, 3, 4]
+list(range(0, 10, 2))  # [0, 2, 4, 6, 8]
+```
+- **法则：** `range(a, b)` 是半开区间 `[a, b)`。
+
+---
+
+## 14 — 边遍历边修改列表  *(第 3 课)*
+
+```python
+xs = [1, 2, 3, 4]
+for x in xs:
+    if x % 2 == 0:
+        xs.remove(x)     # ❌ 跳元素 / 行为不可预测
+# ✅ 遍历副本，或构建新列表：
+xs = [x for x in xs if x % 2 != 0]
+```
+
+---
+
+## 15 — 文件：`"w"` 会覆盖；游标会耗尽  *(第 8 课)*
+
+```python
+open("data.csv", "w")    # ❗ 立即把文件清空
+open("data.csv", "a")    # 追加
+open("data.csv", "r")    # 读取（默认）
+
+with open("data.csv") as f:
+    rows = f.readlines()      # 读了一遍
+    again = f.readlines()     # [] —— 游标已在文件末尾
+```
+- 永远优先 `with open(...) as f:` —— 即使代码崩溃也会把文件关好。
+- Windows 上配合 `csv` 模块，打开时带 `newline=""` 以免出现空行。
+
+---
+
+## 16 — 正则：`.` 匹配*一切*；用原始字符串  *(第 9 课)*
+
+```python
+import re
+re.search(r"\d+", "id 42")     # 用 r"..." 免得 \d 被当成 Python 转义
+re.search(".", "a.b")          # 这个 "." 匹配到的是 "a"，不只是点！
+re.search(r"\.", "a.b")        # 想要真正的点用 \.
+```
+- **法则：** 模式永远写成原始字符串 `r"..."`。转义 `. ^ $ * + ? ( ) [ ] { } | \`。
+
+---
+
+## 快速"先预测再运行"自测（盖住答案）
+```python
+print(True + True)            # 2
+print(3 == 3.0)               # True
+print(0.1 + 0.2 == 0.3)       # False
+print(5 == "5")               # False
+print([1,2] == (1,2))         # False
+print(bool("0"))              # True
+print(7 // 2, -7 // 2)        # 3 -4
+x = [1]; y = x; x.append(2); print(y)   # [1, 2]
+```
+八道题的*为什么*都能讲清，你就掌握了多数新手漏掉的根基。
+
+
+---
+
+<div id="quick-reference"></div>
+
+# Python 语法速查 —— 那些总记不住的写法
+
+> "那个来着怎么写？"专用表。按课程分组。
+
+## 输入输出与类型  *(第 1 课)*
+```python
+name = input("Name: ")          # 永远返回 str
+age  = int(input("Age: "))      # 立即转换
+print("Hi", name, age)          # 空格分隔
+print(f"Hi {name}, age {age}")  # f-string（首选）
+print(f"{score:.2f}")           # 两位小数
+print(f"{count:,}")             # 千位分隔符：1,234
+print("no newline", end="")     # 去掉行尾的 \n
+int("42"), float("3.14"), str(42), bool(0)   # 类型转换
+type(x)                          # x 是什么类型？
+```
+
+## f-string 格式化小抄
+| 写法 | 示例 | 输出 |
+|---|---|---|
+| `:.2f` | `f"{3.14159:.2f}"` | `3.14` |
+| `:,` | `f"{1234567:,}"` | `1,234,567` |
+| `:>8` | `f"{'hi':>8}"` | `      hi`（右对齐） |
+| `:<8` | `f"{'hi':<8}"` | `hi      `（左对齐） |
+| `:^8` | `f"{'hi':^8}"` | `   hi   `（居中） |
+| `:.1%` | `f"{0.873:.1%}"` | `87.3%` |
+
+## 条件  *(第 3 课)*
+```python
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+else:
+    grade = "F"
+
+90 <= score <= 100              # 链式比较
+grade = "pass" if score >= 60 else "fail"   # 三元表达式
+
+match command:                   # Python 3.10+
+    case "start": ...
+    case "stop" | "halt": ...    # 多个值
+    case _: ...                  # 默认分支
+```
+
+## 循环  *(第 3 课)*
+```python
+for i in range(5): ...                  # 0..4
+for x in items: ...                     # 每个元素
+for i, x in enumerate(items): ...       # 序号 + 元素
+for a, b in zip(names, scores): ...     # 两个列表并排走
+while condition: ...
+while True:                             # 输入校验循环
+    x = input("...")
+    if valid(x):
+        break
+# break / continue 控制流程
+```
+
+## 序列与切片  *(第 4 课)*
+```python
+xs = [1, 2, 3]; xs.append(4); xs[0]; xs[-1]   # 最后一个
+xs[1:3]      # [2, 3]   （含起点，不含终点）
+xs[:2]       # 前两个
+xs[::-1]     # 反转
+t = (1, 2)                       # 元组（不可变）
+d = {"name": "Ana", "gpa": 3.9}  # 字典
+d["name"]; d.get("missing", 0)   # 访问；带默认值的安全访问
+d.keys(); d.values(); d.items()
+s = {1, 2, 2, 3}                 # 集合 -> {1, 2, 3}（去重）
+```
+
+## 推导式  *(第 4/10 课)*
+```python
+[x*2 for x in xs]                       # 列表
+[x for x in xs if x > 0]                # 带过滤
+{name: 0 for name in names}             # 字典
+{x % 3 for x in xs}                     # 集合
+(x*x for x in xs)                       # 生成器（惰性）
+```
+
+## 排序  *(第 4 课)*
+```python
+sorted(xs)                              # 新的有序列表
+sorted(xs, reverse=True)
+sorted(students, key=lambda s: s["gpa"])          # 按字段
+sorted(students, key=lambda s: s["gpa"], reverse=True)
+xs.sort()                               # 就地排序（返回 None！）
+```
+
+## 函数  *(第 5 课)*
+```python
+def avg(nums: list[float]) -> float:
+    """Return the mean of nums."""      # 文档字符串
+    return sum(nums) / len(nums)
+
+def greet(name, greeting="Hello"): ...  # 默认参数（不许用可变对象！）
+def total(*args): ...                   # 任意个位置参数 -> 元组
+def config(**kwargs): ...               # 任意个关键字参数 -> 字典
+func(*my_list)                          # 列表摊开成参数
+func(**my_dict)                         # 字典摊开成关键字参数
+```
+
+## 异常  *(第 7 课)*
+```python
+try:
+    n = int(value)
+except ValueError:
+    n = None
+except (KeyError, IndexError) as e:
+    print(e)
+else:
+    print("ok")          # 只在没有异常时运行
+finally:
+    print("always")      # 收尾，总会运行
+
+raise ValueError("score must be 1–5")
+assert n > 0, "n must be positive"
+```
+
+## 文件与 CSV  *(第 8 课)*
+```python
+with open("f.txt") as f:          # 读取，自动关闭
+    text = f.read()
+with open("f.txt", "w") as f:     # 写入（会覆盖！）
+    f.write("line\n")
+
+import csv
+with open("data.csv", newline="") as f:
+    for row in csv.DictReader(f):    # row 是以表头为键的字典
+        print(row["name"])
+
+with open("out.csv", "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=["name", "gpa"])
+    w.writeheader()
+    w.writerow({"name": "Ana", "gpa": 3.9})
+```
+
+## 顺手的标准库  *(第 8 课)*
+```python
+import statistics; statistics.mean(xs); statistics.median(xs); statistics.stdev(xs)
+import random; random.choice(xs); random.randint(1, 6); random.shuffle(xs)
+from datetime import date; date.today(); date(2026, 6, 26)
+from pathlib import Path; Path("data.csv").exists()
+import json; json.dumps(obj, indent=2); json.loads(text)
+```
+
+## 正则  *(第 9 课)*
+```python
+import re
+re.search(r"pattern", text)      # 任意位置的第一个匹配（或 None）
+re.fullmatch(r"\d{5}", zip)      # 整个字符串必须匹配
+re.sub(r"\s+", " ", text)        # 折叠空白
+m = re.search(r"(\w+)@(\w+)", s)
+m.group(1)                        # 第一个捕获组
+```
+| 符号 | 含义 |
+|---|---|
+| `.` | 任意字符（换行除外） |
+| `\d \w \s` | 数字 / 单词字符 / 空白 |
+| `+ * ?` | 1+、0+、0 或 1 |
+| `{m,n}` | m 到 n 次 |
+| `^ $` | 开头 / 结尾 |
+| `[...] [^...]` | 集合内 / 集合外 |
+| `(...)` | 捕获组 |
+| `a\|b` | a 或 b |
+
+## 类  *(第 10 课)*
+```python
+class Student:
+    def __init__(self, name, gpa):
+        self.name = name
+        self._gpa = gpa
+    def __str__(self):
+        return f"{self.name} ({self._gpa})"
+    @property
+    def gpa(self):
+        return self._gpa
+    @gpa.setter
+    def gpa(self, value):
+        if not 0 <= value <= 4:
+            raise ValueError("gpa out of range")
+        self._gpa = value
+
+s = Student("Ana", 3.9)
+print(s)            # 使用 __str__
+```
+
+## 程序骨架  *(每个脚本)*
+```python
+def main():
+    ...
+
+def helper():
+    ...
+
+if __name__ == "__main__":
+    main()
+```
+
+
+---
+
+<div id="glossary"></div>
+
+# 术语表 —— 大白话释义
+
+写给懂研究、不懂代码的学习者。每个词条：一口气说清它是什么。
+
+- **实参（Argument）** —— 调用函数时递进去的值。`int("5")` 里的 `"5"` 就是实参。
+- **形参（Parameter）** —— 函数定义里接收实参的命名占位。`def f(x):` 里的 `x` 就是形参。
+- **变量（Variable）** —— 指向对象的一个*名字*（标签）。不是盒子；是便利贴。
+- **对象（Object）** —— Python 存储的任何值：数字、字符串、列表、函数，甚至类型。"万物皆对象。"
+- **类型（Type）** —— 对象的种类：`int`、`float`、`str`、`bool`、`list`、`dict`、`set`、`tuple`、`NoneType`。
+- **动态类型（Dynamic typing）** —— 变量不锁定类型；有类型的是*对象*，不是*名字*。
+- **`int` / `float`** —— 整数 / 小数。`/` 永远得到浮点数；`//` 向下取整成整数。
+- **`str`** —— 文本。不可变（不能就地修改）。写在引号里。
+- **`bool`** —— `True`/`False`。技术上是一种 `int`（`True == 1`）。
+- **`None`** —— "没有值"。不 `return` 的函数返回的就是它。用 `is None` 检测。
+- **f-string** —— `f"...{expr}..."` —— 带 `{}` 占位符、由 Python 填空的字符串。
+- **相等（`==`）** —— "值相同吗？"你通常想要的比较。
+- **同一（`is`）** —— "是内存里同一个对象吗？"只用于 `None`/`True`/`False`。
+- **真值 / 假值（Truthy / Falsy）** —— 放进 `if` 的值都算真，除非是 `0`、`""`、`[]`、`{}`、`set()` 或 `None`。
+- **可变 / 不可变（Mutable / Immutable）** —— 能否就地修改？`list`/`dict`/`set` 能；`int`/`str`/`tuple` 不能。
+- **别名（Aliasing）** —— 两个名字指向*同一个*可变对象；改一个，另一个也变。
+- **切片（Slicing）** —— 取子序列：`xs[start:stop:step]`，不含终点。
+- **推导式（Comprehension）** —— 用一行循环构建列表/字典/集合：`[x*2 for x in xs]`。
+- **函数（Function）** —— 可复用的具名代码块；接收输入，可选地 `return` 输出。
+- **`return` vs `print`** —— `return` 把值交回*调用者*；`print` 只是往屏幕上显示文字。
+- **作用域（Scope）** —— 名字在哪里可见。Python 按 局部 → 闭包 → 全局 → 内置（LEGB）查找。
+- **`*args` / `**kwargs`** —— 收集"任意个"位置参数（元组）/ 关键字参数（字典）。
+- **类型标注（Type hint）** —— 对期望类型的可选注释（`def f(x: int) -> str:`）。是文档，运行时**不**强制。
+- **异常（Exception）** —— 运行时抛出的错误（如 `ValueError`）。用 `try`/`except` 处理。
+- **`raise`** —— 主动抛出异常。**EAFP** —— "先斩后奏"：直接试，失败再接住。
+- **`assert`** —— 开发者的自检，不成立就报错。不能用来校验用户输入（可以被关闭）。
+- **模块（Module）** —— 可以 `import` 的 `.py` 文件。**库 / 包** —— 一捆模块（用 `pip` 安装）。
+- **标准库（Standard library）** —— Python 自带的模块（`csv`、`statistics`、`random`、`re`、`json`、`datetime`、`pathlib`）。
+- **上下文管理器（`with`）** —— 自动搭建并拆除资源的代码块（比如自动关文件）。
+- **CSV** —— 逗号分隔值；纯文本表格。`csv.DictReader` 把每行变成字典。
+- **类 / 对象（OOP）** —— 蓝图（`class`）和照它造出来的东西（实例）。把数据和行为捆在一起。
+- **`self`** —— 在类内部，指"眼下这一个实例"。
+- **`__init__`** —— 创建实例时运行的初始化方法。**Dunder** = "双下划线"方法。
+- **`@property`** —— 让方法看起来像属性；可以在读/写时做校验。
+- **生成器 / `yield`** —— 惰性地一次产出一个值；大数据省内存。只能遍历一次。
+- **`lambda`** —— 极小的匿名函数，常用作排序的 `key=`。
+- **正则表达式（Regex）** —— 匹配/提取文本的模式语言（`re` 模块）。
+- **回溯（Traceback）** —— 出错时 Python 打印的报告。**先读最后一行。**
+- **REPL** —— 交互式 `>>>` 提示符，一次输入一行。
+
+</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script src="assets/app.js"></script>

@@ -321,6 +321,265 @@ You can validate messy input and fail loudly when you should.
 3. **Error triage** — five real error messages: name the exception and the fix.
 
 </script>
+<script type="text/markdown" id="lesson-a-zh-md">
+# 第 7 课
+## 异常与防御式编程
+
+---
+
+## try / except
+
+```python
+try:
+    n = int(value)
+except ValueError:
+    n = None        # 处理坏情况
+```
+
+代码可能在运行时失败，就包起来。`except` 捕获指定名字的错误。
+`try` 块要保持**小**——只放可能失败的那一行——这样捕获就不会
+误伤你本没打算原谅的代码。
+
+`except ValueError: pass` 是最小化处理——一次*看得见的、故意的*"跳过"。
+真要跳过时没问题；但凡你可能会问"跳过了什么？"，就改成记日志。
+
+---
+
+## 常见异常类型
+
+| 异常 | 何时发生 |
+|---|---|
+| `ValueError` | 类型对、值不行：`int("N/A")` |
+| `TypeError` | 类型不对：`5 > "5"` |
+| `KeyError` | 字典缺键：`d["nope"]` |
+| `IndexError` | 列表下标越界：`xs[99]` |
+| `ZeroDivisionError` | `x / 0` |
+| `FileNotFoundError` | `open("missing.csv")` |
+
+---
+
+## try / except / else / finally
+
+```python
+try:
+    n = int(value)
+except ValueError:
+    print("not a number")
+else:
+    print("ok:", n)      # 仅当没有异常时
+finally:
+    print("always runs")  # 收尾清理
+```
+
+---
+
+## 主动抛出
+
+```python
+def clean_likert(n):
+    if not 1 <= n <= 5:
+        raise ValueError(f"{n} not in 1–5")
+    return n
+```
+
+`raise` 是有意抛出异常——如何处理交给调用者决定。
+
+---
+
+## EAFP vs LBYL
+
+```python
+# LBYL —— "三思而后行"
+if value.isdigit():
+    n = int(value)
+
+# EAFP —— "先斩后奏"（Pythonic）
+try:
+    n = int(value)
+except ValueError:
+    n = None
+```
+
+两者都合法。当"事先检查"困难或有竞态时，EAFP 更亮眼。
+
+---
+
+## assert（开发者检查，不是输入校验）
+
+```python
+assert len(scores) > 0, "scores must not be empty"
+```
+
+给*你自己*开发时做的合理性检查。它可以被关闭（`python -O`），
+所以**绝不要**用 `assert` 校验不可信输入——用 `raise`。
+
+---
+
+## 第一个 pytest 测试
+
+```python
+# clean.py
+def clean_likert(n):
+    if not 1 <= n <= 5:
+        raise ValueError("1–5 only")
+    return n
+
+# test_clean.py
+import pytest
+from clean import clean_likert
+
+def test_valid():    assert clean_likert(3) == 3
+def test_invalid():
+    with pytest.raises(ValueError):
+        clean_likert(9)
+```
+运行：`pytest`
+
+---
+
+## 轮到你了
+
+`examples/session-07/practice.md`：
+1. `safe_int(value)`：返回 int 或 None。
+2. 清洗一列脏问卷数据：收集有效值 + 一份拒收记录。
+3. 写一个 `pytest` 测试。
+
+---
+
+# 更进一步
+## 更稳健的程序
+
+---
+
+## 异常家族树
+
+```text
+Exception
+ ├── ValueError        ├── KeyError / IndexError (LookupError)
+ ├── TypeError         └── OSError (FileNotFoundError, ...)
+```
+
+```python
+try:
+    n = int(raw)
+except (ValueError, TypeError):   # 一次捕获多个具体异常
+    ...
+```
+
+**顺序很重要**：`except` 子句自上而下匹配——先具体、后宽泛；末尾的
+`except Exception as e:` 只用来记录并停止，绝不用来无视。
+
+---
+
+## 携带证据的自定义异常
+
+```python
+class SurveyError(ValueError):
+    def __init__(self, value, message):
+        super().__init__(message)
+        self.value = value            # 把证据留下
+
+raise SurveyError(raw, f"{raw!r} is not a 1-5 rating")
+```
+
+调用者可以专门捕 `SurveyError`——也可以宽泛地捕 `ValueError`——
+并且仍能看到*哪个*值出的问题。
+
+---
+
+## `raise ... from`——留住起因
+
+```python
+try:
+    n = int(cell)
+except ValueError as e:
+    raise SurveyError(cell, "bad rating cell") from e
+```
+
+回溯信息会**两层都显示**：上面是你的领域级错误，下面是真正的底层起因。
+凌晨调试的未来的你会感谢现在的你。
+
+---
+
+## `finally` 与清理思维
+
+```python
+try:
+    f = open("data.csv")
+    ...
+finally:
+    f.close()        # 无论上面发生什么都会运行
+```
+
+`with open(...)`（第 8 课）正是这套模式的成品包装。法则：谁申请资源，
+谁保证释放。
+
+---
+
+## 诊断信息，`logging` 胜过 `print`
+
+```python
+import logging
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+logging.info("processing %s rows", len(rows))
+logging.warning("rejected %r: out of range", raw)
+```
+
+- `print` 输出程序的*结果*；`logging` 记录程序的*日记*。
+- 级别（`DEBUG/INFO/WARNING/ERROR`）让你不删代码就能调低音量。
+
+---
+
+## pytest，进阶版
+
+```python
+import pytest
+from clean import clean_likert
+
+@pytest.mark.parametrize("bad", ["3", True, None, 0, 9])
+def test_rejects(bad):
+    with pytest.raises(ValueError):
+        clean_likert(bad)
+```
+
+一个测试、五个输入、五条独立报告。套路：**准备、执行、断言**——
+并且测*边界*（临界值、错误类型），而不是舒适区。
+
+只会 `print` 的函数没法断言。让函数**返回**值、在边缘处打印——
+这才是可测试的代码（第 5 课 `return` vs `print` 的回报）。
+
+---
+
+## 轮到你了——第二轮
+
+`examples/session-07/practice.md` → **In class — going deeper**：
+修一个 except 顺序 bug、写带 `raise ... from` 的 `SurveyError`、
+把拒收记录换成 `logging`，以及参数化你的测试。
+
+---
+
+## 陷阱回顾
+
+- **绝不**裸写 `except:`——写明异常名。
+- 别捕得太宽，别悄悄吞掉错误。
+- `assert` ≠ 输入校验（用 `raise`）。
+- 捕你*预料中*的那个具体错误。
+
+## 小结
+你已经能校验脏输入，并在该失败时大声失败。
+**下一课：** 第 8 课——文件与研究数据。
+
+---
+
+## 课后作业（第 8 课之前）
+
+*课外完成——不计入课堂时间。完整题目 + 参考答案：`examples/session-07/practice.md` → **Homework**。*
+
+1. **`ask_int(prompt, lo, hi)`** —— 用 EAFP 重写第 3 课的输入校验循环。
+2. **再加三个 pytest 用例** —— `clean_likert` 的边界情况（`True`、`"3"`、`None`）。
+3. **报错分诊** —— 五条真实报错信息：说出异常类名和修法。
+
+</script>
 <script type="text/markdown" id="traps-md">
 ## Traps — predict, then reveal
 Read each snippet and decide what it does **before** you reveal the answer. To run and tinker with them line by line, open **&#9656; Traps — predict, then run** just below.
@@ -402,6 +661,87 @@ Python accepts underscores as digit separators, even inside `int()` text.
 </div>
 
 </script>
+<script type="text/markdown" id="traps-zh-md">
+## 陷阱 —— 先预测，再揭晓
+先读每段代码、想好它会做什么，**再**揭晓答案。想逐行运行、随手改动它们，请打开下方的 **▸ 陷阱 —— 先预测，再运行**。
+
+<div class="trap">
+
+**1.**
+
+```python
+score = '3.0'   # a value from a CSV
+int(score)
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `ValueError: invalid literal for int() with base 10: '3.0'`
+
+`int()` 只解析整数文本；'3.0' 不是合法的整数字面量。用 `int(float(score))`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**2.**
+
+```python
+score = 2.5
+round(score)
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `2`
+
+Python 用银行家舍入（一半时取偶数）：`round(2.5) == 2` 而 `round(3.5) == 4`。汇总数据时当心。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**3.**
+
+```python
+weight = 0.1 + 0.2 + 0.3   # three grade components
+weight == 0.6
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `False`
+
+累加各项时浮点误差会累积：0.1+0.2+0.3 是 0.6000000000000001。比较总和用 `math.isclose`，展示时再取整。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**4.**
+
+```python
+enrolment = '1_000'
+int(enrolment)
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `1000`
+
+Python 接受下划线作数字分隔符，连 `int()` 的文本里也接受。
+
+</details>
+
+</div>
+
+</script>
 <script type="text/markdown" id="quiz-md">
 ### Quiz — Exceptions & Defensive Code
 1. Which exception does `int("N/A")` raise? Wrap `int(value)` so it returns `None` on
@@ -420,6 +760,26 @@ Python accepts underscores as digit separators, even inside `int()` text.
 3. `raise` to validate real/untrusted input; `assert` for developer sanity checks (it can
 be disabled with `python -O`). 4. LBYL ("look before you leap": `if value.isdigit():`)
 vs EAFP ("easier to ask forgiveness"): `try: n = int(value)` / `except ValueError: ...`. 5. Handlers are tried top-down and `Exception` matches a `ValueError` too — placed first it would swallow everything, leaving the specific handler unreachable.
+
+</details>
+</script>
+<script type="text/markdown" id="quiz-zh-md">
+### Quiz — 异常与防御式编程
+1. `int("N/A")` 抛哪种异常？把 `int(value)` 包一下，失败时返回 `None`。
+2. 裸 `except:` 为什么危险？
+3. 什么时候用 `raise`，什么时候用 `assert`？
+4. 说出两种校验风格——并给出把 `value` 转成 int 的 EAFP 写法。
+5. 为什么 `except ValueError:` 必须放在 `except Exception:` 前面？
+
+<details><summary>Show answers</summary>
+
+**答案：** 1. `ValueError`；
+`try: return int(value)` / `except (ValueError, TypeError): return None`。
+2. 它捕获*一切*（连 Ctrl+C 和你自己的手滑都算），会把 bug 藏起来。
+3. 校验真实/不可信输入用 `raise`；开发者的自检用 `assert`（`python -O` 可关闭）。
+4. LBYL（"三思而后行"：`if value.isdigit():`）vs EAFP（"先斩后奏"）：
+`try: n = int(value)` / `except ValueError: ...`。5. 处理器自上而下匹配，
+`Exception` 也能接住 `ValueError`——放前面会把一切吞掉，具体的处理器永远轮不到。
 
 </details>
 </script>

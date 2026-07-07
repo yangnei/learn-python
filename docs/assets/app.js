@@ -143,6 +143,17 @@ function getLang(){
     return localStorage.getItem(LANG_KEY) === "zh" ? "zh" : "en";
   }catch{ return "en"; }
 }
+/* Render every markdown block in the active language: an `X-zh-md` script, when
+   present, replaces `X-md` as the source for target #X while in Chinese. */
+function renderAllMarkdown(){
+  const zh = getLang() === "zh";
+  document.querySelectorAll('script[type="text/markdown"]').forEach(s=>{
+    if(!s.id || !s.id.endsWith("-md") || s.id.endsWith("-zh-md")) return;
+    const base = s.id.slice(0, -3);
+    const zhScript = document.getElementById(base + "-zh-md");
+    renderMarkdownInto((zh && zhScript) ? zhScript.id : s.id, base);
+  });
+}
 /* Chinese strings for chrome elements; English is recovered from the markup itself. */
 const I18N_ZH = {
   "nav.home": "首页", "nav.cheats": "速查表", "check": "自我检测",
@@ -183,6 +194,7 @@ function translateRendered(){
 function applyLang(){
   const zh = getLang() === "zh";
   document.documentElement.lang = zh ? "zh-CN" : "en";
+  renderAllMarkdown();
   document.querySelectorAll("[data-i18n]").forEach(el=>{
     if(!("orig" in el.dataset)) el.dataset.orig = el.textContent;
     const z = I18N_ZH[el.dataset.i18n];
@@ -290,11 +302,8 @@ function setupNotebookEmbed(){
 }
 
 document.addEventListener("DOMContentLoaded", ()=>{
-  // Render every embedded markdown block into the div whose id is the script id
-  // minus "-md" (e.g. lesson-a-md -> #lesson-a, practice-b-md -> #practice-b).
-  document.querySelectorAll('script[type="text/markdown"]').forEach(s=>{
-    if(s.id && s.id.endsWith("-md")) renderMarkdownInto(s.id, s.id.slice(0, -3));
-  });
+  // Markdown rendering happens inside setupLang() -> applyLang() -> renderAllMarkdown(),
+  // which picks the -zh-md variant of each block when Chinese is active.
   buildPlaygrounds();
   setupNotebookEmbed();
   setupCompletion();

@@ -23,6 +23,9 @@ DOCS = ROOT / "docs"
 _traps_spec = importlib.util.spec_from_file_location("traps", Path(__file__).resolve().parent / "traps.py")
 traps = importlib.util.module_from_spec(_traps_spec)
 _traps_spec.loader.exec_module(traps)
+_tz_spec = importlib.util.spec_from_file_location("traps_zh", Path(__file__).resolve().parent / "traps_zh.py")
+traps_zh = importlib.util.module_from_spec(_tz_spec)
+_tz_spec.loader.exec_module(traps_zh)
 
 SESSIONS = [
     (1, "Running Python, Variables & Types",
@@ -444,8 +447,9 @@ def session_quiz_md(qfile_text: str, n: int) -> str:
             block = "## Session " + b
             block = block.split("\n---")[0].rstrip()
             # collapse the answers into a <details>
-            block = re.sub(r"\*\*Answers:\*\*",
-                           "<details><summary>Show answers</summary>\n\n**Answers:**", block, count=1)
+            block = re.sub(r"\*\*(Answers:|答案：)\*\*",
+                           r"<details><summary>Show answers</summary>" + "\n\n" + r"**\1**",
+                           block, count=1)
             if "<details>" in block:
                 block += "\n\n</details>"
             # demote the H2 so it sits under our "Check yourself" H2
@@ -576,25 +580,35 @@ def practice_part_md(heading: str, tasks: str, solution: str) -> str:
     return out
 
 
-def traps_section_md(n: int) -> str:
-    """De-spoilered page traps: code + the common (wrong) guess + a click-to-reveal result."""
+def traps_section_md(n: int, lang: str = "en") -> str:
+    """De-spoilered page traps: code + a click-to-reveal result, in either language."""
     entries = traps.TRAPS.get(n, [])
     if not entries:
         return ""
-    out = ["## Traps — predict, then reveal",
-           "Read each snippet and decide what it does **before** you reveal the answer. "
-           "To run and tinker with them line by line, open **&#9656; Traps — predict, then run** "
-           "just below.\n"]
+    if lang == "zh":
+        out = ["## " + traps_zh.SECTION_HEADING, traps_zh.SECTION_INTRO]
+        summary = traps_zh.REVEAL_SUMMARY
+    else:
+        out = ["## Traps — predict, then reveal",
+               "Read each snippet and decide what it does **before** you reveal the answer. "
+               "To run and tinker with them line by line, open **&#9656; Traps — predict, then run** "
+               "just below.\n"]
+        summary = "Reveal the result"
     for i, t in enumerate(entries, 1):
+        why = traps_zh.WHY_ZH.get((n, i - 1), t['why']) if lang == "zh" else t['why']
         out.append(f'<div class="trap">\n\n**{i}.**\n\n```python\n{traps.display_code(t)}\n```\n')
-        out.append("<details><summary>Reveal the result</summary>\n\n"
-                   f"&rarr; `{traps.reveal(t)}`\n\n{t['why']}\n\n</details>\n\n</div>\n")
+        out.append(f"<details><summary>{summary}</summary>\n\n"
+                   f"&rarr; `{traps.reveal(t)}`\n\n{why}\n\n</details>\n\n</div>\n")
     return "\n".join(out)
 
 
-def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quizzes_text: str) -> str:
+def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quizzes_text: str,
+                  quizzes_zh_text: str = "") -> str:
     lesson = strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text())
+    zh_path = slides_dir / "zh" / f"session-{n:02d}-slides.md"
+    lesson_zh = strip_frontmatter(zh_path.read_text()) if zh_path.exists() else ""
     quiz = session_quiz_md(quizzes_text, n)
+    quiz_zh = session_quiz_md(quizzes_zh_text, n) if quizzes_zh_text else ""
     quiz_block = (f'<h2 data-i18n="check">Check yourself</h2>\n<div id="quiz" class="md"></div>' if quiz else "")
     stem = f"session-{n:02d}"
 
@@ -607,6 +621,7 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
     slot_try = embed_slot("Try it yourself", "动手试试", lite_for(f"{stem}-try"), colab_for(f"{stem}-try"))
 
     traps_md = traps_section_md(n)
+    traps_zh_md = traps_section_md(n, "zh")
     traps_html = ('  <div id="traps" class="md"></div>\n' + f'{slot_traps}\n') if traps_md else ""
 
     lesson_html = ('  <div id="lesson-a" class="md"></div>\n'
@@ -614,9 +629,13 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
                    f'{traps_html}'
                    f'{slot_try}')
     md_blocks = [md_script("lesson-a-md", lesson)]
+    if lesson_zh:
+        md_blocks.append(md_script("lesson-a-zh-md", lesson_zh))
 
     if traps_md:
         md_blocks.append(md_script("traps-md", traps_md))
+        if traps_zh_md:
+            md_blocks.append(md_script("traps-zh-md", traps_zh_md))
 
     body = f"""
 <article>
@@ -635,28 +654,37 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
 """
     scripts = "\n".join([b for b in md_blocks if b] + [
         md_script("quiz-md", quiz) if quiz else "",
+        md_script("quiz-zh-md", quiz_zh) if quiz_zh else "",
     ])
     return page_shell(f"Session {n} — {title}", f"session-{n:02d}", body, scripts, page_id=f"session-{n:02d}")
 
 
+def _combine_cheats(d: Path, head: str, jump: str) -> str:
+    setup = (d / "setup-and-tools.md").read_text()
+    traps_txt = (d / "traps-and-gotchas.md").read_text()
+    quick = (d / "quick-reference.md").read_text()
+    gloss = (d / "glossary.md").read_text()
+    return (f"# {head}\n\n{jump}\n\n"
+            '<div id="setup"></div>\n\n' + setup +
+            '\n\n---\n\n<div id="traps"></div>\n\n' + traps_txt +
+            '\n\n---\n\n<div id="quick-reference"></div>\n\n' + quick +
+            '\n\n---\n\n<div id="glossary"></div>\n\n' + gloss)
+
+
 def build_cheats(cheats_dir: Path) -> str:
-    setup = (cheats_dir / "setup-and-tools.md").read_text()
-    traps = (cheats_dir / "traps-and-gotchas.md").read_text()
-    quick = (cheats_dir / "quick-reference.md").read_text()
-    gloss = (cheats_dir / "glossary.md").read_text()
-    combined = (
-        "# Cheat Sheets\n\n"
-        "Jump to: [Setup &amp; Tools](#setup) · "
-        "[Traps &amp; Gotchas](#traps) · "
-        "[Quick Reference](#quick-reference) · "
-        "[Glossary](#glossary)\n\n"
-        '<div id="setup"></div>\n\n' + setup +
-        '\n\n---\n\n<div id="traps"></div>\n\n' + traps +
-        '\n\n---\n\n<div id="quick-reference"></div>\n\n' + quick +
-        '\n\n---\n\n<div id="glossary"></div>\n\n' + gloss
-    )
-    body = '<div id="cheats" class="md"></div>'
+    combined = _combine_cheats(
+        cheats_dir, "Cheat Sheets",
+        "Jump to: [Setup &amp; Tools](#setup) · [Traps &amp; Gotchas](#traps) · "
+        "[Quick Reference](#quick-reference) · [Glossary](#glossary)")
     scripts = md_script("cheats-md", combined)
+    zh_dir = cheats_dir / "zh"
+    if zh_dir.exists():
+        combined_zh = _combine_cheats(
+            zh_dir, "速查表",
+            "跳转：[环境配置与工具](#setup) · [陷阱与坑](#traps) · "
+            "[语法速查](#quick-reference) · [术语表](#glossary)")
+        scripts += "\n" + md_script("cheats-zh-md", combined_zh)
+    body = '<div id="cheats" class="md"></div>'
     return page_shell("Cheat Sheets — Learn Python", "cheats", body, scripts)
 
 
@@ -665,12 +693,14 @@ def main() -> None:
     examples_dir = ROOT / "examples"
     cheats_dir = ROOT / "cheatsheets"
     quizzes_text = (ROOT / "assessments" / "quizzes.md").read_text()
+    zh_q = ROOT / "assessments" / "quizzes.zh.md"
+    quizzes_zh_text = zh_q.read_text() if zh_q.exists() else ""
 
     (DOCS / "assets").mkdir(parents=True, exist_ok=True)
     (DOCS / "index.html").write_text(build_index())
     for n, title, _desc, _key in SESSIONS:
         (DOCS / f"session-{n:02d}.html").write_text(
-            build_session(n, title, slides_dir, examples_dir, quizzes_text))
+            build_session(n, title, slides_dir, examples_dir, quizzes_text, quizzes_zh_text))
     (DOCS / "cheatsheets.html").write_text(build_cheats(cheats_dir))
     # GitHub Pages: don't run Jekyll over our files
     (DOCS / ".nojekyll").write_text("")
