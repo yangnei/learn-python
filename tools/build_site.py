@@ -584,6 +584,25 @@ def practice_part_md(heading: str, tasks: str, solution: str) -> str:
     return out
 
 
+def practice_page_md(tasks: str, solutions: str, lang: str = "en") -> str:
+    """The readable practice + homework block for a session page, solutions collapsed."""
+    if lang == "zh":
+        head, show = "## 练习与作业", "展开参考答案"
+        intro = ("课堂练习和**课后作业**都在这里——作业**不**计入课堂时间。"
+                 "先自己动手做，再展开答案对照。想直接运行，就用上方"
+                 "**“练习 —— 运行本课笔记本”**。")
+    else:
+        head, show = "## Practice & homework", "Show solutions"
+        intro = ("This session's in-class practice **and homework** — homework does **not** "
+                 "count toward class time. Try each yourself, then reveal the solution to check. "
+                 "To run the code, use **“Practice — run this session's notebook”** above.")
+    out = f"{head}\n\n{intro}\n\n{tasks}\n"
+    if solutions:
+        out += (f"\n<details><summary><strong>{show}</strong></summary>\n\n"
+                f"{solutions}\n\n</details>\n")
+    return out
+
+
 def traps_section_md(n: int, lang: str = "en") -> str:
     """De-spoilered page traps: code + a click-to-reveal result, in either language."""
     entries = traps.TRAPS.get(n, [])
@@ -628,13 +647,31 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
     traps_zh_md = traps_section_md(n, "zh")
     traps_html = ('  <div id="traps" class="md"></div>\n' + f'{slot_traps}\n') if traps_md else ""
 
+    # The practice + homework, as readable text on the page (solutions collapsed),
+    # in addition to the runnable notebook slot above it.
+    practice_path = examples_dir / f"session-{n:02d}" / "practice.md"
+    practice_html = ""
+    practice_blocks = []
+    if practice_path.exists():
+        ptasks, psol = split_practice(practice_path.read_text())
+        if ptasks:
+            practice_html = '  <div id="practice" class="md"></div>\n'
+            practice_blocks.append(md_script("practice-md", practice_page_md(ptasks, psol, "en")))
+            zh_practice = examples_dir / f"session-{n:02d}" / "practice.zh.md"
+            if zh_practice.exists():
+                ztasks, zsol = split_practice(zh_practice.read_text())
+                practice_blocks.append(
+                    md_script("practice-zh-md", practice_page_md(ztasks, zsol, "zh")))
+
     lesson_html = ('  <div id="lesson-a" class="md"></div>\n'
                    f'{slot_practice}\n'
+                   f'{practice_html}'
                    f'{traps_html}'
                    f'{slot_try}')
     md_blocks = [md_script("lesson-a-md", lesson)]
     if lesson_zh:
         md_blocks.append(md_script("lesson-a-zh-md", lesson_zh))
+    md_blocks.extend(practice_blocks)
 
     if traps_md:
         md_blocks.append(md_script("traps-md", traps_md))
