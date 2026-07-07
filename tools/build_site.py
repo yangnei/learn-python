@@ -363,8 +363,9 @@ CDN = {
     "hljs_css": "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css",
 }
 
-# Offline PDF companion (built by tools/build_student_pdf.py, served from docs/).
+# Offline PDF companions (built by tools/build_student_pdf.py, served from docs/).
 STUDENT_PDF = "learn-python-student.pdf"
+STUDENT_PDF_ZH = "learn-python-student.zh.pdf"
 
 # Jupyter notebooks (built by tools/build_notebooks.py) + the in-browser JupyterLite app
 # (built by tools/build_jupyterlite.sh), both served from docs/. The Colab launcher reads
@@ -473,7 +474,8 @@ def nav_html(active: str) -> str:
         links.append(f'<a href="{page}.html"{cls_attr} data-page="{page}" title="{html.escape(title)}" '
                      f'data-title-en="{html.escape(title)}" data-title-zh="{html.escape(zh_title)}">S{n}</a>')
     links.append(f'<a href="cheatsheets.html"{" class=\"active\"" if active=="cheats" else ""} data-i18n="nav.cheats">Cheat sheets</a>')
-    links.append(f'<a class="dl" href="{STUDENT_PDF}" download title="Download the whole course as a PDF">PDF&nbsp;&#8595;</a>')
+    links.append(f'<a class="dl" href="{STUDENT_PDF}" download title="Download the whole course as a PDF" '
+                 f'data-href-en="{STUDENT_PDF}" data-href-zh="{STUDENT_PDF_ZH}">PDF&nbsp;&#8595;</a>')
     links.append('<button class="lang-toggle" type="button" aria-label="Switch language / 切换语言" '
                  'title="English / 中文">中文</button>')
     links.append('<button class="theme-toggle" type="button" aria-label="Switch light or dark theme" '
@@ -538,7 +540,8 @@ def build_index() -> str:
 <span class="p">&gt;&gt;&gt;</span> 5 == "5"
 <span class="o">False</span></pre>
   </figure>
-  <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download data-i18n-html="dl.full">&#8595; Download the full course (PDF)</a>
+  <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download data-i18n-html="dl.full"
+     data-href-en="{STUDENT_PDF}" data-href-zh="{STUDENT_PDF_ZH}">&#8595; Download the full course (PDF)</a>
   <span class="dl-note" data-i18n="hero.note">— all sessions, practice, and cheat sheets for offline reading.</span></p>
 </section>
 
@@ -551,7 +554,7 @@ def build_index() -> str:
   <li data-i18n-html="res.traps"><a href="cheatsheets.html">Traps &amp; Gotchas cheat sheet</a> — the quirks, wrong-vs-right (start here, Session&nbsp;2).</li>
   <li data-i18n-html="res.quick"><a href="cheatsheets.html#quick-reference">Quick syntax reference</a> and <a href="cheatsheets.html#glossary">plain-language glossary</a>.</li>
   <li data-i18n-html="res.nb"><strong>Prefer notebooks?</strong> <a href="{LITE_DIR}/lab/index.html" target="_blank" rel="noopener">Open all sessions as Jupyter notebooks in your browser</a> — a full Jupyter, no install. Each session page also links Colab and a <code>.ipynb</code> download.</li>
-  <li data-i18n-html="res.pdf"><a href="{STUDENT_PDF}" download>The whole course as a PDF</a> — for reading offline or printing.</li>
+  <li data-i18n-html="res.pdf"><a href="{STUDENT_PDF}" download data-href-en="{STUDENT_PDF}" data-href-zh="{STUDENT_PDF_ZH}">The whole course as a PDF</a> — for reading offline or printing.</li>
 </ul>
 """
     return page_shell("Learn Python — Home", "index", body, "")
@@ -563,7 +566,7 @@ def split_practice(practice_md: str) -> tuple[str, str]:
     Layout: an H1 + intro line, then the task sections (`## In class`,
     `## Extra practice`, `## Homework`), then `---` and `## Solutions`.
     """
-    m = re.search(r"(?m)^##\s+Solutions?\s*$", practice_md)
+    m = re.search(r"(?m)^##\s+(?:Solutions?|参考答案)\s*$", practice_md)
     tasks_region = practice_md[:m.start()] if m else practice_md
     solutions = practice_md[m.end():].strip() if m else ""
     first = re.search(r"(?m)^##\s+", tasks_region)
@@ -648,7 +651,8 @@ def build_session(n: int, title: str, slides_dir: Path, examples_dir: Path, quiz
       {'<a href="session-%02d.html" data-i18n-html="foot.prev">&larr; Prev</a>' % (n-1) if n > 1 else '<a href="index.html" data-i18n-html="foot.home">&larr; Home</a>'}
       {'<a href="session-%02d.html" data-i18n-html="foot.next">Next &rarr;</a>' % (n+1) if n < len(SESSIONS) else '<a href="cheatsheets.html" data-i18n-html="foot.cheats">Cheat sheets &rarr;</a>'}
     </div>
-    <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download data-i18n-html="dl.full">&#8595; Download the full course (PDF)</a></p>
+    <p class="dl-line"><a class="dl-btn" href="{STUDENT_PDF}" download data-i18n-html="dl.full"
+       data-href-en="{STUDENT_PDF}" data-href-zh="{STUDENT_PDF_ZH}">&#8595; Download the full course (PDF)</a></p>
   </div>
 </article>
 """

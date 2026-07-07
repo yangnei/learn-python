@@ -170,7 +170,7 @@ const I18N_ZH = {
   "res.traps": '<a href="cheatsheets.html">陷阱与坑速查表</a> —— 每个怪癖的错误写法 vs 正确写法（第 2 课起常备）。',
   "res.quick": '<a href="cheatsheets.html#quick-reference">语法速查</a>和<a href="cheatsheets.html#glossary">通俗术语表</a>。',
   "res.nb": '<strong>偏好笔记本？</strong> <a href="jupyter/lab/index.html" target="_blank" rel="noopener">在浏览器中以 Jupyter 笔记本打开全部课程</a> —— 完整 Jupyter、免安装。每课页面也有 Colab 链接和 <code>.ipynb</code> 下载。',
-  "res.pdf": '<a href="learn-python-student.pdf" download>整套课程 PDF</a> —— 离线阅读或打印。',
+  "res.pdf": '<a href="learn-python-student.zh.pdf" download>整套课程 PDF（中文版）</a> —— 离线阅读或打印。',
 };
 /* generated-inside-markdown strings, translated after render (both directions) */
 const CONTENT_I18N = [
@@ -214,6 +214,9 @@ function applyLang(){
   });
   document.querySelectorAll("[data-title-en][data-title-zh]").forEach(el=>{
     el.title = zh ? el.dataset.titleZh : el.dataset.titleEn;
+  });
+  document.querySelectorAll("[data-href-en][data-href-zh]").forEach(el=>{
+    el.setAttribute("href", zh ? el.dataset.hrefZh : el.dataset.hrefEn);
   });
   document.querySelectorAll("[data-nb-embed]").forEach(btn=>{
     const open = btn.getAttribute("aria-expanded") === "true";

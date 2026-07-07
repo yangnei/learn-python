@@ -33,26 +33,35 @@ _bs_spec.loader.exec_module(_bs)
 _traps_spec = importlib.util.spec_from_file_location("traps", ROOT / "tools" / "traps.py")
 _traps = importlib.util.module_from_spec(_traps_spec)
 _traps_spec.loader.exec_module(_traps)
+_tz_spec = importlib.util.spec_from_file_location("traps_zh", ROOT / "tools" / "traps_zh.py")
+_traps_zh = importlib.util.module_from_spec(_tz_spec)
+_tz_spec.loader.exec_module(_traps_zh)
 
 
-def pdf_traps(n: int) -> str:
-    """Printed traps reference: code, the common wrong guess, the real result, and why."""
+def pdf_traps(n: int, lang: str = "en") -> str:
+    """Printed traps reference: code, the real result, and why — in either language."""
     entries = _traps.TRAPS.get(n, [])
     if not entries:
         return ""
-    out = ["## Traps — predict, then check\n",
-           "Cover the result, predict each one, then check yourself.\n"]
+    if lang == "zh":
+        out = ["## 陷阱 —— 先预测，再核对\n", "盖住结果，逐个预测，再自己核对。\n"]
+    else:
+        out = ["## Traps — predict, then check\n",
+               "Cover the result, predict each one, then check yourself.\n"]
     for i, t in enumerate(entries, 1):
+        why = _traps_zh.WHY_ZH.get((n, i - 1), t['why']) if lang == "zh" else t['why']
+        label = "结果" if lang == "zh" else "Result"
         out.append(f"**{i}.**\n\n```python\n{_traps.display_code(t)}\n```\n")
-        out.append(f"Result: `{_traps.reveal(t)}`. {t['why']}\n")
+        out.append(f"{label}: `{_traps.reveal(t)}`. {why}\n")
     return "\n".join(out)
 
 
-def pdf_practice(heading: str, tasks: str, solution: str) -> str:
+def pdf_practice(heading: str, tasks: str, solution: str, lang: str = "en") -> str:
     """Practice markdown for the PDF — solutions shown (a printed <details> would hide them)."""
     out = f"## {heading}\n\n{tasks}\n"
     if solution:
-        out += f"\n### Solutions\n\n{solution}\n"
+        sol_head = "参考答案" if lang == "zh" else "Solutions"
+        out += f"\n### {sol_head}\n\n{solution}\n"
     return out
 
 # Sessions that have a lesson deck + practice file (capstone is an appendix).
@@ -123,7 +132,24 @@ details { margin:.4em 0; }
 summary { font-weight:600; color:#2f6df0; }
 """
 
-COVER = f"""
+def cover(lang: str) -> str:
+    if lang == "zh":
+        return f"""
+<div class="cover">
+  <div class="sub">Learn Python</div>
+  <h1>学生版（中文）</h1>
+  <div class="rule"></div>
+  <p style="font-size:12pt;color:#33415c">十次两小时课程 + 毕业项目 · 可运行示例 ·
+     课后作业 · 陷阱速查表 · 自测题</p>
+  <div class="meta">
+     为零编程基础的研究者定制的<br>
+     快节奏自学 Python 课程。<br><br>
+     交互式网站的离线伴读版。<br>
+     生成于 {date.today().isoformat()} · 教学内容均为原创
+  </div>
+</div>
+"""
+    return f"""
 <div class="cover">
   <div class="sub">Learn Python</div>
   <h1>Student Edition</h1>
@@ -140,68 +166,75 @@ COVER = f"""
 """
 
 
-def render() -> str:
+def render(lang: str = "en") -> str:
     md = markdown.Markdown(extensions=[
         "extra", "tables", "fenced_code", "sane_lists", "toc", "attr_list",
     ])
-    slides_dir = ROOT / "slides"
+    zh = lang == "zh"
+    slides_dir = ROOT / "slides" / "zh" if zh else ROOT / "slides"
     examples_dir = ROOT / "examples"
-    cheats_dir = ROOT / "cheatsheets"
+    cheats_dir = ROOT / "cheatsheets" / "zh" if zh else ROOT / "cheatsheets"
+    syllabus = ROOT / "curriculum" / ("syllabus-student.zh.md" if zh else "syllabus-student.md")
+    quizzes = ROOT / "assessments" / ("quizzes.zh.md" if zh else "quizzes.md")
+    practice_name = "practice.zh.md" if zh else "practice.md"
+    practice_head = "练习与作业" if zh else "Practice & homework"
 
     def convert(text: str) -> str:
         md.reset()
         return md.convert(normalize_lists(text))
 
-    sections = [COVER]
+    sections = [cover(lang)]
 
     # Front matter: the student syllabus.
-    sections.append(convert((ROOT / "curriculum" / "syllabus-student.md").read_text()))
+    sections.append(convert(syllabus.read_text()))
 
     # Each session: the lesson, then practice (in-class + extra + homework), then traps.
     for n in range(1, N_SESSIONS + 1):
         lesson = strip_frontmatter((slides_dir / f"session-{n:02d}-slides.md").read_text())
-        practice_path = examples_dir / f"session-{n:02d}" / "practice.md"
+        practice_path = examples_dir / f"session-{n:02d}" / practice_name
         tasks = sol = ""
         if practice_path.exists():
             tasks, sol = _bs.split_practice(practice_path.read_text())
         sections.append(f'<div class="pagebreak"></div>{convert(lesson)}')
         if tasks:
-            sections.append(convert(pdf_practice("Practice & homework", tasks, sol)))
-        traps_md = pdf_traps(n)
+            sections.append(convert(pdf_practice(practice_head, tasks, sol, lang)))
+        traps_md = pdf_traps(n, lang)
         if traps_md:
             sections.append(f'<div class="pagebreak"></div>{convert(traps_md)}')
 
     # Appendices: cheat sheets and quizzes.
     for fname in ("setup-and-tools.md", "traps-and-gotchas.md", "quick-reference.md", "glossary.md"):
         sections.append(f'<div class="pagebreak"></div>{convert((cheats_dir / fname).read_text())}')
-    sections.append(f'<div class="pagebreak"></div>{convert((ROOT / "assessments" / "quizzes.md").read_text())}')
+    sections.append(f'<div class="pagebreak"></div>{convert(quizzes.read_text())}')
 
     body = "\n".join(sections)
-    return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
-<title>Student Edition — Learn Python</title>
+    html_lang = "zh-CN" if zh else "en"
+    title = "学生版（中文）— Learn Python" if zh else "Student Edition — Learn Python"
+    return f"""<!doctype html><html lang="{html_lang}"><head><meta charset="utf-8">
+<title>{title}</title>
 <style>{PRINT_CSS}</style></head><body>{body}</body></html>"""
 
 
 def main() -> None:
     DOCS.mkdir(exist_ok=True)
-    html_path = DOCS / "learn-python-student.html"
-    pdf_path = DOCS / "learn-python-student.pdf"
-    html_path.write_text(render())
-    print(f"Wrote {html_path}")
-
     chrome = shutil.which("chromium") or shutil.which("chromium-browser") or shutil.which("google-chrome")
-    if not chrome:
-        print("No chromium found — open the HTML and 'Print to PDF' manually.", file=sys.stderr)
-        return
-    cmd = [chrome, "--headless", "--no-sandbox", "--disable-gpu",
-           "--no-pdf-header-footer", "--virtual-time-budget=8000",
-           f"--print-to-pdf={pdf_path}", html_path.as_uri()]
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    if pdf_path.exists():
-        print(f"Wrote {pdf_path} ({pdf_path.stat().st_size:,} bytes)")
-        html_path.unlink(missing_ok=True)  # keep docs/ clean; the PDF is the artifact
-    else:
-        print("PDF generation failed:\n" + r.stderr, file=sys.stderr)
+    for lang, stem in (("en", "learn-python-student"), ("zh", "learn-python-student.zh")):
+        html_path = DOCS / f"{stem}.html"
+        pdf_path = DOCS / f"{stem}.pdf"
+        html_path.write_text(render(lang))
+        print(f"Wrote {html_path}")
+        if not chrome:
+            print("No chromium found — open the HTML and 'Print to PDF' manually.", file=sys.stderr)
+            continue
+        cmd = [chrome, "--headless", "--no-sandbox", "--disable-gpu",
+               "--no-pdf-header-footer", "--virtual-time-budget=8000",
+               f"--print-to-pdf={pdf_path}", html_path.as_uri()]
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        if pdf_path.exists():
+            print(f"Wrote {pdf_path} ({pdf_path.stat().st_size:,} bytes)")
+            html_path.unlink(missing_ok=True)  # keep docs/ clean; the PDF is the artifact
+        else:
+            print("PDF generation failed:\n" + r.stderr, file=sys.stderr)
 
 
 if __name__ == "__main__":
