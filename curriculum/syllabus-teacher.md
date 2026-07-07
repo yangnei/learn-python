@@ -43,7 +43,7 @@ Session-by-Session Coverage Checklist** and keep it next to the clock.
 - **Protect both practice blocks** (~30 min total, plus the live coding he types along with). If concept overruns, steal from your own talking, never from his typing.
 - **The second hour is new material, not overflow.** If Practice I runs long, cut tasks, don't eat the Going-deeper block.
 - **Predict-then-run is the engine, especially the Session 2 traps.** Always have him *commit to an answer out loud* before running.
-- **The warm-up is homework-powered.** If homework wasn't done, do H1 together as the warm-up and move on.
+- **The warm-up is homework-powered.** If homework wasn't done, do the first homework task together as the warm-up and move on.
 - **Don't pad.** If a block ends early, bank the minutes for practice.
 - **Carry a running "misconceptions log"** (DeepTutor "learning memory"): note every trap he hit; re-surface it as the next warm-up.
 

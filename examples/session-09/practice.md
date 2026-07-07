@@ -40,27 +40,27 @@ print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        (split on com
 
 ## In class — going deeper (second hour)
 
-### E1 — Named groups
+### Task 1 — Named groups
 Redo the dept+number extraction with `(?P<dept>...)` / `(?P<num>...)` and print
 `m.groupdict()`.
 
-### E2 — regex101 field trip
+### Task 2 — regex101 field trip
 Paste your email pattern into regex101.com (flavor: **Python**). Read the left-panel
 explanation token by token — does it say what you *meant*?
 
-### D1 — A commented pattern
+### Task 3 — A commented pattern
 Rewrite your email validator with `re.compile(..., re.VERBOSE)`, one commented line per
 token. It must behave identically.
 
-### D2 — The anonymizer
+### Task 4 — The anonymizer
 Replace every occurrence of the names Ana/Ben/Cara in a transcript with stable IDs
 `P001`, `P002`, … (same name → same ID) using `re.sub` with a **function** replacement.
 
-### D3 — Two-format date harvest
+### Task 5 — Two-format date harvest
 From `"submitted 2026-07-06, revised 07/08/2026, due 2026-09-01"`, extract **all** dates
 in either `YYYY-MM-DD` or `MM/DD/YYYY` form with one `findall` and an alternation.
 
-### D4 — Case-insensitive keyword count
+### Task 6 — Case-insensitive keyword count
 Count mentions of "stress" in a paragraph regardless of case, with a flag — not by
 lowercasing the text.
 
@@ -68,18 +68,18 @@ lowercasing the text.
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — Pattern drill
+### Task 1 — Pattern drill
 One `re.fullmatch` pattern each; test against two valid and two invalid strings:
 1. Student ID: two uppercase letters + six digits (`AB123456`)
 2. US phone: `555-867-5309` (digits and dashes only)
 3. ISO date: `2026-07-06` (just the shape — don't validate month ranges)
 
-### H2 — Messy-name cleanup
+### Task 2 — Messy-name cleanup
 Normalize `["  smith,  ana", "LEE,BEN", "Garcia ,  Cara "]` to `"Ana Smith"`,
 `"Ben Lee"`, `"Cara Garcia"`: regex-split on the comma (with optional spaces around it),
 then `.strip()` + `.title()`, and flip the order.
 
-### H3 — Domain harvest
+### Task 3 — Domain harvest
 From a paragraph containing several email addresses, extract the **unique** domains
 (e.g. `{"university.edu", "gmail.com"}`) with one `findall` + a `set`.
 
@@ -107,20 +107,20 @@ Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and
 ### In class — going deeper
 
 ```python
-# E1
+# Task 1
 import re
 m = re.search(r"(?P<dept>[A-Z]{2})(?P<num>\d{4})", "Course ED1234 meets Tue")
 print(m.group("dept"), m.group("num"))   # ED 1234
 print(m.groupdict())                     # {'dept': 'ED', 'num': '1234'}
 ```
 
-E2 — the point is the habit: regex101's explainer catches "`.` matches any character"
+Task 2 — the point is the habit: regex101's explainer catches "`.` matches any character"
 mistakes before your data does.
 
 ```python
 import re
 
-# D1
+# Task 3
 EMAIL = re.compile(r"""
     \w+          # the user part
     @
@@ -129,7 +129,7 @@ EMAIL = re.compile(r"""
 """, re.VERBOSE)
 print(EMAIL.fullmatch("ana@university.edu") is not None)   # True
 
-# D2
+# Task 4
 ids = {}
 def anonymize(m):
     name = m.group(0)
@@ -140,12 +140,12 @@ text = "Ana said X. Ben said Y. Ana agreed."
 print(re.sub(r"\b(?:Ana|Ben|Cara)\b", anonymize, text))
 # P001 said X. P002 said Y. P001 agreed.
 
-# D3
+# Task 5
 s = "submitted 2026-07-06, revised 07/08/2026, due 2026-09-01"
 print(re.findall(r"\d{4}-\d{2}-\d{2}|\d{2}/\d{2}/\d{4}", s))
 # ['2026-07-06', '07/08/2026', '2026-09-01']
 
-# D4
+# Task 6
 para = "Stress was high. Some stress is normal. STRESS!"
 print(len(re.findall(r"stress", para, re.IGNORECASE)))     # 3
 ```
@@ -153,7 +153,7 @@ print(len(re.findall(r"stress", para, re.IGNORECASE)))     # 3
 ### Homework
 
 ```python
-# H1
+# Task 1
 import re
 
 sid   = r"[A-Z]{2}\d{6}"        # AB123456 ✓  CD000001 ✓  ab123456 ✗  AB12345 ✗
@@ -163,7 +163,7 @@ date  = r"\d{4}-\d{2}-\d{2}"    # 2026-07-06 ✓  2026-7-6 ✗
 for s in ["AB123456", "ab123456"]:
     print(s, re.fullmatch(sid, s) is not None)
 
-# H2
+# Task 2
 def clean_name(raw):
     last, first = re.split(r"\s*,\s*", raw.strip(), maxsplit=1)
     return f"{first.strip().title()} {last.strip().title()}"
@@ -171,7 +171,7 @@ def clean_name(raw):
 for raw in ["  smith,  ana", "LEE,BEN", "Garcia ,  Cara "]:
     print(clean_name(raw))      # Ana Smith · Ben Lee · Cara Garcia
 
-# H3
+# Task 3
 text = "Write ana@university.edu or ben@gmail.com; cc cara@university.edu today."
 print(set(re.findall(r"\w+@([\w.]+\.\w+)", text)))
 # {'university.edu', 'gmail.com'}  — the set removes the duplicate

@@ -32,28 +32,28 @@ print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   (** unpacks a dict into argum
 
 ## In class — going deeper (second hour)
 
-### E1 — Keyword-only
+### Task 1 — Keyword-only
 Rewrite `letter_grade(score, plus_minus)` so that `plus_minus` **must** be passed by
 keyword (`letter_grade(95, plus_minus=True)`); calling it positionally should raise
 `TypeError`.
 
-### E2 — Docstring polish
+### Task 2 — Docstring polish
 Give `pass_rate` a docstring that states what it returns, what `passing` means, and one
 usage example. One short paragraph, no fluff.
 
-### D1 — Your own `map`
+### Task 3 — Your own `map`
 Write `apply_to_all(func, values)` returning a new list with `func` applied to each value.
 Test with `abs` and with a lambda that curves by +5.
 
-### D2 — A function factory
+### Task 4 — A function factory
 Write `make_curver(bonus)` returning a function that adds `bonus`, capped at 100. Build a
 `gentle = make_curver(5)` and a `strict = make_curver(1)` and show they differ.
 
-### D3 — A first decorator
+### Task 5 — A first decorator
 Write `@announce` that prints `calling <name> with <args>` before running the wrapped
 function. Decorate your `letter_grade` and call it.
 
-### D4 — A doctest
+### Task 6 — A doctest
 Add a docstring with two `>>>` examples to `class_average`, then run
 `python -m doctest your_file.py -v` and watch them pass.
 
@@ -61,7 +61,7 @@ Add a docstring with two `>>>` examples to `class_average`, then run
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — A tiny stats library
+### Task 1 — A tiny stats library
 Three functions, each with a docstring and type hints:
 - `validate_score(x) -> float` — accept int/float/numeric str in 0–100; `raise ValueError`
   otherwise (and reject `bool` — remember Session 2!),
@@ -69,11 +69,11 @@ Three functions, each with a docstring and type hints:
   100, and **don't mutate the input list**,
 - `summarize(scores: list[float]) -> dict` — `n` / `mean` / `min` / `max`.
 
-### H2 — `mean_ignoring_none(*values)`
+### Task 2 — `mean_ignoring_none(*values)`
 `mean_ignoring_none(90, None, 80, None, 70)` → `80.0`. If nothing survives the cleaning,
 return `None` rather than dividing by zero.
 
-### H3 — Scope prediction
+### Task 3 — Scope prediction
 What does this print — and what breaks? Predict *before* running:
 ```python
 count = 0
@@ -131,13 +131,13 @@ print(summary(*[91, 58, 73]))
 ### In class — going deeper
 
 ```python
-# E1
+# Task 1
 def letter_grade(score, *, plus_minus=False):   # * makes what follows keyword-only
     ...
 # letter_grade(95, True)            -> TypeError
 # letter_grade(95, plus_minus=True) -> ok
 
-# E2
+# Task 2
 def pass_rate(scores, passing=60):
     """Return the fraction (0..1) of scores at or above `passing`.
 
@@ -146,14 +146,14 @@ def pass_rate(scores, passing=60):
 ```
 
 ```python
-# D1
+# Task 3
 def apply_to_all(func, values):
     return [func(v) for v in values]
 
 print(apply_to_all(abs, [-3, 4, -5]))                 # [3, 4, 5]
 print(apply_to_all(lambda s: min(s + 5, 100), [58, 97]))   # [63, 100]
 
-# D2
+# Task 4
 def make_curver(bonus):
     def curve(score):
         return min(score + bonus, 100)
@@ -162,7 +162,7 @@ def make_curver(bonus):
 gentle, strict = make_curver(5), make_curver(1)
 print(gentle(96), strict(96))    # 100 97
 
-# D3
+# Task 5
 def announce(f):
     def wrapper(*args, **kwargs):
         print(f"calling {f.__name__} with {args}")
@@ -178,7 +178,7 @@ def letter_grade(score):
 
 print(letter_grade(85))          # calling letter_grade with (85,)  ->  B
 
-# D4
+# Task 6
 def class_average(scores):
     """Mean of scores.
 
@@ -194,7 +194,7 @@ def class_average(scores):
 ### Homework
 
 ```python
-# H1
+# Task 1
 def validate_score(x) -> float:
     """Return x as a float score in 0-100, or raise ValueError."""
     if isinstance(x, bool):                  # bool would sneak through float()!
@@ -213,7 +213,7 @@ def summarize(scores: list[float]) -> dict:
     return {"n": len(scores), "mean": sum(scores) / len(scores),
             "min": min(scores), "max": max(scores)}
 
-# H2
+# Task 2
 def mean_ignoring_none(*values):
     clean = [v for v in values if v is not None]
     return sum(clean) / len(clean) if clean else None
@@ -221,7 +221,7 @@ def mean_ignoring_none(*values):
 print(mean_ignoring_none(90, None, 80, None, 70))   # 80.0
 print(mean_ignoring_none(None, None))               # None
 
-# H3
+# Task 3
 # tally([1, 2, 3]) prints 6 — `total` is local to tally, no conflict with anything.
 # bump() raises UnboundLocalError: the assignment makes `count` local to bump,
 # so `count + 1` reads a local variable that doesn't exist yet.

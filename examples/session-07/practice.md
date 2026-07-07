@@ -37,15 +37,15 @@ except AssertionError as e:
 
 ## In class — going deeper (second hour)
 
-### E1 — Which exception?
+### Task 1 — Which exception?
 Without running, name the exception each raises:
 `int("3.5")` · `{"a": 1}["b"]` · `[1, 2][5]` · `1/0` · `open("nope.csv")` · `len(42)`
 
-### E2 — Your own exception
+### Task 2 — Your own exception
 Define `class SurveyError(ValueError)` and raise it for out-of-range Likert values. Show
 that `except ValueError:` still catches it — that's subclassing at work.
 
-### D1 — Fix the except order
+### Task 3 — Fix the except order
 This always prints `"unexpected"` for bad cells — why, and what's the fix?
 ```python
 try:
@@ -56,16 +56,16 @@ except ValueError:
     n = None
 ```
 
-### D2 — `SurveyError` with evidence
+### Task 4 — `SurveyError` with evidence
 Build `class SurveyError(ValueError)` that stores the offending value as `.value`. In your
 cleaning loop, catch the low-level `ValueError` from `int()` and re-raise as
 `SurveyError(cell, ...) from e`. Show the two-level traceback once.
 
-### D3 — Log, don't print
+### Task 5 — Log, don't print
 Convert your rejection log to `logging`: `logging.warning` per rejected cell,
 `logging.info` with the final counts. Configure the format to show the level name.
 
-### D4 — Parametrize
+### Task 6 — Parametrize
 Rewrite your three homework tests as ONE `@pytest.mark.parametrize` test over
 `["3", True, None, 0, 9]`. Run `pytest -q`.
 
@@ -73,17 +73,17 @@ Rewrite your three homework tests as ONE `@pytest.mark.parametrize` test over
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — `ask_int(prompt, lo, hi)`
+### Task 1 — `ask_int(prompt, lo, hi)`
 Session 3's validation loop, rebuilt the EAFP way: `try: n = int(raw)` /
 `except ValueError` instead of `.isdigit()` — so `"-5"` and `" 42 "` work too. Loop until
 valid; return the int.
 
-### H2 — Three more pytest cases
+### Task 2 — Three more pytest cases
 For `clean_likert`, add tests that: `clean_likert(True)` raises (a bool is not a rating!),
 `clean_likert("3")` raises (a str, even if numeric), `clean_likert(None)` raises.
 Run `pytest -q` until green.
 
-### H3 — Error triage
+### Task 3 — Error triage
 For each message, name the exception class and give the one-line fix:
 1. `invalid literal for int() with base 10: 'N/A'`
 2. `unsupported operand type(s) for +: 'int' and 'str'`
@@ -139,7 +139,7 @@ showing you the bug. Always catch the specific exception you expect.
 ### In class — going deeper
 
 ```python
-# E1
+# Task 1
 int("3.5")        # ValueError          (int() parses integer text only)
 {"a": 1}["b"]     # KeyError
 [1, 2][5]         # IndexError
@@ -147,7 +147,7 @@ int("3.5")        # ValueError          (int() parses integer text only)
 open("nope.csv")  # FileNotFoundError
 len(42)           # TypeError           (ints have no length)
 
-# E2
+# Task 2
 class SurveyError(ValueError):
     pass
 
@@ -163,7 +163,7 @@ except ValueError as e:      # the parent class catches the subclass
 ```
 
 ```python
-# D1 — except clauses are tried top-down; `Exception` is the parent of ValueError,
+# Task 3 — except clauses are tried top-down; `Exception` is the parent of ValueError,
 # so it matches FIRST and the specific handler is unreachable. Specific before broad:
 try:
     n = int(cell)
@@ -173,7 +173,7 @@ except Exception as e:
     print("unexpected:", e)
     raise
 
-# D2
+# Task 4
 class SurveyError(ValueError):
     def __init__(self, value, message):
         super().__init__(message)
@@ -187,7 +187,7 @@ def clean_cell(cell):
     return n
 # The traceback shows the ValueError as the cause, the SurveyError on top.
 
-# D3
+# Task 5
 import logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 kept, rejected = [], []
@@ -199,7 +199,7 @@ for cell in ["5", "N/A", "3", ""]:
         logging.warning("rejected %r", e.value)
 logging.info("kept %d, rejected %d", len(kept), len(rejected))
 
-# D4 — test_clean.py
+# Task 6 — test_clean.py
 import pytest
 from clean import clean_likert
 
@@ -212,7 +212,7 @@ def test_rejects(bad):
 ### Homework
 
 ```python
-# H1
+# Task 1
 def ask_int(prompt, lo, hi):
     while True:
         raw = input(prompt)
@@ -225,7 +225,7 @@ def ask_int(prompt, lo, hi):
             return n
         print(f"Between {lo} and {hi}, please.")
 
-# H2 — test_clean.py
+# Task 2 — test_clean.py
 import pytest
 from clean import clean_likert
 
@@ -242,7 +242,7 @@ def test_none_rejected():
         clean_likert(None)
 ```
 
-H3 — triage:
+Task 3 — triage:
 1. `ValueError` — clean/convert first, or wrap in `try/except ValueError`.
 2. `TypeError` — convert one side: `str(n)` or `int(s)`.
 3. `KeyError` — `row.get("score")`, or fix the header spelling.

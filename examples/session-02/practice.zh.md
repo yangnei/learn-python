@@ -43,7 +43,7 @@ print(float("nan") == float("nan"))  # -> False        （NaN 不等于任何东
 
 ## 课堂练习——更进一步（第二小时）
 
-### E1 —— isinstance 速练
+### 任务 1 —— isinstance 速练
 逐个预测，再运行：
 ```python
 isinstance(True, int)
@@ -53,20 +53,20 @@ isinstance("3", (int, float))
 isinstance(3, (int, float))
 ```
 
-### E2 —— 值相同，对象相同吗？
+### 任务 2 —— 值相同，对象相同吗？
 不运行：执行 `a = [1, 2]; b = [1, 2]; c = a` 之后，`a == b`、`a is b`、`a is c`
 各是什么？接着 `c.append(3)` —— `a` 变成什么？运行验证全部四问。
 
-### D1 —— 类型转换预测表
+### 任务 3 —— 类型转换预测表
 逐个预测，再运行：`int("42")` · `int("4.2")` · `float("4.2")` · `int(4.9)` ·
 `int(float("4.2"))` · `str(4.2) + "!"` · `bool("False")`。
 
-### D2 —— `Decimal` 重算
+### 任务 4 —— `Decimal` 重算
 证明 `Decimal("0.1") + Decimal("0.2") == Decimal("0.3")` 而浮点版为 False——
 再检查成绩权重：`0.1 + 0.2 + 0.3 == 0.6` 用 `Decimal` 能修好吗？
 为什么 Decimal 必须**从字符串**构造？
 
-### D3 —— `describe(x)`
+### 任务 5 —— `describe(x)`
 `None` 返回 `"missing"`、`""` 返回 `"empty"`、`0`/`0.0` 返回 `"zero"`（但 `False`
 **不算**），其余返回 `"value"`。在 `[None, "", 0, 0.0, False, "0", 5]` 上验证。
 （小心：`False == 0` —— 正是第 2 课自己的陷阱。哪个工具能区分它们？）
@@ -75,16 +75,16 @@ isinstance(3, (int, float))
 
 *约 30–45 分钟，课外完成——不计入课堂时间。先都试一遍，再看答案。*
 
-### H1 —— 陷阱日志
+### 任务 1 —— 陷阱日志
 从今天约 18 个陷阱中挑出**最让你意外的五个**。每个写下：那行代码、你原本的
 错误预期、以及 Python 为什么那样回答——一句话，用自己的话。（这本日志是你
 专属速查表的种子。）
 
-### H2 —— `approx_equal(a, b, tol=1e-9)`
+### 任务 2 —— `approx_equal(a, b, tol=1e-9)`
 写出你从今往后替代 `==` 的浮点比较；它必须让 `approx_equal(0.1 + 0.2, 0.3)`
 得到 `True`。手写一版（`abs`），再用 `math.isclose` 写一版。
 
-### H3 —— `is_missing(x)`
+### 任务 3 —— `is_missing(x)`
 **只**对 `None` 返回 `True`——对 `0`、`0.0`、`""`、`False` 都不行。在全部五个值
 上验证。（提示：这正是 `is` 的用武之地。）
 
@@ -122,20 +122,20 @@ for v in [87, 87.0, "87", "eighty", 120, True]:
 ### 课堂练习——更进一步
 
 ```python
-# E1
+# 任务 1
 isinstance(True, int)          # True  —— bool 是 int 的子类
 type(True) is int              # False —— 精确类型是 bool
 isinstance(3.0, int)           # False —— float 不是 int 的子类
 isinstance("3", (int, float))  # False —— 长得像数字的字符串仍是 str
 isinstance(3, (int, float))    # True  —— 元组表示"其中任意一种"
 
-# E2
+# 任务 2
 a == b   # True  —— 值相同
 a is b   # False —— 两个不同的列表对象
 a is c   # True  —— c 是 a 的对象上的另一个标签
 # c.append(3) 之后：a == [1, 2, 3] —— 通过 c 的修改透过 a 显现
 
-# D1
+# 任务 3
 int("42")          # 42
 # int("4.2")       -> ValueError —— int() 只解析整数文本
 float("4.2")       # 4.2
@@ -144,13 +144,13 @@ int(float("4.2"))  # 4  （两步走）
 str(4.2) + "!"     # '4.2!'
 bool("False")      # True —— 任何非空字符串都是真值！
 
-# D2
+# 任务 4
 from decimal import Decimal
 print(Decimal("0.1") + Decimal("0.2") == Decimal("0.3"))                    # True
 print(Decimal("0.1") + Decimal("0.2") + Decimal("0.3") == Decimal("0.6"))   # True
 # 要从字符串构造：Decimal(0.1) 会把浮点数的二进制误差原样带进来。
 
-# D3
+# 任务 5
 def describe(x):
     if x is None:
         return "missing"
@@ -169,12 +169,12 @@ for v in [None, "", 0, 0.0, False, "0", 5]:
 
 ### 课后作业
 
-H1 —— 任选五个，例如：`0.1 + 0.2 == 0.3`（二进制浮点）、`True == 1`（bool ⊂ int）、
+任务 1 —— 任选五个，例如：`0.1 + 0.2 == 0.3`（二进制浮点）、`True == 1`（bool ⊂ int）、
 `5 == "5"`（不做跨类型转换）、`[1, 2] == (1, 2)`（列表 ≠ 元组）、对相等列表用 `is`
 （同一 ≠ 相等）。用自己的话写*为什么*比挑哪个更重要。
 
 ```python
-# H2
+# 任务 2
 import math
 
 def approx_equal(a, b, tol=1e-9):
@@ -183,7 +183,7 @@ def approx_equal(a, b, tol=1e-9):
 
 print(approx_equal(0.1 + 0.2, 0.3))   # True
 
-# H3
+# 任务 3
 def is_missing(x):
     return x is None          # 身份判断 —— 只有 None 本身能通过
 

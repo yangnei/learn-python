@@ -625,27 +625,27 @@ print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        (split on com
 
 ## In class — going deeper (second hour)
 
-### E1 — Named groups
+### Task 1 — Named groups
 Redo the dept+number extraction with `(?P<dept>...)` / `(?P<num>...)` and print
 `m.groupdict()`.
 
-### E2 — regex101 field trip
+### Task 2 — regex101 field trip
 Paste your email pattern into regex101.com (flavor: **Python**). Read the left-panel
 explanation token by token — does it say what you *meant*?
 
-### D1 — A commented pattern
+### Task 3 — A commented pattern
 Rewrite your email validator with `re.compile(..., re.VERBOSE)`, one commented line per
 token. It must behave identically.
 
-### D2 — The anonymizer
+### Task 4 — The anonymizer
 Replace every occurrence of the names Ana/Ben/Cara in a transcript with stable IDs
 `P001`, `P002`, … (same name → same ID) using `re.sub` with a **function** replacement.
 
-### D3 — Two-format date harvest
+### Task 5 — Two-format date harvest
 From `"submitted 2026-07-06, revised 07/08/2026, due 2026-09-01"`, extract **all** dates
 in either `YYYY-MM-DD` or `MM/DD/YYYY` form with one `findall` and an alternation.
 
-### D4 — Case-insensitive keyword count
+### Task 6 — Case-insensitive keyword count
 Count mentions of "stress" in a paragraph regardless of case, with a flag — not by
 lowercasing the text.
 
@@ -653,18 +653,18 @@ lowercasing the text.
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — Pattern drill
+### Task 1 — Pattern drill
 One `re.fullmatch` pattern each; test against two valid and two invalid strings:
 1. Student ID: two uppercase letters + six digits (`AB123456`)
 2. US phone: `555-867-5309` (digits and dashes only)
 3. ISO date: `2026-07-06` (just the shape — don't validate month ranges)
 
-### H2 — Messy-name cleanup
+### Task 2 — Messy-name cleanup
 Normalize `["  smith,  ana", "LEE,BEN", "Garcia ,  Cara "]` to `"Ana Smith"`,
 `"Ben Lee"`, `"Cara Garcia"`: regex-split on the comma (with optional spaces around it),
 then `.strip()` + `.title()`, and flip the order.
 
-### H3 — Domain harvest
+### Task 3 — Domain harvest
 From a paragraph containing several email addresses, extract the **unique** domains
 (e.g. `{"university.edu", "gmail.com"}`) with one `findall` + a `set`.
 
@@ -690,20 +690,20 @@ Trap reminder: `.` matches **any** character — use `\.` for a literal dot, and
 ### In class — going deeper
 
 ```python
-# E1
+# Task 1
 import re
 m = re.search(r"(?P<dept>[A-Z]{2})(?P<num>\d{4})", "Course ED1234 meets Tue")
 print(m.group("dept"), m.group("num"))   # ED 1234
 print(m.groupdict())                     # {'dept': 'ED', 'num': '1234'}
 ```
 
-E2 — the point is the habit: regex101's explainer catches "`.` matches any character"
+Task 2 — the point is the habit: regex101's explainer catches "`.` matches any character"
 mistakes before your data does.
 
 ```python
 import re
 
-# D1
+# Task 3
 EMAIL = re.compile(r"""
     \w+          # the user part
     @
@@ -712,7 +712,7 @@ EMAIL = re.compile(r"""
 """, re.VERBOSE)
 print(EMAIL.fullmatch("ana@university.edu") is not None)   # True
 
-# D2
+# Task 4
 ids = {}
 def anonymize(m):
     name = m.group(0)
@@ -723,12 +723,12 @@ text = "Ana said X. Ben said Y. Ana agreed."
 print(re.sub(r"\b(?:Ana|Ben|Cara)\b", anonymize, text))
 # P001 said X. P002 said Y. P001 agreed.
 
-# D3
+# Task 5
 s = "submitted 2026-07-06, revised 07/08/2026, due 2026-09-01"
 print(re.findall(r"\d{4}-\d{2}-\d{2}|\d{2}/\d{2}/\d{4}", s))
 # ['2026-07-06', '07/08/2026', '2026-09-01']
 
-# D4
+# Task 6
 para = "Stress was high. Some stress is normal. STRESS!"
 print(len(re.findall(r"stress", para, re.IGNORECASE)))     # 3
 ```
@@ -736,7 +736,7 @@ print(len(re.findall(r"stress", para, re.IGNORECASE)))     # 3
 ### Homework
 
 ```python
-# H1
+# Task 1
 import re
 
 sid   = r"[A-Z]{2}\d{6}"        # AB123456 ✓  CD000001 ✓  ab123456 ✗  AB12345 ✗
@@ -746,7 +746,7 @@ date  = r"\d{4}-\d{2}-\d{2}"    # 2026-07-06 ✓  2026-7-6 ✗
 for s in ["AB123456", "ab123456"]:
     print(s, re.fullmatch(sid, s) is not None)
 
-# H2
+# Task 2
 def clean_name(raw):
     last, first = re.split(r"\s*,\s*", raw.strip(), maxsplit=1)
     return f"{first.strip().title()} {last.strip().title()}"
@@ -754,7 +754,7 @@ def clean_name(raw):
 for raw in ["  smith,  ana", "LEE,BEN", "Garcia ,  Cara "]:
     print(clean_name(raw))      # Ana Smith · Ben Lee · Cara Garcia
 
-# H3
+# Task 3
 text = "Write ana@university.edu or ben@gmail.com; cc cara@university.edu today."
 print(set(re.findall(r"\w+@([\w.]+\.\w+)", text)))
 # {'university.edu', 'gmail.com'}  — the set removes the duplicate
@@ -806,45 +806,45 @@ print(re.split(r"\s*,\s*", "a, b ,c")) # -> ['a', 'b', 'c']        （按逗号�
 
 ## 课堂练习——更进一步（第二小时）
 
-### E1 —— 命名分组
+### 任务 1 —— 命名分组
 用 `(?P<dept>...)` / `(?P<num>...)` 重做系别+课号提取，打印 `m.groupdict()`。
 
-### E2 —— regex101 实地考察
+### 任务 2 —— regex101 实地考察
 把你的邮箱模式贴进 regex101.com（flavor 选 **Python**）。逐符号读左栏的解释——
 它说的是你*想表达*的意思吗？
 
-### D1 —— 带注释的模式
+### 任务 3 —— 带注释的模式
 用 `re.compile(..., re.VERBOSE)` 重写邮箱校验器，每个符号一行注释。行为必须
 完全一致。
 
-### D2 —— 匿名化器
+### 任务 4 —— 匿名化器
 用 `re.sub` 传**函数**替换，把转录文本里出现的 Ana/Ben/Cara 全部替换成稳定编号
 `P001`、`P002`……（同名 → 同编号）。
 
-### D3 —— 双格式日期收割
+### 任务 5 —— 双格式日期收割
 从 `"submitted 2026-07-06, revised 07/08/2026, due 2026-09-01"` 里用一次
 `findall` + 一个候选分支，提取**全部**日期（`YYYY-MM-DD` 或 `MM/DD/YYYY` 两种
 格式）。
 
-### D4 —— 忽略大小写的关键词计数
+### 任务 6 —— 忽略大小写的关键词计数
 用标志位统计一段话里 "stress" 的出现次数、大小写不限——不许先把文本转小写。
 
 ## 课后作业（第 10 课之前）
 
 *约 30–45 分钟，课外完成——不计入课堂时间。先都试一遍，再看答案。*
 
-### H1 —— 模式练习
+### 任务 1 —— 模式练习
 各写一个 `re.fullmatch` 模式；每个用两个合法、两个非法的字符串测试：
 1. 学号：两个大写字母 + 六位数字（`AB123456`）
 2. 美式电话：`555-867-5309`（只有数字和连字符）
 3. ISO 日期：`2026-07-06`（只验形状——不用检查月份范围）
 
-### H2 —— 脏姓名清洗
+### 任务 2 —— 脏姓名清洗
 把 `["  smith,  ana", "LEE,BEN", "Garcia ,  Cara "]` 规范成 `"Ana Smith"`、
 `"Ben Lee"`、`"Cara Garcia"`：按逗号（两侧可有空格）做正则切分，然后
 `.strip()` + `.title()`，再交换顺序。
 
-### H3 —— 域名收割
+### 任务 3 —— 域名收割
 从含有多个邮箱地址的一段文字里，用一次 `findall` + 一个 `set` 提取**不重复的**
 域名（如 `{"university.edu", "gmail.com"}`）。
 
@@ -870,20 +870,20 @@ m = re.search(r"^(.+),\s*(.+)$", s); f"{m.group(2)} {m.group(1)}"      # 5
 ### 课堂练习——更进一步
 
 ```python
-# E1
+# 任务 1
 import re
 m = re.search(r"(?P<dept>[A-Z]{2})(?P<num>\d{4})", "Course ED1234 meets Tue")
 print(m.group("dept"), m.group("num"))   # ED 1234
 print(m.groupdict())                     # {'dept': 'ED', 'num': '1234'}
 ```
 
-E2 —— 重点是习惯：regex101 的解释器能在你的数据咬你之前，先抓住
+任务 2 —— 重点是习惯：regex101 的解释器能在你的数据咬你之前，先抓住
 "`.` 匹配任意字符"这类失误。
 
 ```python
 import re
 
-# D1
+# 任务 3
 EMAIL = re.compile(r"""
     \w+          # 用户名部分
     @
@@ -892,7 +892,7 @@ EMAIL = re.compile(r"""
 """, re.VERBOSE)
 print(EMAIL.fullmatch("ana@university.edu") is not None)   # True
 
-# D2
+# 任务 4
 ids = {}
 def anonymize(m):
     name = m.group(0)
@@ -903,12 +903,12 @@ text = "Ana said X. Ben said Y. Ana agreed."
 print(re.sub(r"\b(?:Ana|Ben|Cara)\b", anonymize, text))
 # P001 said X. P002 said Y. P001 agreed.
 
-# D3
+# 任务 5
 s = "submitted 2026-07-06, revised 07/08/2026, due 2026-09-01"
 print(re.findall(r"\d{4}-\d{2}-\d{2}|\d{2}/\d{2}/\d{4}", s))
 # ['2026-07-06', '07/08/2026', '2026-09-01']
 
-# D4
+# 任务 6
 para = "Stress was high. Some stress is normal. STRESS!"
 print(len(re.findall(r"stress", para, re.IGNORECASE)))     # 3
 ```
@@ -916,7 +916,7 @@ print(len(re.findall(r"stress", para, re.IGNORECASE)))     # 3
 ### 课后作业
 
 ```python
-# H1
+# 任务 1
 import re
 
 sid   = r"[A-Z]{2}\d{6}"        # AB123456 ✓  CD000001 ✓  ab123456 ✗  AB12345 ✗
@@ -926,7 +926,7 @@ date  = r"\d{4}-\d{2}-\d{2}"    # 2026-07-06 ✓  2026-7-6 ✗
 for s in ["AB123456", "ab123456"]:
     print(s, re.fullmatch(sid, s) is not None)
 
-# H2
+# 任务 2
 def clean_name(raw):
     last, first = re.split(r"\s*,\s*", raw.strip(), maxsplit=1)
     return f"{first.strip().title()} {last.strip().title()}"
@@ -934,7 +934,7 @@ def clean_name(raw):
 for raw in ["  smith,  ana", "LEE,BEN", "Garcia ,  Cara "]:
     print(clean_name(raw))      # Ana Smith · Ben Lee · Cara Garcia
 
-# H3
+# 任务 3
 text = "Write ana@university.edu or ben@gmail.com; cc cara@university.edu today."
 print(set(re.findall(r"\w+@([\w.]+\.\w+)", text)))
 # {'university.edu', 'gmail.com'}  —— 集合顺手去了重

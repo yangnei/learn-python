@@ -43,7 +43,7 @@ print(float("nan") == float("nan"))  # -> False        (NaN equals nothing, not 
 
 ## In class — going deeper (second hour)
 
-### E1 — isinstance drill
+### Task 1 — isinstance drill
 Predict each, then run:
 ```python
 isinstance(True, int)
@@ -53,20 +53,20 @@ isinstance("3", (int, float))
 isinstance(3, (int, float))
 ```
 
-### E2 — Same value, same object?
+### Task 2 — Same value, same object?
 Without running: after `a = [1, 2]; b = [1, 2]; c = a`, what are `a == b`, `a is b`,
 `a is c`? Now `c.append(3)` — what is `a`? Run and check all four.
 
-### D1 — Conversion-matrix predictions
+### Task 3 — Conversion-matrix predictions
 Predict each, then run: `int("42")` · `int("4.2")` · `float("4.2")` · `int(4.9)` ·
 `int(float("4.2"))` · `str(4.2) + "!"` · `bool("False")`.
 
-### D2 — `Decimal` re-run
+### Task 4 — `Decimal` re-run
 Show that `Decimal("0.1") + Decimal("0.2") == Decimal("0.3")` where floats said False —
 and check the grade weights: does `0.1 + 0.2 + 0.3 == 0.6` fix itself with `Decimal`?
 Why must you build Decimals from **strings**?
 
-### D3 — `describe(x)`
+### Task 5 — `describe(x)`
 Return `"missing"` for `None`, `"empty"` for `""`, `"zero"` for `0`/`0.0` (but **not**
 `False`), else `"value"`. Prove it on `[None, "", 0, 0.0, False, "0", 5]`.
 (Careful: `False == 0` — Session 2's own trap. What tool tells them apart?)
@@ -75,17 +75,17 @@ Return `"missing"` for `None`, `"empty"` for `""`, `"zero"` for `0`/`0.0` (but *
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — Trap journal
+### Task 1 — Trap journal
 From today's ~18 traps, pick the **five** that surprised you most. For each, write down:
 the one-line code, your wrong expectation, and *why* Python answers differently — one
 sentence, your own words. (This journal is the seed of your personal cheat sheet.)
 
-### H2 — `approx_equal(a, b, tol=1e-9)`
+### Task 2 — `approx_equal(a, b, tol=1e-9)`
 Write the float comparison you'll use instead of `==` from now on; it must make
 `approx_equal(0.1 + 0.2, 0.3)` come out `True`. Do it once by hand (`abs`), once with
 `math.isclose`.
 
-### H3 — `is_missing(x)`
+### Task 3 — `is_missing(x)`
 Return `True` **only** for `None` — not for `0`, `0.0`, `""`, or `False`. Prove it on all
 five. (Hint: this is exactly what `is` is for.)
 
@@ -123,14 +123,14 @@ pass as a valid score. This is the `bool ⊂ int` trap in a real function.
 ### In class — going deeper
 
 ```python
-# E1
+# Task 1
 isinstance(True, int)          # True  — bool is a subclass of int
 type(True) is int              # False — the exact type is bool
 isinstance(3.0, int)           # False — float is not an int subclass
 isinstance("3", (int, float))  # False — a numeric-LOOKING string is still a str
 isinstance(3, (int, float))    # True  — the tuple means "any of these"
 
-# E2
+# Task 2
 a == b   # True  — same values
 a is b   # False — two separate list objects
 a is c   # True  — c is another label on a's object
@@ -138,7 +138,7 @@ a is c   # True  — c is another label on a's object
 ```
 
 ```python
-# D1
+# Task 3
 int("42")          # 42
 # int("4.2")       -> ValueError — int() parses integer text only
 float("4.2")       # 4.2
@@ -147,13 +147,13 @@ int(float("4.2"))  # 4  (the two-step)
 str(4.2) + "!"     # '4.2!'
 bool("False")      # True — any non-empty string is truthy!
 
-# D2
+# Task 4
 from decimal import Decimal
 print(Decimal("0.1") + Decimal("0.2") == Decimal("0.3"))                    # True
 print(Decimal("0.1") + Decimal("0.2") + Decimal("0.3") == Decimal("0.6"))   # True
 # From strings, because Decimal(0.1) would copy the float's binary error in.
 
-# D3
+# Task 5
 def describe(x):
     if x is None:
         return "missing"
@@ -172,12 +172,12 @@ for v in [None, "", 0, 0.0, False, "0", 5]:
 
 ### Homework
 
-H1 — any five, e.g.: `0.1 + 0.2 == 0.3` (binary floats), `True == 1` (bool ⊂ int),
+Task 1 — any five, e.g.: `0.1 + 0.2 == 0.3` (binary floats), `True == 1` (bool ⊂ int),
 `5 == "5"` (no cross-type conversion), `[1, 2] == (1, 2)` (list ≠ tuple), `is` on equal
 lists (identity ≠ equality). The *why* in your own words matters more than the pick.
 
 ```python
-# H2
+# Task 2
 import math
 
 def approx_equal(a, b, tol=1e-9):
@@ -186,7 +186,7 @@ def approx_equal(a, b, tol=1e-9):
 
 print(approx_equal(0.1 + 0.2, 0.3))   # True
 
-# H3
+# Task 3
 def is_missing(x):
     return x is None          # identity — only None itself passes
 

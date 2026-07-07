@@ -51,28 +51,28 @@ print(92 in nums, 60 in nums)        # -> True False
 
 ## 课堂练习——更进一步（第二小时）
 
-### E1 —— 改写成链式比较
+### 任务 1 —— 改写成链式比较
 各用一个链式比较重写：
 1. `if x >= 0 and x <= 100:`
 2. `if lo < value and value < hi:`
 3. `if a == b and b == c:`
 
-### E2 —— 倒计时
+### 任务 2 —— 倒计时
 打印 10 → 1 再打印 `Go!`——先用 `range`，再用 `while`。**两端**的差一错误都要当心。
 
-### D1 —— `match/case` 重写
+### 任务 3 —— `match/case` 重写
 用 `match/case` 重写你的李克特分类器：5/4 → `"agree"`、3 → `"neutral"`、
 1/2 → `"disagree"`、其他 → `"invalid"`。这里哪个版本更好读——为什么？
 
-### D2 —— `for/else` 查找
+### 任务 4 —— `for/else` 查找
 在 `[91, 73, 84, 58, 90]` 中找出第一个低于 60 的分数并打印；如果没有，打印
 `"everyone passed"`——**不许**用 `found` 旗标变量。
 
-### D3 —— 一趟找出最高和最低
+### 任务 5 —— 一趟找出最高和最低
 在对 `[73, 91, 58, 84]` 的一次循环里同时跟踪迄今最高和迄今最低（不用
 `max()`/`min()`）。两个都打印出来。
 
-### D4 —— 把判断本身返回出去
+### 任务 6 —— 把判断本身返回出去
 把下面每个改写成单行 `return`，然后挑一个在 `if` 里裸用（不写 `== True`）：
 ```python
 def is_passing(score):
@@ -91,16 +91,16 @@ def is_full_class(roster):
 
 *约 30–45 分钟，课外完成——不计入课堂时间。先都试一遍，再看答案。*
 
-### H1 —— 出勤标注器
+### 任务 1 —— 出勤标注器
 写 `label(pct)` → `"perfect"`（恰好 100）、`"good"`（≥ 80）、`"at risk"`（≥ 50），
 其余 `"critical"`；超出 0–100 返回 `"invalid"`。对
 `[100, 92.5, 80, 79.9, 50, 12, -3, 104]` 循环打印 `pct -> label`。**测试每个边界。**
 
-### H2 —— 猜数字游戏
+### 任务 2 —— 猜数字游戏
 设 `secret = 37`。循环：读入一个猜测（校验它是 1–100 的整数——复用今天的校验循环
 模式），打印 `higher` / `lower` / `got it in N tries`。统计次数。
 
-### H3 —— 闰年判断
+### 任务 3 —— 闰年判断
 `is_leap(year)`：能被 4 整除，但整百年除外，除非能被 400 整除——写成**一个**布尔
 表达式。验证：2024 → True、1900 → False、2000 → True、2026 → False。
 
@@ -154,12 +154,12 @@ elif score >= 60:
 ### 课堂练习——更进一步
 
 ```python
-# E1
+# 任务 1
 0 <= x <= 100
 lo < value < hi
 a == b == c
 
-# E2
+# 任务 2
 for n in range(10, 0, -1):    # 从 10 开始，到 0 之前停，步长 -1
     print(n)
 print("Go!")
@@ -170,7 +170,7 @@ while n >= 1:
     n -= 1
 print("Go!")
 
-# D1
+# 任务 3
 def likert_label(answer):
     match answer:
         case 5 | 4:
@@ -183,7 +183,7 @@ def likert_label(answer):
             return "invalid"
 # 这里 match 胜出：每个分支都在拿同一个值对比字面量。
 
-# D2
+# 任务 4
 for s in [91, 73, 84, 58, 90]:
     if s < 60:
         print("first failing:", s)
@@ -191,7 +191,7 @@ for s in [91, 73, 84, 58, 90]:
 else:
     print("everyone passed")
 
-# D3
+# 任务 5
 scores = [73, 91, 58, 84]
 best = worst = scores[0]
 for s in scores[1:]:
@@ -201,7 +201,7 @@ for s in scores[1:]:
         worst = s
 print("best:", best, "worst:", worst)    # 91 58
 
-# D4
+# 任务 6
 def is_passing(score):
     return score >= 60             # 比较结果本来就是 bool
 
@@ -215,7 +215,7 @@ if is_passing(72):                 # 裸用 —— 永远别写 `== True`
 ### 课后作业
 
 ```python
-# H1
+# 任务 1
 def label(pct):
     if not 0 <= pct <= 100:
         return "invalid"
@@ -232,7 +232,7 @@ for pct in [100, 92.5, 80, 79.9, 50, 12, -3, 104]:
 # 100 perfect · 92.5 good · 80 good · 79.9 at risk · 50 at risk · 12 critical ·
 # -3 invalid · 104 invalid
 
-# H2
+# 任务 2
 secret, tries = 37, 0
 while True:
     raw = input("Guess 1-100: ")
@@ -249,7 +249,7 @@ while True:
         print(f"got it in {tries} tries")
         break
 
-# H3
+# 任务 3
 def is_leap(year):
     return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
 

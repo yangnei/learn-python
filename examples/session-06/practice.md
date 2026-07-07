@@ -50,22 +50,22 @@ print(fib(35))                       # -> 9227465   (try this WITHOUT @cache... 
 
 ## In class — going deeper (second hour)
 
-### E1 — Recursive countdown
+### Task 1 — Recursive countdown
 `countdown(3)` prints `3 2 1 Go!`. Say the base case out loud before you type.
 
-### E2 — Trace on paper
+### Task 2 — Trace on paper
 Write the full expansion of `total([5, 10, 20])` (Task 1) the way the slides traced
 `orderings(3)` — every pending call, then the unwind.
 
-### D1 — Binary search, counting steps
+### Task 3 — Binary search, counting steps
 Write recursive `find(sorted_names, target)` that also counts how many names it looked at.
 Search a sorted list of 7 names, then imagine 1,000 — how many steps, roughly, and why?
 
-### D2 — Count the org tree
+### Task 4 — Count the org tree
 With `org = {"name": ..., "reports": [...]}` nested to any depth, write
 `count_people(node)`. Then `deepest(node)` returning how many levels the tree has.
 
-### D3 — Flatten without recursion
+### Task 5 — Flatten without recursion
 Rewrite `flatten` using an explicit to-visit list (no recursive calls). Verify it matches
 your recursive version on `[1, [2, [3, 4]], 5]` — and explain why this one survives
 depth 10,000.
@@ -74,16 +74,16 @@ depth 10,000.
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — `sum_digits(n)`
+### Task 1 — `sum_digits(n)`
 `sum_digits(4823)` → `17`, recursively. (Hint: `n % 10` is the last digit, `n // 10` is
 the rest. What's the smallest number whose digit-sum is obvious?)
 
-### H2 — `deep_count(obj)`
+### Task 2 — `deep_count(obj)`
 Count how many **numbers** (int/float — but not bool!) appear anywhere in a nested
 structure. Handle dicts, lists/tuples, and scalars.
 `deep_count({"quiz": [90, 85], "final": {"written": 88, "oral": 92}, "note": "great"})` → `4`.
 
-### H3 — In your own words
+### Task 3 — In your own words
 One paragraph: for which shapes of problem is a plain loop the better tool, and what
 *specifically* goes wrong with deep recursion around depth ~1000? (Name the error.)
 
@@ -140,7 +140,7 @@ print(depth([1, [2, [3, [4]]]]), depth([1, 2, 3]), depth(5))   # 4 1 0
 ### In class — going deeper
 
 ```python
-# E1
+# Task 1
 def countdown(n):
     if n == 0:            # base case
         print("Go!")
@@ -148,7 +148,7 @@ def countdown(n):
     print(n)
     countdown(n - 1)      # recursive case, moving toward 0
 
-# E2 — the trace
+# Task 2 — the trace
 # total([5, 10, 20])
 # = 5 + total([10, 20])
 # =     10 + total([20])
@@ -158,7 +158,7 @@ def countdown(n):
 ```
 
 ```python
-# D1
+# Task 3
 def find(names, target, lo=0, hi=None, steps=1):
     if hi is None:
         hi = len(names)
@@ -175,7 +175,7 @@ roster = sorted(["Ana", "Ben", "Cara", "Dev", "Eve", "Fay", "Gus"])
 print(find(roster, "Fay"))     # (True, 2-3 steps)
 # 1,000 names -> ~10 steps: each step halves the range (2**10 = 1024).
 
-# D2
+# Task 4
 def count_people(node):
     return 1 + sum(count_people(r) for r in node["reports"])
 
@@ -184,7 +184,7 @@ def deepest(node):
         return 1
     return 1 + max(deepest(r) for r in node["reports"])
 
-# D3
+# Task 5
 def flatten_iter(xs):
     out, to_visit = [], list(xs)
     while to_visit:
@@ -202,7 +202,7 @@ print(flatten_iter([1, [2, [3, 4]], 5]))   # [1, 2, 3, 4, 5]
 ### Homework
 
 ```python
-# H1
+# Task 1
 def sum_digits(n):
     if n < 10:                       # single digit: the sum is itself
         return n
@@ -210,7 +210,7 @@ def sum_digits(n):
 
 print(sum_digits(4823))              # 17
 
-# H2
+# Task 2
 def deep_count(obj):
     if isinstance(obj, bool):        # bool ⊂ int — a flag isn't a number (Session 2!)
         return 0
@@ -226,7 +226,7 @@ print(deep_count({"quiz": [90, 85], "final": {"written": 88, "oral": 92},
                   "note": "great"}))   # 4
 ```
 
-H3 — model answer: flat sequences (summing a list, walking rows) read best as loops.
+Task 3 — model answer: flat sequences (summing a list, walking rows) read best as loops.
 Every pending recursive call keeps a stack frame, and Python has no tail-call
 optimization, so around ~1000 frames it raises `RecursionError` — where a loop would
 simply keep going. Recursion earns its keep when the *data itself* is nested/self-similar.

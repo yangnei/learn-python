@@ -32,27 +32,27 @@ print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   （** 把字典摊开成参�
 
 ## 课堂练习——更进一步（第二小时）
 
-### E1 —— 仅关键字参数
+### 任务 1 —— 仅关键字参数
 改写 `letter_grade(score, plus_minus)`，让 `plus_minus` **必须**用关键字传
 （`letter_grade(95, plus_minus=True)`）；按位置传要抛 `TypeError`。
 
-### E2 —— 打磨文档字符串
+### 任务 2 —— 打磨文档字符串
 给 `pass_rate` 写一个文档字符串：说明返回什么、`passing` 是什么意思、附一个
 用法示例。一小段就好，不要废话。
 
-### D1 —— 自己写 `map`
+### 任务 3 —— 自己写 `map`
 写 `apply_to_all(func, values)`，返回把 `func` 应用到每个值的新列表。
 用 `abs` 和一个加 5 分的 lambda 测试。
 
-### D2 —— 函数工厂
+### 任务 4 —— 函数工厂
 写 `make_curver(bonus)`，返回一个"加 `bonus` 分、上限 100"的函数。构造
 `gentle = make_curver(5)` 和 `strict = make_curver(1)`，证明两者不同。
 
-### D3 —— 第一个装饰器
+### 任务 5 —— 第一个装饰器
 写 `@announce`：在被包装函数运行前打印 `calling <name> with <args>`。装饰你的
 `letter_grade` 并调用。
 
-### D4 —— 一个 doctest
+### 任务 6 —— 一个 doctest
 给 `class_average` 的文档字符串加两个 `>>>` 示例，然后运行
 `python -m doctest your_file.py -v`，看它们通过。
 
@@ -60,7 +60,7 @@ print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   （** 把字典摊开成参�
 
 *约 30–45 分钟，课外完成——不计入课堂时间。先都试一遍，再看答案。*
 
-### H1 —— 迷你统计库
+### 任务 1 —— 迷你统计库
 三个函数，都带文档字符串和类型标注：
 - `validate_score(x) -> float` —— 接受 0–100 内的 int/float/数字字符串；否则
   `raise ValueError`（并拒绝 `bool` —— 记得第 2 课！），
@@ -68,11 +68,11 @@ print(f(**{"a": 1, "b": 9}))         # -> (1, 9)   （** 把字典摊开成参�
   **不许修改输入列表**，
 - `summarize(scores: list[float]) -> dict` —— `n` / `mean` / `min` / `max`。
 
-### H2 —— `mean_ignoring_none(*values)`
+### 任务 2 —— `mean_ignoring_none(*values)`
 `mean_ignoring_none(90, None, 80, None, 70)` → `80.0`。清洗后什么都不剩时返回
 `None`，而不是除以零。
 
-### H3 —— 作用域预测
+### 任务 3 —— 作用域预测
 这段代码打印什么——哪里会坏？*先预测*再运行：
 ```python
 count = 0
@@ -130,27 +130,27 @@ print(summary(*[91, 58, 73]))
 ### 课堂练习——更进一步
 
 ```python
-# E1
+# 任务 1
 def letter_grade(score, *, plus_minus=False):   # * 让后面的参数只能用关键字
     ...
 # letter_grade(95, True)            -> TypeError
 # letter_grade(95, plus_minus=True) -> 正常
 
-# E2
+# 任务 2
 def pass_rate(scores, passing=60):
     """Return the fraction (0..1) of scores at or above `passing`.
 
     `passing` is the cutoff, 60 by default: pass_rate([70, 50, 90]) -> 0.66...
     """
 
-# D1
+# 任务 3
 def apply_to_all(func, values):
     return [func(v) for v in values]
 
 print(apply_to_all(abs, [-3, 4, -5]))                 # [3, 4, 5]
 print(apply_to_all(lambda s: min(s + 5, 100), [58, 97]))   # [63, 100]
 
-# D2
+# 任务 4
 def make_curver(bonus):
     def curve(score):
         return min(score + bonus, 100)
@@ -159,7 +159,7 @@ def make_curver(bonus):
 gentle, strict = make_curver(5), make_curver(1)
 print(gentle(96), strict(96))    # 100 97
 
-# D3
+# 任务 5
 def announce(f):
     def wrapper(*args, **kwargs):
         print(f"calling {f.__name__} with {args}")
@@ -175,7 +175,7 @@ def letter_grade(score):
 
 print(letter_grade(85))          # calling letter_grade with (85,)  ->  B
 
-# D4
+# 任务 6
 def class_average(scores):
     """Mean of scores.
 
@@ -191,7 +191,7 @@ def class_average(scores):
 ### 课后作业
 
 ```python
-# H1
+# 任务 1
 def validate_score(x) -> float:
     """Return x as a float score in 0-100, or raise ValueError."""
     if isinstance(x, bool):                  # bool 会冒充数字混过 float()！
@@ -210,7 +210,7 @@ def summarize(scores: list[float]) -> dict:
     return {"n": len(scores), "mean": sum(scores) / len(scores),
             "min": min(scores), "max": max(scores)}
 
-# H2
+# 任务 2
 def mean_ignoring_none(*values):
     clean = [v for v in values if v is not None]
     return sum(clean) / len(clean) if clean else None
@@ -218,7 +218,7 @@ def mean_ignoring_none(*values):
 print(mean_ignoring_none(90, None, 80, None, 70))   # 80.0
 print(mean_ignoring_none(None, None))               # None
 
-# H3
+# 任务 3
 # tally([1, 2, 3]) 打印 6 —— `total` 是 tally 的局部变量，与谁都不冲突。
 # bump() 抛 UnboundLocalError：那次赋值让 `count` 成为 bump 的局部变量，
 # 于是右边读到的是一个还不存在的局部名。

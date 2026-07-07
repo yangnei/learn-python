@@ -50,22 +50,22 @@ print(fib(35))                       # -> 9227465   （去掉 @cache 再试试�
 
 ## 课堂练习——更进一步（第二小时）
 
-### E1 —— 递归倒计时
+### 任务 1 —— 递归倒计时
 `countdown(3)` 打印 `3 2 1 Go!`。动手之前先说出基例。
 
-### E2 —— 纸上追踪
+### 任务 2 —— 纸上追踪
 像幻灯片追踪 `orderings(3)` 那样，写出 `total([5, 10, 20])`（任务 1）的完整
 展开——每一次挂起的调用，然后逐层返回。
 
-### D1 —— 数步数的二分查找
+### 任务 3 —— 数步数的二分查找
 写递归版 `find(sorted_names, target)`，顺便统计它看了几个名字。在 7 个名字的
 有序列表里查找，然后想象 1000 个——大约要几步？为什么？
 
-### D2 —— 数组织树
+### 任务 4 —— 数组织树
 `org = {"name": ..., "reports": [...]}` 任意嵌套。写 `count_people(node)`；
 再写 `deepest(node)`，返回这棵树有几层。
 
-### D3 —— 不用递归摊平
+### 任务 5 —— 不用递归摊平
 用显式的待访问列表（不写递归调用）重写 `flatten`。在 `[1, [2, [3, 4]], 5]` 上
 验证与递归版一致——并解释为什么它能扛住一万层的深度。
 
@@ -73,16 +73,16 @@ print(fib(35))                       # -> 9227465   （去掉 @cache 再试试�
 
 *约 30–45 分钟，课外完成——不计入课堂时间。先都试一遍，再看答案。*
 
-### H1 —— `sum_digits(n)`
+### 任务 1 —— `sum_digits(n)`
 `sum_digits(4823)` → `17`，用递归。（提示：`n % 10` 是最后一位，`n // 10` 是
 其余部分。哪个最小的数的数字和一眼便知？）
 
-### H2 —— `deep_count(obj)`
+### 任务 2 —— `deep_count(obj)`
 数嵌套结构里出现了多少个**数字**（int/float——但 bool 不算！）。处理字典、
 列表/元组和标量。
 `deep_count({"quiz": [90, 85], "final": {"written": 88, "oral": 92}, "note": "great"})` → `4`。
 
-### H3 —— 用自己的话
+### 任务 3 —— 用自己的话
 一段话：哪种形状的问题更适合普通循环？深度到 1000 左右时递归*具体*会出什么
 问题？（说出错误名。）
 
@@ -138,7 +138,7 @@ print(depth([1, [2, [3, [4]]]]), depth([1, 2, 3]), depth(5))   # 4 1 0
 ### 课堂练习——更进一步
 
 ```python
-# E1
+# 任务 1
 def countdown(n):
     if n == 0:            # 基例
         print("Go!")
@@ -146,7 +146,7 @@ def countdown(n):
     print(n)
     countdown(n - 1)      # 递归步，朝 0 走
 
-# E2 —— 追踪
+# 任务 2 —— 追踪
 # total([5, 10, 20])
 # = 5 + total([10, 20])
 # =     10 + total([20])
@@ -154,7 +154,7 @@ def countdown(n):
 # =               0            <- 基例
 # 回程：20 + 0 = 20 ; 10 + 20 = 30 ; 5 + 30 = 35
 
-# D1
+# 任务 3
 def find(names, t, lo=0, hi=None, steps=1):
     if hi is None:
         hi = len(names)
@@ -171,7 +171,7 @@ roster = sorted(["Ana", "Ben", "Cara", "Dev", "Eve", "Fay", "Gus"])
 print(find(roster, "Fay"))     # (True, 2-3 步)
 # 1000 个名字 -> 约 10 步：每步把范围减半（2**10 = 1024）。
 
-# D2
+# 任务 4
 def count_people(node):
     return 1 + sum(count_people(r) for r in node["reports"])
 
@@ -180,7 +180,7 @@ def deepest(node):
         return 1
     return 1 + max(deepest(r) for r in node["reports"])
 
-# D3
+# 任务 5
 def flatten_iter(xs):
     out, to_visit = [], list(xs)
     while to_visit:
@@ -198,7 +198,7 @@ print(flatten_iter([1, [2, [3, 4]], 5]))   # [1, 2, 3, 4, 5]
 ### 课后作业
 
 ```python
-# H1
+# 任务 1
 def sum_digits(n):
     if n < 10:                       # 一位数：数字和就是它自己
         return n
@@ -206,7 +206,7 @@ def sum_digits(n):
 
 print(sum_digits(4823))              # 17
 
-# H2
+# 任务 2
 def deep_count(obj):
     if isinstance(obj, bool):        # bool ⊂ int —— 开关标志不算数字（第 2 课！）
         return 0
@@ -222,6 +222,6 @@ print(deep_count({"quiz": [90, 85], "final": {"written": 88, "oral": 92},
                   "note": "great"}))   # 4
 ```
 
-H3 —— 参考回答：平铺序列（列表求和、逐行处理）用循环最清楚。每个挂起的递归调用
+任务 3 —— 参考回答：平铺序列（列表求和、逐行处理）用循环最清楚。每个挂起的递归调用
 都占一个栈帧，而 Python 没有尾调用优化，所以到约 1000 帧就抛 `RecursionError`——
 循环则可以一直跑。递归的价值在于*数据本身*是嵌套/自相似的时候。

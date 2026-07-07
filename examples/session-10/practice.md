@@ -50,28 +50,28 @@ print(head([9, 8]), head(5))         # -> 9 None
 
 ## In class — going deeper (second hour)
 
-### E1 — The guard, observed
+### Task 1 — The guard, observed
 Add `print("running as", __name__)` to the top of `grades.py`. Run the file directly,
 then `import grades` from the REPL — what prints each time, and why?
 
-### E2 — `@dataclass` Student
+### Task 2 — `@dataclass` Student
 Rebuild the plain (non-validating) `Student` as a `@dataclass`. What do you get for free?
 Check `repr` and `==` on two equal students.
 
-### D1 — Sortable students
+### Task 3 — Sortable students
 Give `Student` a `__repr__`, `__eq__`, and `__lt__` (by gpa) so that `sorted(roster)`
 works with **no** `key=`. Prove it.
 
-### D2 — `dataclass` done right
+### Task 4 — `dataclass` done right
 Write `@dataclass class Course: name: str; roster: list = field(default_factory=list)`.
 Why would `roster: list = []` be wrong — and which Session 5 bug is this the class-shaped
 version of?
 
-### D3 — `from_row`
+### Task 5 — `from_row`
 Add `Student.from_row(cls, row)` building a `Student` from a CSV `DictReader` row
 (convert types!). Why is a `@classmethod` the right home for this?
 
-### D4 — A two-stage pipeline
+### Task 6 — A two-stage pipeline
 Write generators `to_ints(cells)` (skip unparseable) and `in_range(vals, lo=1, hi=5)`;
 chain them over `["5", "3", "N/A", "7", "1"]`. When does any work actually happen?
 
@@ -79,19 +79,19 @@ chain them over `["5", "3", "N/A", "7", "1"]`. When does any work actually happe
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — Courses and a computed GPA
+### Task 1 — Courses and a computed GPA
 Extend `Student`: a `courses` list of `(name, grade_points)` tuples, an
 `add_course(name, points)` method that validates 0–4, and make `gpa` a **computed
 property** (mean of the course points; `None` with no courses). No stored gpa that can go
 stale.
 
-### H2 — A `Cohort` class
+### Task 2 — A `Cohort` class
 `Cohort(name)` holds `Student`s: `add(student)`, `mean_gpa()` (skip students with no
 gpa), `at_risk(threshold=2.0)` returning names, and `__str__` →
 `"Fall-26 (3 students)"`. Careful where the student list lives — remember the
 class-variable trap.
 
-### H3 — Pythonic rewrite
+### Task 3 — Pythonic rewrite
 Rewrite each as a single comprehension / generator / `map` line:
 ```python
 # 1 -> list comprehension
@@ -145,11 +145,11 @@ runnable script and an importable module.
 ### In class — going deeper
 
 ```python
-# E1
+# Task 1
 # python3 grades.py   -> "running as __main__"  (the file IS the program)
 # >>> import grades   -> "running as grades"    (so the __main__ block is skipped)
 
-# E2
+# Task 2
 from dataclasses import dataclass
 
 @dataclass
@@ -162,7 +162,7 @@ print(Student("Ana", 3.9) == Student("Ana", 3.9))   # True
 ```
 
 ```python
-# D1
+# Task 3
 class Student:
     def __init__(self, name, gpa):
         self.name = name
@@ -177,7 +177,7 @@ class Student:
 roster = [Student("Ana", 3.9), Student("Ben", 1.8), Student("Cara", 3.2)]
 print(sorted(roster))    # Ben, Cara, Ana — __lt__ told sorted() how
 
-# D2
+# Task 4
 from dataclasses import dataclass, field
 
 @dataclass
@@ -187,7 +187,7 @@ class Course:
 # `roster: list = []` would share ONE list across every Course — the mutable-default
 # bug from Session 5, in class form. default_factory makes a fresh list per instance.
 
-# D3
+# Task 5
 @dataclass
 class Student2:
     name: str
@@ -199,7 +199,7 @@ class Student2:
 # It constructs an instance of the class itself, so it belongs to the CLASS (cls),
 # not to any one object — the "alternate constructor" pattern.
 
-# D4
+# Task 6
 def to_ints(cells):
     for c in cells:
         try:
@@ -217,7 +217,7 @@ print(list(pipeline))    # [5, 3, 1] — nothing ran until list() pulled values 
 ### Homework
 
 ```python
-# H1
+# Task 1
 class Student:
     def __init__(self, name):
         self.name = name
@@ -237,7 +237,7 @@ class Student:
     def __str__(self):
         return f"{self.name} (GPA {self.gpa})"
 
-# H2
+# Task 2
 class Cohort:
     def __init__(self, name):
         self.name = name
@@ -257,7 +257,7 @@ class Cohort:
     def __str__(self):
         return f"{self.name} ({len(self.students)} students)"
 
-# H3
+# Task 3
 names  = [s.name for s in roster if s.gpa is not None and s.gpa >= 3.5]
 total  = sum(len(s.courses) for s in roster)      # generator — no list in memory
 labels = list(map(str, roster))   # or [str(s) for s in roster] — either is fine;

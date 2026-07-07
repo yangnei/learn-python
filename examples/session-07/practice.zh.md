@@ -37,15 +37,15 @@ except AssertionError as e:
 
 ## 课堂练习——更进一步（第二小时）
 
-### E1 —— 哪个异常？
+### 任务 1 —— 哪个异常？
 不运行，说出每个会抛什么异常：
 `int("3.5")` · `{"a": 1}["b"]` · `[1, 2][5]` · `1/0` · `open("nope.csv")` · `len(42)`
 
-### E2 —— 你自己的异常
+### 任务 2 —— 你自己的异常
 定义 `class SurveyError(ValueError)`，对越界的李克特值抛出它。证明
 `except ValueError:` 仍然接得住——这就是子类化在起作用。
 
-### D1 —— 修好 except 顺序
+### 任务 3 —— 修好 except 顺序
 这段对坏单元格永远打印 `"unexpected"`——为什么？怎么修？
 ```python
 try:
@@ -56,16 +56,16 @@ except ValueError:
     n = None
 ```
 
-### D2 —— 携带证据的 `SurveyError`
+### 任务 4 —— 携带证据的 `SurveyError`
 写 `class SurveyError(ValueError)`，把出错的值存进 `.value`。在清洗循环里接住
 `int()` 的底层 `ValueError`，用 `raise SurveyError(cell, ...) from e` 重新抛出。
 展示一次两层的回溯。
 
-### D3 —— 记日志，别打印
+### 任务 5 —— 记日志，别打印
 把你的拒收记录换成 `logging`：每个被拒的单元格 `logging.warning`，最终统计
 `logging.info`。把格式配置成显示级别名。
 
-### D4 —— 参数化
+### 任务 6 —— 参数化
 把三个作业测试改写成**一个** `@pytest.mark.parametrize` 测试，覆盖
 `["3", True, None, 0, 9]`。运行 `pytest -q`。
 
@@ -73,17 +73,17 @@ except ValueError:
 
 *约 30–45 分钟，课外完成——不计入课堂时间。先都试一遍，再看答案。*
 
-### H1 —— `ask_int(prompt, lo, hi)`
+### 任务 1 —— `ask_int(prompt, lo, hi)`
 用 EAFP 重写第 3 课的输入校验循环：用 `try: n = int(raw)` /
 `except ValueError` 替代 `.isdigit()`——这样 `"-5"` 和 `" 42 "` 也能处理。
 循环到输入有效为止；返回整数。
 
-### H2 —— 再加三个 pytest 用例
+### 任务 2 —— 再加三个 pytest 用例
 给 `clean_likert` 补测试：`clean_likert(True)` 要抛错（布尔不是评分！）、
 `clean_likert("3")` 要抛错（字符串，哪怕是数字样子）、`clean_likert(None)` 要抛错。
 运行 `pytest -q` 直到全绿。
 
-### H3 —— 报错分诊
+### 任务 3 —— 报错分诊
 对每条信息，说出异常类名和一行修法：
 1. `invalid literal for int() with base 10: 'N/A'`
 2. `unsupported operand type(s) for +: 'int' and 'str'`
@@ -139,7 +139,7 @@ def test_bad():
 ### 课堂练习——更进一步
 
 ```python
-# E1
+# 任务 1
 int("3.5")        # ValueError          （int() 只解析整数文本）
 {"a": 1}["b"]     # KeyError
 [1, 2][5]         # IndexError
@@ -147,7 +147,7 @@ int("3.5")        # ValueError          （int() 只解析整数文本）
 open("nope.csv")  # FileNotFoundError
 len(42)           # TypeError           （整数没有长度）
 
-# E2
+# 任务 2
 class SurveyError(ValueError):
     pass
 
@@ -161,7 +161,7 @@ try:
 except ValueError as e:      # 父类接得住子类
     print("caught:", e)
 
-# D1 —— except 子句自上而下匹配；Exception 是 ValueError 的父类，
+# 任务 3 —— except 子句自上而下匹配；Exception 是 ValueError 的父类，
 # 放在前面就先命中，具体的处理器永远轮不到。先具体、后宽泛：
 try:
     n = int(cell)
@@ -171,7 +171,7 @@ except Exception as e:
     print("unexpected:", e)
     raise
 
-# D2
+# 任务 4
 class SurveyError(ValueError):
     def __init__(self, value, message):
         super().__init__(message)
@@ -185,7 +185,7 @@ def clean_cell(cell):
     return n
 # 回溯里下层是起因 ValueError，上层是 SurveyError。
 
-# D3
+# 任务 5
 import logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 kept, rejected = [], []
@@ -197,7 +197,7 @@ for cell in ["5", "N/A", "3", ""]:
         logging.warning("rejected %r", e.value)
 logging.info("kept %d, rejected %d", len(kept), len(rejected))
 
-# D4 —— test_clean.py
+# 任务 6 —— test_clean.py
 import pytest
 from clean import clean_likert
 
@@ -210,7 +210,7 @@ def test_rejects(bad):
 ### 课后作业
 
 ```python
-# H1
+# 任务 1
 def ask_int(prompt, lo, hi):
     while True:
         raw = input(prompt)
@@ -223,7 +223,7 @@ def ask_int(prompt, lo, hi):
             return n
         print(f"Between {lo} and {hi}, please.")
 
-# H2 —— test_clean.py
+# 任务 2 —— test_clean.py
 import pytest
 from clean import clean_likert
 
@@ -240,7 +240,7 @@ def test_none_rejected():
         clean_likert(None)
 ```
 
-H3 —— 分诊：
+任务 3 —— 分诊：
 1. `ValueError` —— 先清洗/转换，或包进 `try/except ValueError`。
 2. `TypeError` —— 转换其中一边：`str(n)` 或 `int(s)`。
 3. `KeyError` —— 用 `row.get("score")`，或检查表头拼写。

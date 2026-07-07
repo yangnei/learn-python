@@ -37,36 +37,36 @@ print(json.loads(s)["ok"])           # -> True                   (and back to a 
 
 ## In class — going deeper (second hour)
 
-### E1 — One more column
+### Task 1 — One more column
 Extend the survey summary: add a `pct_valid` column (share of rows with a usable value),
 formatted to one decimal.
 
-### E2 — pathlib mini-tour
+### Task 2 — pathlib mini-tour
 With `from pathlib import Path`: does `students.csv` exist? How many bytes is it
 (`.stat().st_size`)? List every `.csv` in this folder (`.glob`).
 
-### D1 — pathlib inventory
+### Task 3 — pathlib inventory
 List every `.csv` in this folder with its size in bytes, one aligned line each, using
 `Path(".").glob` and `.stat().st_size`.
 
-### D2 — Date math
+### Task 4 — Date math
 Parse `"2026-01-05"` and `"2026-07-06"` with `strptime`, print the number of days between
 them, and print the first date as `Jan 05, 2026` with `strftime`.
 
-### D3 — A reproducible sample
+### Task 5 — A reproducible sample
 Seed with `random.seed(42)`, then `random.sample` 3 names from the students in
 `students.csv`. Run it twice — same three? Why does a methods section care?
 
-### D4 — CSV → JSON
+### Task 6 — CSV → JSON
 Read `students.csv` into a list of dicts with **int** scores, and write it to
 `students.json` with `indent=2`. Open the file: what happened to the quotes and numbers?
 
-### D5 — Take the filename from the command line
+### Task 7 — Take the filename from the command line
 Turn Task 1 into `report.py`: read the CSV named on the command line
 (`python3 report.py students.csv`), print the class mean, and exit with a usage
 message when the argument is missing or extra. (`sys.argv`, `sys.exit`.)
 
-### D6 — An animated before/after
+### Task 8 — An animated before/after
 With Pillow (`pip install pillow`), generate two solid-color frames using
 `Image.new("RGB", (60, 60), color)` and save them as one looping GIF
 (`save_all=True`, `append_images=[...]`, `duration=400`, `loop=0`). Open the file —
@@ -76,19 +76,19 @@ it pulses. How big is this binary file (`pathlib`)?
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — Attendance report (the whole pipeline)
+### Task 1 — Attendance report (the whole pipeline)
 Create `attendance.csv` yourself: a `name` column plus five `s1..s5` columns of 0/1, about
 six rows — and sneak in one dirty cell (`"?"`). Then: read it with `DictReader`, compute
 each student's attendance rate (skip dirty cells; remember that summing 0/1 ints just
 works), and write `attendance_report.csv` with `name,rate,n_valid` via `DictWriter`.
 Everything inside `with open(...)`.
 
-### H2 — JSON round-trip
+### Task 2 — JSON round-trip
 `json.dump` your per-item survey means to `summary.json` (use `indent=2`), read it back
 with `json.load`, and verify `loaded == original`. Open the file in your editor — what
 happened to `True`?
 
-### H3 — Your own data
+### Task 3 — Your own data
 Point the pipeline at ANY CSV from your own work (export one from Excel/Sheets if
 needed): read it, count the rows, compute one mean, print a two-line report. Note the
 first dirty value you hit and how you handled it — into the bug log it goes.
@@ -120,7 +120,7 @@ before you ever read it. Use `"r"` (the default) to read.
 ### In class — going deeper
 
 ```python
-# E1 — inside the loop over survey items
+# Task 1 — inside the loop over survey items
 vals = [to_int(r[item]) for r in rows]
 good = [v for v in vals if v is not None]
 writer.writerow({"item": item,
@@ -128,7 +128,7 @@ writer.writerow({"item": item,
                  "n_valid": len(good),
                  "pct_valid": f"{100 * len(good) / len(vals):.1f}"})
 
-# E2
+# Task 2
 from pathlib import Path
 p = Path("students.csv")
 print(p.exists())                      # True (in this folder)
@@ -137,19 +137,19 @@ print(sorted(Path(".").glob("*.csv"))) # every CSV here
 ```
 
 ```python
-# D1
+# Task 3
 from pathlib import Path
 for p in sorted(Path(".").glob("*.csv")):
     print(f"{p.name:<24}{p.stat().st_size:>8,} bytes")
 
-# D2
+# Task 4
 from datetime import datetime
 a = datetime.strptime("2026-01-05", "%Y-%m-%d")
 b = datetime.strptime("2026-07-06", "%Y-%m-%d")
 print((b - a).days)                    # 182
 print(a.strftime("%b %d, %Y"))         # Jan 05, 2026
 
-# D3
+# Task 5
 import csv, random
 with open("students.csv", newline="", encoding="utf-8") as f:
     names = [r["name"] for r in csv.DictReader(f)]
@@ -157,7 +157,7 @@ random.seed(42)
 print(random.sample(names, 3))         # same 3 every run — the seed pins the RNG,
                                        # so your "random" sample is reproducible.
 
-# D4
+# Task 6
 import json
 with open("students.csv", newline="", encoding="utf-8") as f:
     rows = [{**r, "score": int(r["score"])} for r in csv.DictReader(f)]
@@ -166,7 +166,7 @@ Path("students.json").write_text(json.dumps(rows, indent=2))
 ```
 
 ```python
-# D5 — report.py
+# Task 7 — report.py
 import csv, statistics, sys
 
 if len(sys.argv) != 2:                     # argv[0] is report.py itself
@@ -178,7 +178,7 @@ print(f"n={len(scores)}  mean={statistics.mean(scores):.1f}")
 ```
 
 ```python
-# D6
+# Task 8
 from PIL import Image
 from pathlib import Path
 
@@ -191,7 +191,7 @@ print(Path("pulse.gif").stat().st_size, "bytes")   # a few hundred — tiny but 
 ### Homework
 
 ```python
-# H1
+# Task 1
 import csv
 
 with open("attendance.csv", newline="") as f:
@@ -213,7 +213,7 @@ with open("attendance_report.csv", "w", newline="") as f:
     w.writeheader()
     w.writerows(report)
 
-# H2
+# Task 2
 import json
 
 original = {"q1": 4.2, "q2": 3.8, "all_valid": False}
@@ -225,6 +225,6 @@ print(loaded == original)   # True — and in the file, Python's False is writte
                             # JSON's false (lowercase): JSON is its own language.
 ```
 
-H3 — a pattern, not a fixed answer: `rows = list(csv.DictReader(f))` inside a `with`,
+Task 3 — a pattern, not a fixed answer: `rows = list(csv.DictReader(f))` inside a `with`,
 `len(rows)` for the count, one column through a `to_int`/`to_float` cleaner for the mean.
 The first dirty value and its exception belong in your bug log.

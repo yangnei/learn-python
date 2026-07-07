@@ -49,27 +49,27 @@ print(head([9, 8]), head(5))         # -> 9 None
 
 ## 课堂练习——更进一步（第二小时）
 
-### E1 —— 亲眼看守卫
+### 任务 1 —— 亲眼看守卫
 在 `grades.py` 顶部加 `print("running as", __name__)`。先直接运行文件，再在
 REPL 里 `import grades`——各打印什么？为什么？
 
-### E2 —— `@dataclass` 版 Student
+### 任务 2 —— `@dataclass` 版 Student
 把普通（不带校验的）`Student` 改写成 `@dataclass`。白得了什么？
 在两个等值学生上检查 `repr` 和 `==`。
 
-### D1 —— 可排序的学生
+### 任务 3 —— 可排序的学生
 给 `Student` 写 `__repr__`、`__eq__` 和按 gpa 的 `__lt__`，让 `sorted(roster)`
 **不用** `key=` 就能跑。证明它。
 
-### D2 —— 正确的 `dataclass`
+### 任务 4 —— 正确的 `dataclass`
 写 `@dataclass class Course: name: str; roster: list = field(default_factory=list)`。
 `roster: list = []` 为什么是错的——这是第 5 课哪个 bug 的类版本？
 
-### D3 —— `from_row`
+### 任务 5 —— `from_row`
 给 `Student` 加 `from_row(cls, row)`：从 CSV 的 `DictReader` 行构造实例
 （记得转换类型！）。为什么 `@classmethod` 是它的正确归宿？
 
-### D4 —— 两级管道
+### 任务 6 —— 两级管道
 写生成器 `to_ints(cells)`（跳过转不动的）和 `in_range(vals, lo=1, hi=5)`；
 串起来处理 `["5", "3", "N/A", "7", "1"]`。真正的计算发生在什么时候？
 
@@ -77,17 +77,17 @@ REPL 里 `import grades`——各打印什么？为什么？
 
 *约 30–45 分钟，课外完成——不计入课堂时间。先都试一遍，再看答案。*
 
-### H1 —— 课程与计算出的 GPA
+### 任务 1 —— 课程与计算出的 GPA
 扩展 `Student`：一个 `(课程名, 绩点)` 元组的 `courses` 列表、一个校验 0–4 的
 `add_course(name, points)` 方法，并把 `gpa` 做成**计算属性**（课程绩点的均值；
 没有课程时为 `None`）。不存任何会过期的 gpa。
 
-### H2 —— `Cohort` 类
+### 任务 2 —— `Cohort` 类
 `Cohort(name)` 装着一群 `Student`：`add(student)`、`mean_gpa()`（跳过没有 gpa
 的学生）、`at_risk(threshold=2.0)` 返回姓名，`__str__` →
 `"Fall-26 (3 students)"`。想清楚学生列表放哪——记得类变量陷阱。
 
-### H3 —— Pythonic 重写
+### 任务 3 —— Pythonic 重写
 把每段改写成一行推导式 / 生成器 / `map`：
 ```python
 # 1 -> 列表推导式
@@ -140,11 +140,11 @@ def gpas(rs):
 ### 课堂练习——更进一步
 
 ```python
-# E1
+# 任务 1
 # python3 grades.py   -> "running as __main__"  （这个文件就是程序本体）
 # >>> import grades   -> "running as grades"    （于是 __main__ 块被跳过）
 
-# E2
+# 任务 2
 from dataclasses import dataclass
 
 @dataclass
@@ -155,7 +155,7 @@ class Student:
 # 白得的：__init__、好读的 __repr__、逐字段的 __eq__：
 print(Student("Ana", 3.9) == Student("Ana", 3.9))   # True
 
-# D1
+# 任务 3
 class Student:
     def __init__(self, name, gpa):
         self.name = name
@@ -170,7 +170,7 @@ class Student:
 roster = [Student("Ana", 3.9), Student("Ben", 1.8), Student("Cara", 3.2)]
 print(sorted(roster))    # Ben、Cara、Ana —— __lt__ 教会了 sorted() 怎么排
 
-# D2
+# 任务 4
 from dataclasses import dataclass, field
 
 @dataclass
@@ -180,7 +180,7 @@ class Course:
 # `roster: list = []` 会让所有 Course 共用同一个列表 —— 第 5 课的可变默认值
 # bug 换了件类的外衣。default_factory 给每个实例现造一个新列表。
 
-# D3
+# 任务 5
 @dataclass
 class Student2:
     name: str
@@ -192,7 +192,7 @@ class Student2:
 # 它构造的是类本身的实例，所以属于类（cls）而不属于任何一个对象——
 # "备选构造器"模式。
 
-# D4
+# 任务 6
 def to_ints(cells):
     for c in cells:
         try:
@@ -210,7 +210,7 @@ print(list(pipeline))    # [5, 3, 1] —— 直到 list() 把值拉过来才真�
 ### 课后作业
 
 ```python
-# H1
+# 任务 1
 class Student:
     def __init__(self, name):
         self.name = name
@@ -230,7 +230,7 @@ class Student:
     def __str__(self):
         return f"{self.name} (GPA {self.gpa})"
 
-# H2
+# 任务 2
 class Cohort:
     def __init__(self, name):
         self.name = name
@@ -250,7 +250,7 @@ class Cohort:
     def __str__(self):
         return f"{self.name} ({len(self.students)} students)"
 
-# H3
+# 任务 3
 names  = [s.name for s in roster if s.gpa is not None and s.gpa >= 3.5]
 total  = sum(len(s.courses) for s in roster)      # 生成器 —— 内存里不建列表
 labels = list(map(str, roster))   # 或 [str(s) for s in roster] —— 都行；

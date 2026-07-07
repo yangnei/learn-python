@@ -35,22 +35,22 @@ print("@" in "ana@uni.edu", len("data")) # -> True 4   (membership + length)
 
 ## In class — going deeper (second hour)
 
-### E1 — f-string formatting drill
+### Task 1 — f-string formatting drill
 Given `pi = 3.14159265`, `n = 9876543`, `rate = 0.4567`, print exactly:
 `3.14` · `9,876,543` · `45.7%` · `pi = 3.14159265` (the self-documenting form).
 
-### E2 — Weeks enrolled
+### Task 2 — Weeks enrolled
 Extend `age.py`: also report the age in **weeks** (52 per year), with a thousands separator.
 
-### D1 — Aligned gradebook lines
+### Task 3 — Aligned gradebook lines
 Print three students (`name, score, rate`) as aligned columns: name left-padded to 10,
 score right-aligned with 1 decimal, rate as a percent. All three lines must line up.
 
-### D2 — Name normalizer
+### Task 4 — Name normalizer
 Turn `"  aDA lovelace "` into `"Ada Lovelace"` by *chaining* string methods, then report
 `len()` of the result and whether it `.startswith("Ada")`.
 
-### D3 — Whole units + remainder
+### Task 5 — Whole units + remainder
 1. Convert 130 minutes into `2 h 10 min` using `//` and `%`.
 2. Assign student IDs `[101, 102, 103, 104, 105, 106]` to discussion groups 0/1/2 with `%`.
 
@@ -58,12 +58,12 @@ Turn `"  aDA lovelace "` into `"Ada Lovelace"` by *chaining* string methods, the
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — Unit converter (`convert.py`)
+### Task 1 — Unit converter (`convert.py`)
 Ask for a distance in miles (may be a decimal). Print kilometers (`× 1.60934`) to 2
 decimals and meters with a thousands separator:
 `5.0 miles = 8.05 km (8,047 meters)`
 
-### H2 — Traceback drill
+### Task 2 — Traceback drill
 Break each of these on purpose in a script, run it, and copy down the LAST line of each
 traceback:
 1. `int("ten")`
@@ -71,7 +71,7 @@ traceback:
 3. `print(nmae)` right after `name = "Ada"` (typo on purpose)
 Then, one sentence each: what does the error *name* tell you?
 
-### H3 — Type-prediction table
+### Task 3 — Type-prediction table
 Predict `type(...)` (or the output) of each, then check in the REPL:
 `7/2` · `7//2` · `7.0//2` · `"7"*2` · `int("7")*2` · `7 == 7.0` · `None` · `input`
 (no parentheses!) · `print("hi")`
@@ -108,21 +108,21 @@ print(f"{n:,}")           # 9,876,543
 print(f"{rate:.1%}")      # 45.7%
 print(f"{pi = }")         # pi = 3.14159265
 
-# E2
+# Task 2
 age = int(input("Age: "))
 print(f"That's about {age * 52:,} weeks.")
 ```
 
 ```python
-# D1
+# Task 3
 for name, score, rate in [("Ana", 91.456, 0.873), ("Ben", 58.0, 0.412), ("Cara", 73.2, 0.65)]:
     print(f"{name:<10}{score:>8.1f}{rate:>8.1%}")
 
-# D2
+# Task 4
 clean = "  aDA lovelace ".strip().title()
 print(clean, len(clean), clean.startswith("Ada"))   # Ada Lovelace 12 True
 
-# D3
+# Task 5
 minutes = 130
 print(f"{minutes // 60} h {minutes % 60} min")      # 2 h 10 min
 for sid in [101, 102, 103, 104, 105, 106]:
@@ -132,19 +132,19 @@ for sid in [101, 102, 103, 104, 105, 106]:
 ### Homework
 
 ```python
-# H1 — convert.py
+# Task 1 — convert.py
 miles = float(input("Miles: "))
 km = miles * 1.60934
 print(f"{miles} miles = {km:.2f} km ({round(km * 1000):,} meters)")
 ```
 
-H2 — the last lines, and what the names mean:
+Task 2 — the last lines, and what the names mean:
 1. `ValueError: invalid literal for int() with base 10: 'ten'` — right *type* of argument, unusable value.
 2. `TypeError: can only concatenate str (not "int") to str` — the types themselves don't fit the operation.
 3. `NameError: name 'nmae' is not defined` — you used a name that was never assigned (usually a typo).
 
 ```python
-# H3 — what type() says
+# Task 3 — what type() says
 7 / 2         # float — / always gives a float (3.5)
 7 // 2        # int   — floor division of two ints (3)
 7.0 // 2      # float — floored VALUE, float TYPE (3.0)

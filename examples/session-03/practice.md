@@ -51,29 +51,29 @@ print(92 in nums, 60 in nums)        # -> True False
 
 ## In class — going deeper (second hour)
 
-### E1 — Refactor to chained comparisons
+### Task 1 — Refactor to chained comparisons
 Rewrite each with one chained comparison:
 1. `if x >= 0 and x <= 100:`
 2. `if lo < value and value < hi:`
 3. `if a == b and b == c:`
 
-### E2 — Countdown
+### Task 2 — Countdown
 Print 10 → 1 then `Go!` — once with `range`, once with `while`. Mind the off-by-one at
 **both** ends.
 
-### D1 — `match/case` rewrite
+### Task 3 — `match/case` rewrite
 Rewrite your Likert classifier with `match/case`: 5/4 → `"agree"`, 3 → `"neutral"`,
 1/2 → `"disagree"`, anything else → `"invalid"`. Which version reads better here — and why?
 
-### D2 — `for/else` search
+### Task 4 — `for/else` search
 Find the first score below 60 in `[91, 73, 84, 58, 90]` and print it; if there is none,
 print `"everyone passed"` — **without** a `found` flag.
 
-### D3 — Best AND worst, one pass
+### Task 5 — Best AND worst, one pass
 Track best-so-far and worst-so-far through a single loop over
 `[73, 91, 58, 84]` (no `max()`/`min()`). Print both.
 
-### D4 — Return the test itself
+### Task 6 — Return the test itself
 Rewrite each as a single `return` line, then call one of them bare in an `if`
 (no `== True`):
 ```python
@@ -93,16 +93,16 @@ def is_full_class(roster):
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 
-### H1 — Attendance labeler
+### Task 1 — Attendance labeler
 Write `label(pct)` → `"perfect"` (exactly 100), `"good"` (≥ 80), `"at risk"` (≥ 50), else
 `"critical"`; `"invalid"` outside 0–100. Loop over
 `[100, 92.5, 80, 79.9, 50, 12, -3, 104]` printing `pct -> label`. **Test every boundary.**
 
-### H2 — Number-guessing game
+### Task 2 — Number-guessing game
 Set `secret = 37`. Loop: ask for a guess (validate it's an integer 1–100 — reuse today's
 validation-loop pattern), print `higher` / `lower` / `got it in N tries`. Count attempts.
 
-### H3 — Leap-year checker
+### Task 3 — Leap-year checker
 `is_leap(year)`: divisible by 4, except centuries unless divisible by 400 — as **one**
 boolean expression. Verify: 2024 → True, 1900 → False, 2000 → True, 2026 → False.
 
@@ -156,12 +156,12 @@ elif score >= 60:
 ### In class — going deeper
 
 ```python
-# E1
+# Task 1
 0 <= x <= 100
 lo < value < hi
 a == b == c
 
-# E2
+# Task 2
 for n in range(10, 0, -1):    # start 10, stop BEFORE 0, step -1
     print(n)
 print("Go!")
@@ -174,7 +174,7 @@ print("Go!")
 ```
 
 ```python
-# D1
+# Task 3
 def likert_label(answer):
     match answer:
         case 5 | 4:
@@ -187,7 +187,7 @@ def likert_label(answer):
             return "invalid"
 # match wins here: every branch compares the SAME value against literals.
 
-# D2
+# Task 4
 for s in [91, 73, 84, 58, 90]:
     if s < 60:
         print("first failing:", s)
@@ -195,7 +195,7 @@ for s in [91, 73, 84, 58, 90]:
 else:
     print("everyone passed")
 
-# D3
+# Task 5
 scores = [73, 91, 58, 84]
 best = worst = scores[0]
 for s in scores[1:]:
@@ -207,7 +207,7 @@ print("best:", best, "worst:", worst)    # 91 58
 ```
 
 ```python
-# D4
+# Task 6
 def is_passing(score):
     return score >= 60             # the comparison already IS the bool
 
@@ -221,7 +221,7 @@ if is_passing(72):                 # bare — never `== True`
 ### Homework
 
 ```python
-# H1
+# Task 1
 def label(pct):
     if not 0 <= pct <= 100:
         return "invalid"
@@ -238,7 +238,7 @@ for pct in [100, 92.5, 80, 79.9, 50, 12, -3, 104]:
 # 100 perfect · 92.5 good · 80 good · 79.9 at risk · 50 at risk · 12 critical ·
 # -3 invalid · 104 invalid
 
-# H2
+# Task 2
 secret, tries = 37, 0
 while True:
     raw = input("Guess 1-100: ")
@@ -255,7 +255,7 @@ while True:
         print(f"got it in {tries} tries")
         break
 
-# H3
+# Task 3
 def is_leap(year):
     return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
 
