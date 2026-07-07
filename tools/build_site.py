@@ -553,6 +553,7 @@ def build_index() -> str:
   <li data-i18n-html="res.setup"><strong>New to Python?</strong> <a href="cheatsheets.html#setup">Set up your computer &amp; learning tools</a> — install per-OS (or run in the browser, no install), plus Python&nbsp;Tutor, regex101, and how to use AI to learn.</li>
   <li data-i18n-html="res.traps"><a href="cheatsheets.html">Traps &amp; Gotchas cheat sheet</a> — the quirks, wrong-vs-right (start here, Session&nbsp;2).</li>
   <li data-i18n-html="res.quick"><a href="cheatsheets.html#quick-reference">Quick syntax reference</a> and <a href="cheatsheets.html#glossary">plain-language glossary</a>.</li>
+  <li data-i18n-html="res.net"><strong>Into crawling &amp; sniffing?</strong> <a href="cheatsheets.html#net">Crawling &amp; Sniffing starter reference</a> — the libraries, the ethics, and how each session prepares you. Runnable examples in <code>examples/networking/</code>.</li>
   <li data-i18n-html="res.nb"><strong>Prefer notebooks?</strong> <a href="{LITE_DIR}/lab/index.html" target="_blank" rel="noopener">Open all sessions as Jupyter notebooks in your browser</a> — a full Jupyter, no install. Each session page also links Colab and a <code>.ipynb</code> download.</li>
   <li data-i18n-html="res.pdf"><a href="{STUDENT_PDF}" download data-href-en="{STUDENT_PDF}" data-href-zh="{STUDENT_PDF_ZH}">The whole course as a PDF</a> — for reading offline or printing.</li>
 </ul>
@@ -668,25 +669,29 @@ def _combine_cheats(d: Path, head: str, jump: str) -> str:
     traps_txt = (d / "traps-and-gotchas.md").read_text()
     quick = (d / "quick-reference.md").read_text()
     gloss = (d / "glossary.md").read_text()
+    net = (d / "crawling-and-sniffing.md").read_text()
     return (f"# {head}\n\n{jump}\n\n"
             '<div id="setup"></div>\n\n' + setup +
             '\n\n---\n\n<div id="traps"></div>\n\n' + traps_txt +
             '\n\n---\n\n<div id="quick-reference"></div>\n\n' + quick +
-            '\n\n---\n\n<div id="glossary"></div>\n\n' + gloss)
+            '\n\n---\n\n<div id="glossary"></div>\n\n' + gloss +
+            '\n\n---\n\n<div id="net"></div>\n\n' + net)
 
 
 def build_cheats(cheats_dir: Path) -> str:
     combined = _combine_cheats(
         cheats_dir, "Cheat Sheets",
         "Jump to: [Setup &amp; Tools](#setup) · [Traps &amp; Gotchas](#traps) · "
-        "[Quick Reference](#quick-reference) · [Glossary](#glossary)")
+        "[Quick Reference](#quick-reference) · [Glossary](#glossary) · "
+        "[Crawling &amp; Sniffing](#net)")
     scripts = md_script("cheats-md", combined)
     zh_dir = cheats_dir / "zh"
     if zh_dir.exists():
         combined_zh = _combine_cheats(
             zh_dir, "速查表",
             "跳转：[环境配置与工具](#setup) · [陷阱与坑](#traps) · "
-            "[语法速查](#quick-reference) · [术语表](#glossary)")
+            "[语法速查](#quick-reference) · [术语表](#glossary) · "
+            "[爬虫与抓包](#net)")
         scripts += "\n" + md_script("cheats-zh-md", combined_zh)
     body = '<div id="cheats" class="md"></div>'
     return page_shell("Cheat Sheets — Learn Python", "cheats", body, scripts)

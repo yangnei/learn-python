@@ -203,7 +203,8 @@ def render(lang: str = "en") -> str:
             sections.append(f'<div class="pagebreak"></div>{convert(traps_md)}')
 
     # Appendices: cheat sheets and quizzes.
-    for fname in ("setup-and-tools.md", "traps-and-gotchas.md", "quick-reference.md", "glossary.md"):
+    for fname in ("setup-and-tools.md", "traps-and-gotchas.md", "quick-reference.md",
+                  "glossary.md", "crawling-and-sniffing.md"):
         sections.append(f'<div class="pagebreak"></div>{convert((cheats_dir / fname).read_text())}')
     sections.append(f'<div class="pagebreak"></div>{convert(quizzes.read_text())}')
 

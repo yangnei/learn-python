@@ -44,6 +44,22 @@ Write a program `analyzer.py` that:
   (regex), output a frequency table.
 - **Attendance tracker:** parse an attendance CSV → per-student attendance rate, flag < 80%.
 
+## Networking briefs (for the crawling / sniffing track — see `examples/networking/`)
+These exercise the same fundamentals against real tools. **Authorization first:** crawl only
+sites you own or sandboxes (quotes.toscrape.com); sniff only your own/authorized traffic.
+- **Polite site crawler:** starting from one URL, breadth-first crawl a single host with
+  `requests` + `beautifulsoup4`, obeying `robots.txt` (`urllib.robotparser`), rate-limiting
+  (`time.sleep`), a `visited` set + `deque` frontier, a depth or page cap, and robust error
+  handling (`requests.RequestException`). Output a CSV of `url, status, title, n_links`.
+  Stretch: a `Crawler` class that `yield`s pages; extract one structured field per page.
+- **Capture analyzer:** read a `.pcap` you captured yourself with `scapy.rdpcap` (offline —
+  no root), and report top protocols, top talkers (source IP), and top destination ports with
+  `Counter`. Stretch: parse an IPv4 header straight from `bytes` with `struct` to prove you
+  understand what scapy does; add a `--live N` mode guarded behind an authorization prompt.
+- **Access-log miner:** parse a web-server access log (Apache/Nginx `access.log`) with a regex
+  into fields, then report requests per hour, top paths, top IPs, and the 404 rate — the
+  read-clean-summarize pipeline (S8) applied to real server data.
+
 ## What "done" looks like
 The program runs without crashing on the provided dirty data, prints a readable summary, and
 writes `report.csv`. The student can explain, for any line, whether it compares *value or

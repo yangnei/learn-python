@@ -171,6 +171,7 @@ const I18N_ZH = {
   "res.quick": '<a href="cheatsheets.html#quick-reference">语法速查</a>和<a href="cheatsheets.html#glossary">通俗术语表</a>。',
   "res.nb": '<strong>偏好笔记本？</strong> <a href="jupyter/lab/index.html" target="_blank" rel="noopener">在浏览器中以 Jupyter 笔记本打开全部课程</a> —— 完整 Jupyter、免安装。每课页面也有 Colab 链接和 <code>.ipynb</code> 下载。',
   "res.pdf": '<a href="learn-python-student.zh.pdf" download>整套课程 PDF（中文版）</a> —— 离线阅读或打印。',
+  "res.net": '<strong>想做爬虫和抓包？</strong> <a href="cheatsheets.html#net">爬虫与抓包入门参考</a> —— 用到的库、伦理边界，以及每一课如何为它们打基础。可运行示例在 <code>examples/networking/</code>。',
 };
 /* generated-inside-markdown strings, translated after render (both directions) */
 const CONTENT_I18N = [
