@@ -111,7 +111,7 @@ even silly ones: the point is that installing is trivial.)
 
 ---
 
-## The pandas teaser (your next course)
+## The pandas teaser (Session 11 goes deep)
 
 ```python
 import pandas as pd
@@ -287,7 +287,7 @@ df[df["score"] < 60]                      # filter rows
 df.to_csv("report.csv", index=False)
 ```
 
-Five lines = today's whole session. That's the next course — and now you know what each
+Five lines = today's whole session. That's Session 11 — and now you know what each
 line does underneath.
 
 ---

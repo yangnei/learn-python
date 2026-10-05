@@ -1,6 +1,6 @@
 # Learn Python — Student Syllabus
 
-Welcome. This is a fast, ~20-hour path (**ten two-hour sessions**, plus an optional
+Welcome. This is a fast, ~22-hour path (**eleven two-hour sessions**, plus an optional
 capstone) from "never coded" to "I can write a real Python program to wrangle my research
 data." It's re-ordered for you and front-loaded with the language quirks that trip people
 up.
@@ -23,7 +23,7 @@ matching `slides/`, `examples/`, and `cheatsheets/` file for each session. (A fu
 
 ---
 
-## The 10 sessions (2 hours each, + homework)
+## The 11 sessions (2 hours each, + homework)
 
 | # | Title | You'll be able to… |
 |---|---|---|
@@ -37,7 +37,8 @@ matching `slides/`, `examples/`, and `cheatsheets/` file for each session. (A fu
 | 8 | **Files, Libraries & Research Data** | Read/write CSV survey data, `statistics`/`datetime`/`pathlib`, `pip install`, pandas teaser |
 | 9 | **Regular Expressions & Text Cleaning** | Validate, extract, and clean real text with `re` + capture groups |
 | 10 | **Modules, OOP & the Pythonic Toolkit** | Import modules, build a small class with `@property`, generators/`map`/`filter`/walrus |
-| 11 | **Capstone (optional)** | Build a Gradebook & Survey Analyzer end-to-end |
+| 11 | **NumPy & pandas for Research Data** | Vectorize with NumPy arrays and masks; load, filter, `groupby`, reshape, and merge tables with pandas |
+| 12 | **Capstone (optional)** | Build a Gradebook & Survey Analyzer end-to-end |
 
 Files for session N: `slides/session-NN-slides.md` · `examples/session-NN/`.
 Session 2's **type traps** are the most load-bearing material in the course — if you
@@ -58,12 +59,13 @@ deeply master one session, make it that one.
 5. **Connect to what you know.** Every topic maps to research methods/stats (see `connection-map.md`). Lean on those bridges.
 
 ## What "done" looks like
-You finish the capstone (S11) or, at minimum, complete every session's practice +
+You finish the capstone (S12) or, at minimum, complete every session's practice +
 homework and score the per-session quizzes in `assessments/`. The real test: you can open
 a messy CSV of your own data and write a short script that summarizes it without copying
 from anyone.
 
 ## Scope (so you're not surprised)
 This makes you a confident *programmer who handles research data*. It is **not** a full
-data-science course — pandas, plotting, and statistical modeling get a taste, not a deep
-dive. Those are the natural next step once these fundamentals are solid.
+data-science course — Session 11 gives you working NumPy and pandas, but plotting and
+statistical modeling get no more than a taste. Those are the natural next step once
+these fundamentals are solid.

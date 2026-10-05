@@ -48,6 +48,8 @@ SESSIONS = [
      "raw strings, search/fullmatch/findall/sub, groups — then flags, compile, VERBOSE, lazy matching, sub with a function.", False),
     (10, "Modules, OOP & the Pythonic Toolkit",
      "modules & __main__, classes with @property, generators — then dunders, dataclasses, classmethods, pipelines.", False),
+    (11, "NumPy & pandas for Research Data",
+     "arrays, vectorizing, masks, axis, DataFrames, loc/iloc, groupby — then broadcasting, missing data, transform, melt, merge, time series.", False),
 ]
 
 
@@ -73,6 +75,8 @@ ZH_SESSIONS: dict[int, tuple[str, str]] = {
         "原始字符串、search/fullmatch/findall/sub、分组——进阶：标志位、compile、VERBOSE、惰性匹配、函数替换。"),
     10: ("模块、面向对象与 Python 惯用法",
          "模块与 __main__、@property 类、生成器——进阶：双下方法、dataclass、classmethod、生成器管道。"),
+    11: ("NumPy 与 pandas：处理研究数据",
+         "数组、向量化、布尔掩码、axis、DataFrame、loc/iloc、groupby——进阶：广播、缺失数据、transform、melt、merge、时间序列。"),
 }
 
 # Editable, in-browser-runnable snippets per session (Pyodide-safe: no file I/O, no input()).
@@ -352,6 +356,46 @@ print("fib(35):", fib(35))             # 9227465 — try removing @cache, then w
 # def oops(n): return oops(n + 1)
 # oops(0)
 '''}],
+    11: [
+        {"title": "numpy_vectorize.py", "code": '''\
+import numpy as np
+
+scores = np.array([91, 58, 73, 64, 88, 79])
+print("curved: ", np.minimum(scores + 5, 100))      # every score at once, capped at 100
+print("passed: ", scores[scores >= 60])              # boolean mask
+print("count:  ", (scores >= 60).sum())               # True counts as 1
+print("labels: ", np.where(scores >= 60, "pass", "fail"))
+
+quizzes = np.array([[8, 9, 7, 10],                   # rows = students, columns = quizzes
+                    [5, 6, 4, 7],
+                    [9, 9, 10, 8]])
+print("per student:", quizzes.mean(axis=1))          # axis = the dimension that disappears
+print("per quiz:   ", quizzes.mean(axis=0))
+weights = np.array([0.1, 0.2, 0.3, 0.4])             # broadcasting: (3, 4) * (4,)
+print("weighted:   ", (quizzes * weights).sum(axis=1).round(2))
+'''},
+        {"title": "pandas_groupby.py", "code": '''\
+from io import StringIO
+import pandas as pd
+
+DATA = """name,major,score
+Ana,Education,91
+Ben,Psychology,58
+Cara,Education,73
+Dev,Sociology,64
+Eve,Psychology,88
+Finn,Education,79"""
+df = pd.read_csv(StringIO(DATA))                     # a real file: pd.read_csv("students.csv")
+
+print(df[df["score"] >= 75])                         # filter rows
+df["grade"] = pd.cut(df["score"], bins=[0, 59, 69, 79, 89, 100], labels=list("FDCBA"))
+print(df.sort_values("score", ascending=False))
+
+print(df.groupby("major").agg(n=("name", "count"), mean=("score", "mean")).round(1))
+df["vs_major"] = df["score"] - df.groupby("major")["score"].transform("mean")
+print(df[["name", "major", "vs_major"]].round(1))
+'''},
+    ],
 }
 
 # One session = one topic, so the per-topic snippets map straight onto sessions.

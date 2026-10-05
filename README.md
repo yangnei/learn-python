@@ -5,7 +5,7 @@ experience** but strong self-learning skills. The pace is accelerated and the co
 deliberately front-loaded with the **easily-missed language fundamentals** (the dynamic-typing
 "traps") that beginners skip and later get bitten by.
 
-- **Length:** **10 two-hour sessions** (~20 hours) + an optional 11th capstone session. Each
+- **Length:** **11 two-hour sessions** (~22 hours) + an optional 12th capstone session. Each
   session = a **core** hour + a **Going deeper** hour of new material around a break, and
   assigns **homework (~30–45 min)** that doesn't count toward class time.
 - **Two editions:** a clean **student** track and a **teacher** track (timing, transitions, misconceptions).
@@ -84,9 +84,9 @@ learn-python/
 │   ├── syllabus-teacher.md         ← TEACHER edition (timing, transitions, Socratic prompts)
 │   └── connection-map.md           ← Python ⇄ education-research bridges (personalization)
 ├── slides/
-│   └── session-01..10-slides.md    ← Marp slide decks (one per session)
+│   └── session-01..11-slides.md    ← Marp slide decks (one per session)
 ├── examples/
-│   └── session-01..10/             ← runnable demo.py + practice.md (+ CSVs in S8, grades.py in S10)
+│   └── session-01..11/             ← runnable demo.py + practice.md (+ CSVs in S8/S11, grades.py in S10)
 ├── cheatsheets/
 │   ├── traps-and-gotchas.md        ← the quirks, wrong-vs-right, all verified
 │   ├── quick-reference.md          ← syntax you'll forget
@@ -95,9 +95,9 @@ learn-python/
 │   ├── quizzes.md                  ← per-session quizzes + answer keys
 │   └── capstone-project.md         ← the Gradebook & Survey Analyzer
 ├── docs/                           ← STUDENT interactive website (GitHub Pages)
-│   ├── index.html, session-01..10.html, cheatsheets.html
+│   ├── index.html, session-01..11.html, cheatsheets.html
 │   ├── learn-python-student.pdf    ← downloadable student edition (offline reading)
-│   ├── notebooks/session-01..10.ipynb  ← one Jupyter notebook per session (+ -try/-traps)
+│   ├── notebooks/session-01..11.ipynb  ← one Jupyter notebook per session (+ -try/-traps)
 │   ├── jupyter/                    ← hosted JupyterLite app (run notebooks in-browser)
 │   └── assets/ (style.css, app.js) ← Pyodide-powered runnable code, quizzes, progress
 ├── output/
@@ -110,7 +110,7 @@ learn-python/
     └── build_student_pdf.py        ← regenerates the student PDF
 ```
 
-## The 10 sessions at a glance (two hours each, + homework)
+## The 11 sessions at a glance (two hours each, + homework)
 | # | Title |
 |---|---|
 | 1 | Running Python, Variables & Types |
@@ -123,10 +123,12 @@ learn-python/
 | 8 | Files, Libraries & Research Data |
 | 9 | Regular Expressions & Text Cleaning |
 | 10 | Modules, OOP & the Pythonic Toolkit |
-| 11 | Capstone (optional) — Gradebook & Survey Analyzer, end to end |
+| 11 | NumPy & pandas for Research Data |
+| 12 | Capstone (optional) — Gradebook & Survey Analyzer, end to end |
 
 The sessions run in five natural pairs (types→traps, control flow→data structures,
 functions→recursion, exceptions→files, regex→modules/OOP); each pair shares a through-line.
+Session 11 then redoes Session 8's by-hand data work with NumPy and pandas.
 
 ## How to render the slides (optional)
 The decks are plain Markdown with `---` slide breaks and Marp front-matter. To export to
@@ -138,15 +140,17 @@ Each `examples/session-XX/demo.py` is self-contained:
 ```bash
 cd examples/session-01 && python3 demo.py     # variables & types
 cd examples/session-08 && python3 demo.py     # reads the bundled CSVs
+cd examples/session-11 && python3 demo.py     # needs numpy + pandas
 ```
-Requires Python 3.11+. The only optional third-party packages are `pytest` (Session 7 test)
-and `pandas` (Session 8 teaser); everything else is the standard library.
+Requires Python 3.11+. Sessions 1–10 use the standard library, plus the optional `pytest`
+(Session 7 test) and `pandas` (Session 8 teaser). Session 11 needs `numpy` and `pandas`
+(`pip install numpy pandas`); both come preinstalled in Colab and the in-browser notebook.
 
 ## Scaling to the available time
 - **~14–16 hours:** keep every core hour; trim the Going-deeper blocks to the essentials
   named by each session's cut line.
-- **~20 hours:** run S1–S10 as written, two hours each (recommended).
-- **~22 hours:** add the S11 capstone.
+- **~22 hours:** run S1–S11 as written, two hours each (recommended).
+- **~24 hours:** add the S12 capstone.
 
 ## Note
 All instructional content in this package — prose, slides, code, cheat sheets, and quizzes —

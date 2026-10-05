@@ -31,7 +31,7 @@ By the end the student can:
 6. Build one small, education-relevant capstone (e.g., a gradebook/survey analyzer).
 
 ## Format & Duration
-- **~20 hours total**, delivered as **10 two-hour sessions** — plus an optional 11th capstone
+- **~22 hours total**, delivered as **11 two-hour sessions** — plus an optional 12th capstone
   session. Every session also assigns **homework (~30–45 min)** outside class time.
 - Each session runs: warm-up (last session's homework + traps) → the topic's **core**
   (Concept → Live Example → Practice) → break → **Going deeper** (new material: Concept →
@@ -42,7 +42,8 @@ By the end the student can:
     Socratic prompts, predicted misconceptions, and "what to cut if you're behind."
 
 ## Non-Goals (explicit scope cuts)
-- Not a data-science course: pandas/NumPy/matplotlib get a single guided *teaser*, not depth.
+- Not a data-science course: NumPy and pandas get one working session (S11); plotting and
+  statistical modeling stay out of scope.
 - No web frameworks, async, packaging, or deployment.
 - No exhaustive standard-library tour; we cover what a researcher actually reaches for.
 - Statistics *concepts* are assumed known — we only show how to compute them in Python.

@@ -75,7 +75,7 @@ Add `Student.from_row(cls, row)` building a `Student` from a CSV `DictReader` ro
 Write generators `to_ints(cells)` (skip unparseable) and `in_range(vals, lo=1, hi=5)`;
 chain them over `["5", "3", "N/A", "7", "1"]`. When does any work actually happen?
 
-## Homework (before the capstone)
+## Homework (before Session 11)
 
 *~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
 

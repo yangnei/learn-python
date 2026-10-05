@@ -227,7 +227,29 @@ loops.
 
 ---
 
-## Session 11 (Optional) — Capstone Project *(integrative)*
+## Session 11 — NumPy & pandas for Research Data
+
+**Objectives**
+1. Replace Python loops with **NumPy** arrays: vectorized math, boolean masks, and
+   aggregations along an `axis`.
+2. Load, inspect, select (`loc`/`iloc`), filter, and add columns to a **pandas**
+   DataFrame.
+3. Produce "descriptives by condition" with `groupby(...).agg(...)` and named aggregation,
+   redoing Session 8's by-hand work in a line each.
+
+**Going deeper (second hour):** views vs copies, broadcasting (z-scores, weighted totals),
+seeded `default_rng` simulations, missing data (`na_values`, `isna`, `dropna`/`fillna`,
+NaN → float64), `transform`, `melt`/`pivot_table`/`crosstab`, `merge` with `validate` and
+`indicator`, `.dt`/`.str`, `resample`/`rolling`, method chaining, the single-`.loc`
+assignment rule, `to_csv`.
+**Trap focus:** list `* 2` repeats; `and` on arrays; array slices are views; one NaN makes
+floats; `loc` slices include the end; index alignment produces NaN.
+**Homework:** Session 8's survey summary in six pandas lines; a seeded class-mean
+simulation; one publishable `groupby` table from your own data plus its cleaning log.
+
+---
+
+## Session 12 (Optional) — Capstone Project *(integrative)*
 
 **Objective:** independently build one small, end-to-end program on a real-ish education
 dataset. Default brief: **"Gradebook & Survey Analyzer"** — read a CSV of students +
@@ -250,10 +272,11 @@ students, and write a report CSV. Alternative briefs are listed in
 | Files & libraries (CSV, `statistics`, `pandas` teaser) | S8 |
 | Regular expressions | S9 |
 | Modules & OOP | S10 |
+| NumPy & pandas (arrays, DataFrames, `groupby`, reshape, merge) | S11 (teaser in S8) |
 | Power-tools (comprehensions, `*args`, type hints, generators, `map`/`filter`, walrus) | S4, S5, S10 |
 
 ## Scaling to the time budget
 - **~14–16 hours:** keep every core hour; trim each Going-deeper block to its two or
   three starred essentials (each session's *cut line* names them).
-- **~20 hours:** run S1–S10 as written, two hours each (recommended).
-- **~22 hours:** add the S11 capstone.
+- **~22 hours:** run S1–S11 as written, two hours each (recommended).
+- **~24 hours:** add the S12 capstone.

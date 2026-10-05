@@ -7,8 +7,9 @@ don't tell), and an explicit **"if you're behind, cut this"** line per session.
 
 Each two-hour session has two halves around a break: the **core** of the topic first, then a
 **Going deeper** block — genuinely new material (not stretched practice), with its own live
-demos and its own practice round. The 10 sessions run in five natural pairs (types→traps,
-control flow→data structures, functions→recursion, exceptions→files, regex→modules/OOP).
+demos and its own practice round. Sessions 1–10 run in five natural pairs (types→traps,
+control flow→data structures, functions→recursion, exceptions→files, regex→modules/OOP);
+Session 11 then revisits Session 8's data work with NumPy and pandas.
 Each pair shares a through-line; **name it out loud** when you open the second session of a
 pair, so consecutive sessions feel like one arc.
 
@@ -385,12 +386,12 @@ Session-by-Session Coverage Checklist** and keep it next to the clock.
 - **1:08–1:30 — Deeper concept.** `__repr__`/`__eq__`/`__lt__` → `sorted()` just works (and `__add__` — operator overloading in one line); dataclasses round 2 (`default_factory` = the S5 rule in class form; `frozen=True`); `@classmethod` alternate constructors (`from_row`: file format at the edge, objects inside — S8 bridge); composition over inheritance; class vs instance attributes (the trap → the law); generator **pipelines** (lazy stages, constant memory); from script to project (folder layout, the `def main()` convention, one module per concern).
 - **1:30–1:40 — Live II.** Demo deeper sections: sortable `Score`s, `default_factory`, `from_row`, the two-stage pipeline.
 - **1:40–1:53 — Practice II.** Sortable `Student`; the dataclass `Course`; `from_row`; the pipeline.
-- **1:53–2:00 — Recap + quiz + homework + course wrap.** Dunders make objects native; mutable data in `__init__`/`default_factory`, always; compose first. Quiz S10. Frame the capstone: *"Next time, you drive."*
+- **1:53–2:00 — Recap + quiz + homework + course wrap.** Dunders make objects native; mutable data in `__init__`/`default_factory`, always; compose first. Quiz S10. Preview S11: *"Next time, a library does your Session 8 in one line."*
 
 **Transitions**
 - Open (the pair's thread): *"You can clean any string. Last step: organize code so it's reusable — functions into modules, data-plus-rules into classes."*
 - Break→deeper: *"You've built a class that defends itself. Now make your objects feel NATIVE — printable, comparable, sortable — and wire generators into a pipeline that could eat a million rows."*
-- Close: *"That's the toolbox — every tool earned its place. The capstone is where you prove it's yours."*
+- Close: *"That's the toolbox — every tool earned its place. Next: the libraries researchers build from these same tools."*
 
 **Predicted misconceptions**
 - `self` looks magical; generators exhaust.
@@ -407,7 +408,44 @@ Session-by-Session Coverage Checklist** and keep it next to the clock.
 
 ---
 
-## SESSION 11 (Optional) — Capstone
+## SESSION 11 — NumPy & pandas for Research Data
+**Covers:** NumPy arrays, vectorized math, boolean masks, `axis`; pandas `read_csv`, inspection, `loc`/`iloc`, filtering, new columns, `groupby` + named aggregation · **deeper:** views vs copies, broadcasting, seeded `default_rng`, missing data, `transform`, `melt`/`pivot_table`/`crosstab`, `merge`, dates and `resample`, method chaining, the single-`.loc` rule.
+**Pre-flight:** `examples/session-11/` with `students.csv` + `survey.csv` (the Session 8 files); `import numpy, pandas` works (or use the in-browser notebook, which has both); his Session 8 `demo.py` open side by side for the before/after.
+
+**The clock (120 min)**
+- **0:00–0:05 — Warm-up.** S10 homework: one Pythonic rewrite. Then: "How many lines was your Session 8 by-major mean?"
+- **0:05–0:30 — Core concept.** Why arrays (one type, one block, C speed); list `* 2` vs array `* 2`; vectorization; boolean masks and `&`; 2D indexing and `axis`; Series vs DataFrame; `read_csv` infers types.
+- **0:30–0:42 — Live I.** Session 8 redone: class mean, curve, pass count in NumPy; load `students.csv`, `info()`, filter, `pd.cut`, `groupby("major").agg(...)`.
+- **0:42–1:00 — Practice I.** Vectorize Session 8; the quiz grid + `axis`; load & inspect; filter + grade column; the descriptives table.
+- **1:00–1:08 — Break.**
+- **1:08–1:30 — Deeper concept.** Views vs copies (S2 aliasing returns); broadcasting (weighted totals, column z-scores); `default_rng(seed)` simulations; missing data (`na_values`, NaN → float64, drop vs impute as a *methods* decision); `transform`; wide ↔ long (`melt`, `crosstab`, `pivot_table`); `merge` with `validate`/`indicator`; `.dt`, `resample`, `rolling`; method chaining; the single-`.loc` rule.
+- **1:30–1:40 — Live II.** Demo deeper sections: the view surprise, z-scores by broadcasting, the survey melted long, the advisors merge that "loses" Sociology.
+- **1:40–1:53 — Practice II.** Broadcast z-scores; clean the survey; melt + crosstab; above-major-mean via `transform`; merge advisors; weekly resample.
+- **1:53–2:00 — Recap + quiz + homework.** `&` not `and`; slices are views; NaN makes floats; one `.loc` to assign. Quiz S11. Frame the capstone: *"pandas is allowed."*
+
+**Transitions**
+- Open: *"In Session 8 you wrote the loop. Today a library writes it for you — and because you wrote it once, you'll know what it's doing."*
+- Break→deeper: *"Clean data is the exception. Second hour: the messy parts — missing values, wide survey exports, joining tables, dates."*
+- Close: *"You can now do in six lines what took sixty. Next time you drive: the capstone."*
+
+**Predicted misconceptions**
+- Writes `and` between masks; forgets the parentheses around each condition.
+- Expects `arr[:2]` to copy (it did for lists).
+- Mixes up `axis=0` and `axis=1` — have him say which dimension disappears.
+- Reaches for `.apply` or a `for` loop over rows out of habit.
+- Writes `df[mask]["col"] = value` and is puzzled nothing changed.
+
+**Socratic prompts**
+- "Your Likert column now prints `4.0`. What single cell caused that, and why?"
+- "Drop the incomplete respondents or impute? Which one would a reviewer ask you to justify?"
+- "The merge has fewer advisors than students. How would you *prove* which rows didn't match?"
+
+**Cut line:** drop `rolling`, `pivot_table`, and the dice simulation (leave the slides as reference); keep masks, `axis`, `groupby`, missing data, `melt`, `merge`, and the `.loc` rule.
+**Homework:** Session 8 survey summary in six lines · seeded class-mean simulation · your own `groupby` table + cleaning log.
+
+---
+
+## SESSION 12 (Optional) — Capstone
 **Role shift:** you stop teaching and start *coaching*. He drives; you ask questions and unblock. Plan ~2 hours.
 - **0:00–0:15 — Brief & plan.** He restates the goal and sketches the steps aloud (pseudocode). You only check the plan is sound.
 - **0:15–1:05 — Build.** He codes the Gradebook & Survey Analyzer (`assessments/capstone-project.md`). Intervene only when stuck >3 min; prefer a question over an answer.

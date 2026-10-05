@@ -1,6 +1,6 @@
 # Capstone Project — Gradebook & Survey Analyzer
 
-**Time:** ~2 hours (Session 11). **Role:** the student drives; the teacher coaches with questions.
+**Time:** ~2 hours (Session 12). **Role:** the student drives; the teacher coaches with questions.
 **Goal:** independently build one end-to-end program on realistic education data, exercising
 every fundamental from the course.
 

@@ -168,6 +168,29 @@ own in `__init__`: `self.students = []`. 5. A bare `[]` default would be created
 
 ---
 
+## Session 11 — NumPy & pandas for Research Data
+1. `[1, 2] * 2` vs `np.array([1, 2]) * 2` — what does each give, and why?
+2. Why does `(scores > 60) and (scores < 90)` raise an error on an array, and what do you
+   write instead?
+3. For a `(students, quizzes)` array, which gives one mean per student: `axis=0` or
+   `axis=1`?
+4. One cell of an integer survey column is blank. What happens to the column's dtype,
+   and what does `.mean()` do with the blank?
+5. `groupby(...).agg(...)` vs `groupby(...).transform(...)` — what shape does each return?
+6. Why does `df[df["score"] < 60]["grade"] = "D"` leave `df` unchanged, and what's the fix?
+
+**Answers:** 1. `[1, 2, 1, 2]` (a list repeats) vs `array([2, 4])` (an array does
+element-wise math). 2. `and` needs a single True/False, but the comparison gives a whole
+array of them, so NumPy refuses to guess (ValueError); write `(scores > 60) & (scores < 90)`,
+with the parentheses. 3. `axis=1`: the axis you name is the one that disappears, so
+collapsing the quiz columns leaves one value per student. 4. It becomes `float64`
+(NaN is a float); pandas skips NaN, so the mean is over the valid cells only. 5. `agg`
+returns one row per group; `transform` returns one value per original row, aligned to
+the index, ready to become a new column. 6. The filter makes a copy and the assignment
+lands on that copy (pandas warns); use one `.loc`: `df.loc[df["score"] < 60, "grade"] = "D"`.
+
+---
+
 ## Scoring guide (formative, not graded)
 - **All correct, explained why:** ready for the next session (or the capstone).
 - **Right answer, fuzzy why:** re-do that session's `traps-and-gotchas` rows.

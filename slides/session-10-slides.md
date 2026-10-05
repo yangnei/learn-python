@@ -287,11 +287,11 @@ generator pipeline.
 
 ## Summary
 You can structure code into modules and classes and write idiomatic Python.
-**Next (optional):** Session 11 — the capstone: put it all together.
+**Next:** Session 11 — NumPy & pandas: your Session 8 work, in a line each.
 
 ---
 
-## Homework (before the capstone)
+## Homework (before Session 11)
 
 *Outside class — it doesn't count toward class time. Full specs + solutions: `examples/session-10/practice.md` → **Homework**.*
 

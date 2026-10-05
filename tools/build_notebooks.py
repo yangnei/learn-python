@@ -6,7 +6,7 @@ examples (examples/session-NN/demo.py + practice.md).
 
 Writes docs/notebooks/session-NN.ipynb (plus -try and -traps variants). The notebooks
 are self-contained so they run unchanged in JupyterLite (Pyodide), Google Colab, local
-Jupyter, or VS Code: the two sessions that read local files (S8 CSVs, S10 grades.py
+Jupyter, or VS Code: the sessions that read local files (S8/S11 CSVs, S10 grades.py
 module) get a setup cell that writes those files into the working directory first.
 """
 import importlib.util
@@ -54,9 +54,9 @@ def split_code_cells(src: str) -> list[str]:
 
 def setup_cell(n: int) -> str | None:
     """Return notebook-only setup code for sessions that depend on local files."""
-    if n == 8:   # the Files session reads CSVs
-        students = (EXAMPLES / "session-08" / "students.csv").read_text()
-        survey = (EXAMPLES / "session-08" / "survey.csv").read_text()
+    if n in (8, 11):   # the Files session reads CSVs; the pandas practice reads the same ones
+        students = (EXAMPLES / f"session-{n:02d}" / "students.csv").read_text()
+        survey = (EXAMPLES / f"session-{n:02d}" / "survey.csv").read_text()
         return (
             "# Setup (notebook only): write the data files this session reads.\n"
             "from pathlib import Path\n"

@@ -63,6 +63,13 @@ WHY_ZH: dict[tuple[int, int], str] = {
     (10, 0): "生成器是一次性的：完整遍历一遍后就耗尽了。要么重建，要么需要用两次就先存成列表。",
     (10, 1): "`@dataclass` 自动写了逐字段比较的 `__eq__`，所以值相同的成绩 `==` 成立（尽管 `g1 is g2` 为 False）。",
     (10, 2): "`students` 是所有实例共享的**类**变量。在 `__init__` 里给每个实例自己的：`self.students = []`。",
+    # ---- Session 11 ----
+    (11, 0): "对**列表**来说，`* 2` 是把列表重复一遍。逐元素运算是 NumPy 数组做的事：`np.array(scores) * 2` 得到 `array([182, 116])`。",
+    (11, 1): "`and` 需要**一个** True/False，但两边都是一整个数组，NumPy 拒绝替你猜。组合掩码用 `&`（以及 `|`、`~`），括号保留：`(scores > 70) & (scores < 90)`。",
+    (11, 2): "对**数组**切片得到的是同一块内存的视图（对列表切片才会复制）。需要独立的一段时用 `scores[:2].copy()`。",
+    (11, 3): "缺失值存成 NaN，而 NaN 是浮点数，所以一个空白就让整列变成 float64（你的 4 显示成 4.0）。",
+    (11, 4): "`.loc` 按**标签**切片，并且包含结束标签。`.iloc[0:2]` 按位置切片、不包含结尾，和普通 Python 一样。",
+    (11, 5): "pandas 按索引**标签**对齐 Series，而不是按位置。只在一边出现的标签得到 NaN。用 `.dropna()` 检查，或先填充：`spring.sub(fall, fill_value=0)`。",
 }
 
 # Chinese text for the generated traps section (page + reveal chrome).

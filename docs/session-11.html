@@ -1,0 +1,1547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){try{var k="lp.theme",t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t="light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<title>Session 11 — NumPy &amp; pandas for Research Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
+</head>
+<body data-page="session-11">
+<header class="site"><div class="nav-inner"><a class="brand" href="index.html">Learn <span class="py">Python</span></a><nav class="nav-links"><a href="index.html" data-i18n="nav.home">Home</a><a href="session-01.html" data-page="session-01" title="Running Python, Variables &amp; Types" data-title-en="Running Python, Variables &amp; Types" data-title-zh="运行 Python、变量与类型">S1</a><a href="session-02.html" data-page="session-02" title="The Dynamic-Typing Traps" data-title-en="The Dynamic-Typing Traps" data-title-zh="动态类型陷阱">S2</a><a href="session-03.html" data-page="session-03" title="Control Flow: Conditionals &amp; Loops" data-title-en="Control Flow: Conditionals &amp; Loops" data-title-zh="控制流：条件与循环">S3</a><a href="session-04.html" data-page="session-04" title="Data Structures" data-title-en="Data Structures" data-title-zh="数据结构">S4</a><a href="session-05.html" data-page="session-05" title="Functions, Scope &amp; Reusability" data-title-en="Functions, Scope &amp; Reusability" data-title-zh="函数、作用域与复用">S5</a><a href="session-06.html" data-page="session-06" title="Recursion &amp; Recursive Thinking" data-title-en="Recursion &amp; Recursive Thinking" data-title-zh="递归与递归思维">S6</a><a href="session-07.html" data-page="session-07" title="Exceptions &amp; Defensive Code" data-title-en="Exceptions &amp; Defensive Code" data-title-zh="异常与防御式编程">S7</a><a href="session-08.html" data-page="session-08" title="Files, Libraries &amp; Research Data" data-title-en="Files, Libraries &amp; Research Data" data-title-zh="文件、库与研究数据">S8</a><a href="session-09.html" data-page="session-09" title="Regular Expressions &amp; Text Cleaning" data-title-en="Regular Expressions &amp; Text Cleaning" data-title-zh="正则表达式与文本清洗">S9</a><a href="session-10.html" data-page="session-10" title="Modules, OOP &amp; the Pythonic Toolkit" data-title-en="Modules, OOP &amp; the Pythonic Toolkit" data-title-zh="模块、面向对象与 Python 惯用法">S10</a><a href="session-11.html" class="active" data-page="session-11" title="NumPy &amp; pandas for Research Data" data-title-en="NumPy &amp; pandas for Research Data" data-title-zh="NumPy 与 pandas：处理研究数据">S11</a><a href="cheatsheets.html" data-i18n="nav.cheats">Cheat sheets</a><a class="dl" href="learn-python-student.pdf" download title="Download the whole course as a PDF" data-href-en="learn-python-student.pdf" data-href-zh="learn-python-student.zh.pdf">PDF&nbsp;&#8595;</a><button class="lang-toggle" type="button" aria-label="Switch language / 切换语言" title="English / 中文">中文</button><button class="theme-toggle" type="button" aria-label="Switch light or dark theme" title="Switch light / dark"><span class="ti-moon" aria-hidden="true">&#9790;</span><span class="ti-sun" aria-hidden="true">&#9728;</span></button></nav></div></header>
+<main>
+
+<article>
+  
+<aside class="nb-bar">
+  <a class="nb-btn nb-primary" href="notebooks/session-11.ipynb" download data-i18n-html="nb.download">&#8595; Download this session (.ipynb)</a>
+  <a class="nb-btn" href="https://colab.research.google.com/#create=true" target="_blank" rel="noopener" data-i18n-html="nb.blank">Open a blank notebook in Colab &#8599;</a>
+</aside>
+  <div id="lesson-a" class="md"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-11.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false"
+              data-label-en="&#9656; Practice — run this session's notebook" data-label-zh="&#9656; 练习 —— 运行本课笔记本">&#9656; Practice — run this session's notebook</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-11.ipynb" target="_blank" rel="noopener" data-i18n-html="slot.colab">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+  <div id="practice" class="md"></div>
+  <div id="traps" class="md"></div>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-11-traps.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false"
+              data-label-en="&#9656; Traps — predict, then run" data-label-zh="&#9656; 陷阱 —— 先预测，再运行">&#9656; Traps — predict, then run</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-11-traps.ipynb" target="_blank" rel="noopener" data-i18n-html="slot.colab">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+
+  <section class="nb-slot" data-nb-src="jupyter/notebooks/index.html?path=session-11-try.ipynb">
+    <div class="nb-slot-bar">
+      <button class="nb-btn nb-primary" type="button" data-nb-embed aria-expanded="false"
+              data-label-en="&#9656; Try it yourself" data-label-zh="&#9656; 动手试试">&#9656; Try it yourself</button>
+      <a class="nb-btn" href="https://colab.research.google.com/github/yangnei/learn-python/blob/main/docs/notebooks/session-11-try.ipynb" target="_blank" rel="noopener" data-i18n-html="slot.colab">Open in Colab &#8599;</a>
+    </div>
+    <div class="nb-embed" hidden></div>
+  </section>
+  <h2 data-i18n="check">Check yourself</h2>
+<div id="quiz" class="md"></div>
+  <div class="page-foot">
+    <button id="complete-btn" class="complete-btn" type="button">Mark this session complete</button>
+    <div class="foot-nav">
+      <a href="session-10.html" data-i18n-html="foot.prev">&larr; Prev</a>
+      <a href="cheatsheets.html" data-i18n-html="foot.cheats">Cheat sheets &rarr;</a>
+    </div>
+    <p class="dl-line"><a class="dl-btn" href="learn-python-student.pdf" download data-i18n-html="dl.full"
+       data-href-en="learn-python-student.pdf" data-href-zh="learn-python-student.zh.pdf">&#8595; Download the full course (PDF)</a></p>
+  </div>
+</article>
+
+</main>
+<script type="text/markdown" id="lesson-a-md">
+# Session 11
+## NumPy & pandas for Research Data
+
+---
+
+## Why now? 🧠
+
+In Session 8 you computed a class mean, a mean per major, and per-item survey means
+**by hand**: loops, `setdefault`, a `to_int` cleaner. That was the point — you now know
+what has to happen underneath.
+
+Today, two libraries do it in a line each:
+
+- **NumPy** — fast arrays of numbers (the engine).
+- **pandas** — labeled tables built on NumPy (your spreadsheet, scripted).
+
+```bash
+pip install numpy pandas        # preinstalled in Colab and the browser notebook
+```
+
+```python
+import numpy as np              # the community-standard nicknames
+import pandas as pd
+```
+
+---
+
+## A list vs an array
+
+```python
+scores = [91, 58, 73]
+scores * 2                 # [91, 58, 73, 91, 58, 73]   <- a list REPEATS
+
+import numpy as np
+arr = np.array([91, 58, 73])
+arr * 2                    # array([182, 116, 146])     <- an array MULTIPLIES
+arr.dtype, arr.shape       # (dtype('int64'), (3,))
+```
+
+A NumPy array holds **one type** in **one block of memory**, and its math runs in
+compiled C. It's faster *and* shorter.
+
+```python
+np.zeros(3)                # array([0., 0., 0.])
+np.arange(0, 10, 2)        # like range(): array([0, 2, 4, 6, 8])
+np.linspace(0, 1, 5)       # 5 evenly spaced points, both ends included
+```
+
+---
+
+## Vectorization: say what, not how
+
+```python
+arr + 5                    # curve every score by 5 points
+arr / 100                  # as fractions
+arr.mean(), arr.std()      # whole-array statistics
+np.sqrt(arr)
+```
+
+Session 3 you wrote: `for s in scores: new.append(s + 5)`.
+NumPy: `scores + 5`. The loop still happens, just in C, not Python.
+
+⚠️ An integer array stays integer: `np.array([1, 2]) / 2` gives floats, but assigning a
+float *into* an int array truncates it.
+
+---
+
+## Boolean masks — the most useful trick
+
+A comparison on an array gives an array of `True`/`False` — use it to **filter**:
+
+```python
+scores = np.array([91, 58, 73, 64, 88])
+passed = scores >= 60            # array([ True, False,  True,  True,  True])
+scores[passed]                   # array([91, 73, 64, 88])
+passed.sum()                     # 4 — True counts as 1 (Session 2!)
+scores[(scores >= 60) & (scores < 80)]    # & | ~ — and wrap each condition in ()
+np.where(scores >= 60, "pass", "fail")    # vectorized if/else
+```
+
+⚠️ `and` / `or` on arrays raise **ValueError: truth value … is ambiguous**. Python can't
+turn five booleans into one. Use `&`, `|`, `~`.
+
+---
+
+## 2D arrays and `axis`
+
+```python
+# rows = students, columns = quizzes
+quizzes = np.array([[8, 9, 7, 10],
+                    [5, 6, 4, 7],
+                    [9, 9, 10, 8]])
+quizzes.shape            # (3, 4)
+quizzes[1, 2]            # 4 — row 1, column 2
+quizzes[0]               # first student's row
+quizzes[:, 3]            # every student's quiz 3
+quizzes.mean(axis=0)     # one mean PER QUIZ    (collapse the rows)
+quizzes.mean(axis=1)     # one mean PER STUDENT (collapse the columns)
+```
+
+Memory hook: **`axis` is the dimension that disappears.**
+
+---
+
+## pandas: Series and DataFrame
+
+- **Series** — one labeled column.
+- **DataFrame** — a table of Series sharing one row index.
+
+```python
+import pandas as pd
+students = pd.read_csv("students.csv")   # one line replaces your DictReader loop
+students.head()           # first 5 rows
+students.shape            # (6, 3)
+students.info()           # columns, types, non-null counts — look at this FIRST
+students.describe()       # count/mean/std/min/quartiles/max of numeric columns
+```
+
+Unlike `csv`, `read_csv` **infers types**: `score` arrives as numbers, not strings.
+
+---
+
+## Selecting
+
+| You want | Write |
+|---|---|
+| one column (a Series) | `df["score"]` |
+| several columns | `df[["name", "score"]]` |
+| by **label** | `df.loc[0, "name"]`, `df.loc[0:2, ["name"]]` |
+| by **position** | `df.iloc[0, 0]`, `df.iloc[-1]` |
+
+⚠️ `loc` slices **include** the end label; `iloc` slices **exclude** the end position
+(like normal Python). `df.loc[0:2]` is 3 rows; `df.iloc[0:2]` is 2.
+
+---
+
+## Filtering rows
+
+Same mask idea as NumPy:
+
+```python
+students[students["score"] >= 75]
+students[(students["major"] == "Education") & (students["score"] < 80)]
+students[students["major"].isin(["Sociology", "Psychology"])]
+students.query("score > 70 and major != 'Education'")   # readable alternative
+```
+
+---
+
+## New columns, sorting, counting
+
+```python
+students["passed"] = students["score"] >= 60
+students["grade"] = pd.cut(students["score"], bins=[0, 59, 69, 79, 89, 100],
+                           labels=["F", "D", "C", "B", "A"])
+students["z"] = (students["score"] - students["score"].mean()) / students["score"].std()
+
+students.sort_values("score", ascending=False)
+students["major"].value_counts()          # a Counter for a column
+```
+
+Prefer these vectorized forms to `.apply(some_function)`, which runs Python once
+per row and gives up the speed.
+
+---
+
+## groupby: split → apply → combine 🧠
+
+Your whole Session 8 by-major loop:
+
+```python
+students.groupby("major")["score"].mean()
+```
+
+Several statistics with clean column names (**named aggregation**):
+
+```python
+students.groupby("major").agg(
+    n=("name", "count"),
+    mean_score=("score", "mean"),
+    best=("score", "max"),
+)
+```
+
+Research bridge: this is "descriptives by condition", the first table of most
+results sections.
+
+---
+
+## Your turn
+
+`examples/session-11/practice.md`:
+1. Vectorize Session 8: class mean, curve, pass count with NumPy.
+2. Load the students into pandas, filter, add a grade column.
+3. `groupby` major: n, mean, max.
+
+---
+
+# Going deeper
+## Arrays that bend, tables that reshape
+
+---
+
+## Views vs copies
+
+```python
+original = np.array([91, 58, 73, 64])
+view = original[:2]       # a slice is a VIEW of the same memory
+view[0] = 0
+original                  # array([ 0, 58, 73, 64])   <- changed!
+
+safe = original[:2].copy()   # independent
+```
+
+Session 2's aliasing, back again: slicing a **list** copies, slicing an **array**
+doesn't. (Boolean and list indexing, `arr[mask]`, do return copies.)
+
+---
+
+## Broadcasting
+
+Arrays of different shapes combine when, compared **from the right**, each dimension
+is equal or 1. The size-1 dimension stretches.
+
+```python
+weights = np.array([0.1, 0.2, 0.3, 0.4])        # (4,)   one weight per quiz
+(quizzes * weights).sum(axis=1)                 # (3, 4) * (4,) -> weighted total per student
+
+z = (quizzes - quizzes.mean(axis=0)) / quizzes.std(axis=0)   # z-score every column
+```
+
+No loops over rows or columns: the mean row stretches over all the students.
+
+---
+
+## Reproducible randomness
+
+```python
+rng = np.random.default_rng(seed=42)    # the modern Generator API
+rng.integers(1, 7, size=8)              # dice
+rng.normal(loc=70, scale=10, size=5)    # simulated scores
+rng.choice(["A", "B"], size=10)         # random assignment to conditions
+
+sums = rng.integers(1, 7, size=(100_000, 2)).sum(axis=1)
+(sums == 7).mean()                      # ~0.167, a simulation in two lines
+```
+
+Same seed → same numbers → a reproducible methods section (Session 8's lesson, at scale).
+
+---
+
+## Missing data
+
+```python
+survey = pd.read_csv("survey.csv", na_values=["N/A"])   # "N/A" and blanks -> NaN
+survey.isna().sum()                    # missing per column
+survey["q2_clarity"].mean()            # pandas SKIPS NaN (NumPy's .mean() would give nan)
+survey.dropna()                        # only complete rows
+survey.fillna(survey.median(numeric_only=True))   # impute with column medians
+```
+
+⚠️ One missing value turns an int column into **float64**, because NaN is a float.
+Your 1–5 Likert column now prints `4.0`.
+
+Whether you drop or impute is a **methods decision**: report it.
+
+---
+
+## transform: group stats on every row
+
+`agg` shrinks to one row per group; `transform` keeps the original shape:
+
+```python
+students["major_mean"] = students.groupby("major")["score"].transform("mean")
+students["vs_major"] = students["score"] - students["major_mean"]
+```
+
+"How far is each student from their major's average?", with no merge needed.
+
+---
+
+## Reshaping: wide ↔ long
+
+Survey exports are **wide** (one column per item). Most analysis wants **long**
+(one row per answer):
+
+```python
+long = survey.melt(id_vars="respondent", var_name="item", value_name="rating")
+long.groupby("item")["rating"].agg(["mean", "count"])
+pd.crosstab(long["item"], long["rating"])        # frequency table: 1s, 2s, ... per item
+
+students.pivot_table(index="major", columns="passed", values="score",
+                     aggfunc="count", fill_value=0)   # long -> wide summary
+```
+
+---
+
+## merge: joining tables
+
+```python
+advisors = pd.DataFrame({"major": ["Education", "Psychology", "History"],
+                         "advisor": ["Dr. Lee", "Dr. Okafor", "Dr. Ruiz"]})
+students.merge(advisors, on="major", how="left", validate="many_to_one")
+```
+
+| `how=` | keeps |
+|---|---|
+| `"inner"` (default) | keys in both |
+| `"left"` | every left row (missing matches → NaN) |
+| `"outer"` | everything |
+
+`validate=` catches accidental duplicate keys; `indicator=True` adds a `_merge`
+column showing where each row came from. Use both when a join "loses" rows.
+
+---
+
+## Dates and time series
+
+```python
+logins["day"] = pd.to_datetime(logins["day"])   # or read_csv(..., parse_dates=["day"])
+logins["day"].dt.day_name()                     # .dt = date tools for a column
+weekly = logins.set_index("day")["logins"].resample("W").sum()   # per-week totals
+logins["logins"].rolling(7).mean()              # 7-day moving average
+```
+
+`.str` does the same for text columns: `df["name"].str.upper()`,
+`.str.contains("ED")`, `.str.strip()`.
+
+---
+
+## Method chaining
+
+Each step returns a new DataFrame, so an analysis reads top to bottom:
+
+```python
+report = (
+    students
+    .query("passed")
+    .groupby("major", as_index=False)
+    .agg(n=("name", "count"), mean_score=("score", "mean"))
+    .sort_values("mean_score", ascending=False)
+)
+report.to_csv("report.csv", index=False)
+```
+
+---
+
+## The one assignment rule ⚠️
+
+```python
+students[students["score"] < 60]["grade"] = "D"      # ✗ edits a temporary copy
+students.loc[students["score"] < 60, "grade"] = "D"  # ✓ one .loc: rows, column
+```
+
+The first line filters into a **copy**, then sets a value on that copy, so `students`
+never changes (pandas warns). Always change values with a single `.loc[rows, col]`.
+
+---
+
+## Your turn (deeper)
+
+`examples/session-11/practice.md`, **In class — going deeper**: z-scores by
+broadcasting, clean the survey's missing values, melt it long, merge in advisors,
+and a weekly resample.
+
+---
+
+## Trap recap
+
+- A list `* 2` repeats; an array `* 2` multiplies.
+- `and`/`or` on arrays → ValueError; use `&`/`|`/`~` with parentheses.
+- An array slice is a **view**; `.copy()` when you need independence.
+- One NaN turns an int column into floats.
+- `loc` slices include the end; `iloc` slices don't.
+- Change values with one `.loc[rows, col]`, never `df[mask]["col"] = ...`.
+
+## Summary
+Everything you did by hand in Session 8 is now a line or two, and you know what each
+line does underneath.
+**Next (optional):** the capstone. Build it with pandas if you like.
+
+---
+
+## Homework (before the capstone)
+
+*Outside class — doesn't count toward class time. Full tasks + solutions:
+`examples/session-11/practice.md` → **Homework**.*
+
+1. **Rewrite Session 8 in pandas.** The survey summary in six lines; diff the outputs.
+2. **A simulation.** 10,000 seeded classes: how often is the mean above 75?
+3. **Your own data.** One publishable `groupby` table, plus your list of cleaning decisions.
+
+</script>
+<script type="text/markdown" id="lesson-a-zh-md">
+# 第 11 课
+## NumPy 与 pandas：处理研究数据
+
+---
+
+## 为什么是现在？🧠
+
+第 8 课里，你**手工**算出了全班均值、各专业均值和问卷每题的均值：循环、
+`setdefault`、一个 `to_int` 清洗函数。这正是用意——现在你知道底层到底要做什么了。
+
+今天，两个库让每件事都只需一行：
+
+- **NumPy** —— 快速的数值数组（引擎）。
+- **pandas** —— 建在 NumPy 之上、带标签的表格（用代码驱动的电子表格）。
+
+```bash
+pip install numpy pandas        # Colab 和浏览器笔记本已预装
+```
+
+```python
+import numpy as np              # 社区通用的简称
+import pandas as pd
+```
+
+---
+
+## 列表 vs 数组
+
+```python
+scores = [91, 58, 73]
+scores * 2                 # [91, 58, 73, 91, 58, 73]   <- 列表是**重复**
+
+import numpy as np
+arr = np.array([91, 58, 73])
+arr * 2                    # array([182, 116, 146])     <- 数组是**相乘**
+arr.dtype, arr.shape       # (dtype('int64'), (3,))
+```
+
+NumPy 数组把**同一种类型**放在**一整块内存**里，运算在编译好的 C 代码中执行。更快，*也*更短。
+
+```python
+np.zeros(3)                # array([0., 0., 0.])
+np.arange(0, 10, 2)        # 类似 range()：array([0, 2, 4, 6, 8])
+np.linspace(0, 1, 5)       # 5 个等距点，两端都包含
+```
+
+---
+
+## 向量化：说"做什么"，而不是"怎么做"
+
+```python
+arr + 5                    # 每个分数都加 5 分
+arr / 100                  # 换成小数
+arr.mean(), arr.std()      # 整个数组的统计量
+np.sqrt(arr)
+```
+
+第 3 课你写的是：`for s in scores: new.append(s + 5)`。
+NumPy 写成：`scores + 5`。循环仍然存在，只是在 C 里跑，而不是在 Python 里。
+
+⚠️ 整数数组保持整数：`np.array([1, 2]) / 2` 得到浮点数，但把浮点数**赋值进**
+整数数组会被截断。
+
+---
+
+## 布尔掩码——最有用的一招
+
+对数组做比较，会得到一个 `True`/`False` 数组——用它来**筛选**：
+
+```python
+scores = np.array([91, 58, 73, 64, 88])
+passed = scores >= 60            # array([ True, False,  True,  True,  True])
+scores[passed]                   # array([91, 73, 64, 88])
+passed.sum()                     # 4 —— True 算作 1（第 2 课！）
+scores[(scores >= 60) & (scores < 80)]    # 用 & | ~，每个条件都要加括号
+np.where(scores >= 60, "pass", "fail")    # 向量化的 if/else
+```
+
+⚠️ 对数组用 `and` / `or` 会抛出 **ValueError: truth value … is ambiguous**。Python
+没法把五个布尔值变成一个。请用 `&`、`|`、`~`。
+
+---
+
+## 二维数组与 `axis`
+
+```python
+# 行 = 学生，列 = 小测
+quizzes = np.array([[8, 9, 7, 10],
+                    [5, 6, 4, 7],
+                    [9, 9, 10, 8]])
+quizzes.shape            # (3, 4)
+quizzes[1, 2]            # 4 —— 第 1 行、第 2 列
+quizzes[0]               # 第一个学生的一行
+quizzes[:, 3]            # 每个学生的第 3 次小测
+quizzes.mean(axis=0)     # **每次小测**一个均值（压掉行）
+quizzes.mean(axis=1)     # **每个学生**一个均值（压掉列）
+```
+
+记忆口诀：**`axis` 指的是会消失的那个维度。**
+
+---
+
+## pandas：Series 与 DataFrame
+
+- **Series** —— 一列带标签的数据。
+- **DataFrame** —— 共用同一个行索引的多个 Series 组成的表。
+
+```python
+import pandas as pd
+students = pd.read_csv("students.csv")   # 一行代替你的 DictReader 循环
+students.head()           # 前 5 行
+students.shape            # (6, 3)
+students.info()           # 列、类型、非空计数——**先**看这个
+students.describe()       # 数值列的 count/mean/std/min/四分位数/max
+```
+
+和 `csv` 不同，`read_csv` 会**推断类型**：`score` 读进来就是数字，不是字符串。
+
+---
+
+## 选取数据
+
+| 你想要 | 写法 |
+|---|---|
+| 一列（Series） | `df["score"]` |
+| 多列 | `df[["name", "score"]]` |
+| 按**标签** | `df.loc[0, "name"]`、`df.loc[0:2, ["name"]]` |
+| 按**位置** | `df.iloc[0, 0]`、`df.iloc[-1]` |
+
+⚠️ `loc` 切片**包含**结束标签；`iloc` 切片**不包含**结束位置（和普通 Python 一样）。
+`df.loc[0:2]` 是 3 行；`df.iloc[0:2]` 是 2 行。
+
+---
+
+## 筛选行
+
+和 NumPy 的掩码思路一样：
+
+```python
+students[students["score"] >= 75]
+students[(students["major"] == "Education") & (students["score"] < 80)]
+students[students["major"].isin(["Sociology", "Psychology"])]
+students.query("score > 70 and major != 'Education'")   # 更易读的写法
+```
+
+---
+
+## 新列、排序、计数
+
+```python
+students["passed"] = students["score"] >= 60
+students["grade"] = pd.cut(students["score"], bins=[0, 59, 69, 79, 89, 100],
+                           labels=["F", "D", "C", "B", "A"])
+students["z"] = (students["score"] - students["score"].mean()) / students["score"].std()
+
+students.sort_values("score", ascending=False)
+students["major"].value_counts()          # 针对一列的 Counter
+```
+
+优先用这些向量化写法，而不是 `.apply(某个函数)`——后者每行都跑一次 Python，速度就没了。
+
+---
+
+## groupby：拆分 → 计算 → 合并 🧠
+
+你第 8 课的整个"按专业"循环：
+
+```python
+students.groupby("major")["score"].mean()
+```
+
+一次算多个统计量，列名也干净（**具名聚合**）：
+
+```python
+students.groupby("major").agg(
+    n=("name", "count"),
+    mean_score=("score", "mean"),
+    best=("score", "max"),
+)
+```
+
+研究上的桥梁：这就是"按条件分组的描述统计"——大多数结果部分的第一张表。
+
+---
+
+## 轮到你了
+
+`examples/session-11/practice.md`：
+1. 用 NumPy 向量化第 8 课：全班均值、加分、及格人数。
+2. 把学生数据读进 pandas，筛选，加一列等级。
+3. 按专业 `groupby`：人数、均值、最高分。
+
+---
+
+# 更进一步
+## 会伸缩的数组，会变形的表格
+
+---
+
+## 视图 vs 副本
+
+```python
+original = np.array([91, 58, 73, 64])
+view = original[:2]       # 切片是同一块内存的**视图**
+view[0] = 0
+original                  # array([ 0, 58, 73, 64])   <- 变了！
+
+safe = original[:2].copy()   # 独立的副本
+```
+
+第 2 课的别名问题又回来了：切**列表**会复制，切**数组**不会。（布尔索引和列表索引 `arr[mask]` 返回的是副本。）
+
+---
+
+## 广播
+
+形状不同的数组也能一起运算：**从右往左**比较，每个维度要么相等，要么是 1。大小为 1 的维度会被拉伸。
+
+```python
+weights = np.array([0.1, 0.2, 0.3, 0.4])        # (4,)   每次小测一个权重
+(quizzes * weights).sum(axis=1)                 # (3, 4) * (4,) -> 每个学生的加权总分
+
+z = (quizzes - quizzes.mean(axis=0)) / quizzes.std(axis=0)   # 每一列都做 z 分数
+```
+
+不用循环行或列：均值那一行会被拉伸到所有学生身上。
+
+---
+
+## 可复现的随机数
+
+```python
+rng = np.random.default_rng(seed=42)    # 新式 Generator 接口
+rng.integers(1, 7, size=8)              # 掷骰子
+rng.normal(loc=70, scale=10, size=5)    # 模拟分数
+rng.choice(["A", "B"], size=10)         # 随机分配到实验条件
+
+sums = rng.integers(1, 7, size=(100_000, 2)).sum(axis=1)
+(sums == 7).mean()                      # 约 0.167，两行代码完成一次模拟
+```
+
+同一个种子 → 同样的数字 → 可复现的方法部分（第 8 课的道理，放大版）。
+
+---
+
+## 缺失数据
+
+```python
+survey = pd.read_csv("survey.csv", na_values=["N/A"])   # "N/A" 和空白 -> NaN
+survey.isna().sum()                    # 每列缺失多少
+survey["q2_clarity"].mean()            # pandas 会**跳过** NaN（NumPy 的 .mean() 会得到 nan）
+survey.dropna()                        # 只保留完整的行
+survey.fillna(survey.median(numeric_only=True))   # 用各列中位数填补
+```
+
+⚠️ 只要有一个缺失值，整数列就会变成 **float64**，因为 NaN 是浮点数。你的 1–5 李克特量表列现在显示成 `4.0`。
+
+删掉还是填补，是一个**方法学决定**：要在论文里写明。
+
+---
+
+## transform：把分组统计放回每一行
+
+`agg` 缩成每组一行；`transform` 保持原来的形状：
+
+```python
+students["major_mean"] = students.groupby("major")["score"].transform("mean")
+students["vs_major"] = students["score"] - students["major_mean"]
+```
+
+"每个学生离本专业平均分有多远？"——不需要 merge。
+
+---
+
+## 变形：宽 ↔ 长
+
+问卷导出的数据是**宽**的（每题一列）。大多数分析想要**长**的（每个回答一行）：
+
+```python
+long = survey.melt(id_vars="respondent", var_name="item", value_name="rating")
+long.groupby("item")["rating"].agg(["mean", "count"])
+pd.crosstab(long["item"], long["rating"])        # 频数表：每题有几个 1、几个 2……
+
+students.pivot_table(index="major", columns="passed", values="score",
+                     aggfunc="count", fill_value=0)   # 长 -> 宽的汇总
+```
+
+---
+
+## merge：连接两张表
+
+```python
+advisors = pd.DataFrame({"major": ["Education", "Psychology", "History"],
+                         "advisor": ["Dr. Lee", "Dr. Okafor", "Dr. Ruiz"]})
+students.merge(advisors, on="major", how="left", validate="many_to_one")
+```
+
+| `how=` | 保留 |
+|---|---|
+| `"inner"`（默认） | 两边都有的键 |
+| `"left"` | 左表的每一行（没匹配上 → NaN） |
+| `"outer"` | 全部 |
+
+`validate=` 能抓住意外重复的键；`indicator=True` 会加一列 `_merge`，显示每行来自哪边。连接后"丢了行"时，两个都用上。
+
+---
+
+## 日期与时间序列
+
+```python
+logins["day"] = pd.to_datetime(logins["day"])   # 或 read_csv(..., parse_dates=["day"])
+logins["day"].dt.day_name()                     # .dt = 针对一列的日期工具
+weekly = logins.set_index("day")["logins"].resample("W").sum()   # 每周合计
+logins["logins"].rolling(7).mean()              # 7 天移动平均
+```
+
+`.str` 对文本列做同样的事：`df["name"].str.upper()`、
+`.str.contains("ED")`、`.str.strip()`。
+
+---
+
+## 链式调用
+
+每一步都返回一个新的 DataFrame，所以整个分析从上读到下：
+
+```python
+report = (
+    students
+    .query("passed")
+    .groupby("major", as_index=False)
+    .agg(n=("name", "count"), mean_score=("score", "mean"))
+    .sort_values("mean_score", ascending=False)
+)
+report.to_csv("report.csv", index=False)
+```
+
+---
+
+## 唯一的赋值规则 ⚠️
+
+```python
+students[students["score"] < 60]["grade"] = "D"      # ✗ 改的是一个临时副本
+students.loc[students["score"] < 60, "grade"] = "D"  # ✓ 一次 .loc：行、列
+```
+
+第一行先筛选出一个**副本**，再在副本上赋值，所以 `students` 根本没变（pandas 会发出警告）。改值永远用一次 `.loc[行, 列]`。
+
+---
+
+## 轮到你了——第二轮
+
+`examples/session-11/practice.md` → **In class — going deeper**：用广播算 z 分数、清洗问卷的缺失值、把问卷 melt 成长表、merge 导师信息，以及按周 resample。
+
+---
+
+## 陷阱回顾
+
+- 列表 `* 2` 是重复；数组 `* 2` 是相乘。
+- 对数组用 `and`/`or` → ValueError；用带括号的 `&`/`|`/`~`。
+- 数组切片是**视图**；需要独立就 `.copy()`。
+- 一个 NaN 就能把整数列变成浮点数。
+- `loc` 切片包含结尾；`iloc` 不包含。
+- 改值用一次 `.loc[行, 列]`，绝不用 `df[mask]["col"] = ...`。
+
+## 小结
+第 8 课里手工做的一切，现在都是一两行代码——而且你知道每一行底下在做什么。
+**下一步（可选）：** 毕业项目。愿意的话，用 pandas 来做。
+
+---
+
+## 课后作业（毕业项目之前）
+
+*课外完成——不计入课堂时间。完整题目 + 参考答案：`examples/session-11/practice.md` → **Homework**。*
+
+1. **用 pandas 重写第 8 课。** 六行写出问卷汇总；对比两份输出。
+2. **一次模拟。** 10,000 个带种子的班级：均值超过 75 的有多常见？
+3. **你自己的数据。** 一张能放进论文的 `groupby` 表，外加你的清洗决定清单。
+
+</script>
+<script type="text/markdown" id="practice-md">
+## Practice & homework
+
+This session's in-class practice **and homework** — homework does **not** count toward class time. Try each yourself, then reveal the solution to check. To run the code, use **“Practice — run this session's notebook”** above.
+
+## In class
+
+Files provided: `students.csv`, `survey.csv` (the same data as Session 8).
+Start every script with `import numpy as np` and `import pandas as pd`.
+
+### Task 1 — Session 8, vectorized
+Put the scores `[91, 58, 73, 64, 88, 79]` in a NumPy array. Without a loop, print: the
+mean, every score curved by 5 points (capped at 100 with `np.minimum`), and how many
+students passed (score >= 60).
+
+### Task 2 — Quiz grid
+Build a 3×4 array (3 students, 4 quizzes) of your own numbers. Print each student's mean
+and each quiz's mean. Which `axis` gave which? Then print the single highest score and
+**which student** got it (`np.argmax` on the right axis).
+
+### Task 3 — Load and look
+`pd.read_csv("students.csv")`. Print `.shape`, `.head()`, `.info()`, and
+`["score"].describe()`. Compare the mean to your Session 8 hand-computed one.
+
+### Task 4 — Filter and label
+Show only Education students scoring under 80. Then add a `grade` column with `pd.cut`
+(A ≥ 90, B ≥ 80, C ≥ 70, D ≥ 60, else F) and print the students sorted by score.
+
+### Task 5 — Descriptives by major
+With one `groupby(...).agg(...)`, build a table with `n`, `mean_score`, `min_score`,
+`max_score` per major, sorted by `mean_score`.
+
+### Trap check
+Predict, then run: `np.array([60, 75]) > 70 and np.array([60, 75]) < 90`. What
+happens, and what should you write instead?
+
+### Bonus — Pythonic idiom drill
+Cover the `# ->` answers, predict each line, then run.
+
+```python
+import numpy as np
+a = np.array([3, 1, 2])
+print(a * 2)                  # -> [6 2 4]        (a list would repeat: [3, 1, 2, 3, 1, 2])
+print(a[a > 1])               # -> [3 2]          (mask: keep where True)
+print(np.sort(a)[::-1])       # -> [3 2 1]        (sort, then reverse)
+print((a > 1).mean())         # -> 0.666...       (share of True values)
+```
+
+## In class — going deeper (second hour)
+
+### Task 1 — z-scores by broadcasting
+For your quiz grid from Task 2, compute every cell's z-score **within its quiz column**
+in one expression. Check that each column's mean is now ~0.
+
+### Task 2 — A view surprise
+Make `a = np.arange(5)`, take `b = a[1:3]`, set `b[:] = 0`. Predict `a`. Redo it with
+`.copy()` and confirm `a` survives.
+
+### Task 3 — Clean the survey
+Read `survey.csv` so that `"N/A"` becomes missing. Print missing values per column, the
+mean of each `q*` item, and the number of complete rows. Why did `q2_clarity` become
+`float64`?
+
+### Task 4 — Melt it long
+Melt the survey to one row per (respondent, item, rating). Produce a table of `mean` and
+`count` per item, and a `crosstab` of item × rating.
+
+### Task 5 — Who's above their major?
+Add `major_mean` with `groupby(...).transform("mean")`, then list the students who beat
+their own major's average.
+
+### Task 6 — Join in advisors
+Create `advisors` (Education → Dr. Lee, Psychology → Dr. Okafor). Left-merge it onto the
+students with `validate="many_to_one"`. Which students got `NaN`? Re-run with
+`indicator=True` to confirm.
+
+### Task 7 — Weekly logins
+With `rng = np.random.default_rng(1)`, build 21 days of logins (`pd.date_range` +
+`rng.integers(10, 50, size=21)`). Print weekly totals with `resample("W")` and a 3-day
+rolling mean.
+
+## Homework (before the capstone)
+
+*~30–45 minutes, outside class — it doesn't count toward class time. Try everything before peeking at the solutions.*
+
+### Task 1 — Rewrite Session 8 in pandas
+Take your Session 8 survey summary (per-item mean and `n_valid`, written to
+`survey_summary.csv`). Redo it with pandas in **at most six lines**. Diff the two output
+files: do the numbers match?
+
+### Task 2 — A simulation
+With a seeded generator, simulate 10,000 classes of 30 students whose scores are
+`rng.normal(72, 12)` (clip to 0–100). What fraction of classes have a mean **above 75**?
+Run it twice with the same seed, then with a different one.
+
+### Task 3 — Your own data
+Load a CSV from your own work with `pd.read_csv`. Run `.info()` and `.isna().sum()`,
+then produce one `groupby` table you'd put in a paper. Write down every cleaning decision
+you made (dropped? imputed? renamed?), because that list *is* part of your methods section.
+
+<details><summary><strong>Show solutions</strong></summary>
+
+### In class
+
+```python
+import numpy as np
+import pandas as pd
+
+# Task 1
+scores = np.array([91, 58, 73, 64, 88, 79])
+print(scores.mean())                      # 75.5
+print(np.minimum(scores + 5, 100))        # [96 63 78 69 93 84]
+print((scores >= 60).sum())               # 5
+
+# Task 2
+q = np.array([[8, 9, 7, 10], [5, 6, 4, 7], [9, 9, 10, 8]])
+print(q.mean(axis=1))                     # per student (columns collapse)
+print(q.mean(axis=0))                     # per quiz    (rows collapse)
+print(q.max(), "by student", q.max(axis=1).argmax())   # 10 by student 0 (first max wins)
+
+# Task 3
+students = pd.read_csv("students.csv")
+print(students.shape)                     # (6, 3)
+students.info()
+print(students["score"].describe())       # mean 75.5 — same as Session 8
+
+# Task 4
+print(students[(students["major"] == "Education") & (students["score"] < 80)])
+students["grade"] = pd.cut(students["score"], bins=[0, 59, 69, 79, 89, 100],
+                           labels=["F", "D", "C", "B", "A"])
+print(students.sort_values("score", ascending=False))
+
+# Task 5
+table = students.groupby("major").agg(
+    n=("name", "count"), mean_score=("score", "mean"),
+    min_score=("score", "min"), max_score=("score", "max"),
+).sort_values("mean_score", ascending=False)
+print(table)
+```
+
+Trap: `ValueError: The truth value of an array with more than one element is ambiguous`.
+`and` needs ONE True/False, but each side is a whole array. Write
+`(a > 70) & (a < 90)`, with the parentheses, because `&` binds tighter than `>`.
+
+### In class — going deeper
+
+```python
+# Task 1
+z = (q - q.mean(axis=0)) / q.std(axis=0)  # (3,4) - (4,) broadcasts down the rows
+print(z.mean(axis=0).round(10))           # all zero (a "-0." is still zero)
+
+# Task 2
+a = np.arange(5); b = a[1:3]; b[:] = 0
+print(a)                                  # [0 0 0 3 4] — b was a view
+a = np.arange(5); b = a[1:3].copy(); b[:] = 0
+print(a)                                  # [0 1 2 3 4]
+
+# Task 3
+survey = pd.read_csv("survey.csv", na_values=["N/A"])
+items = [c for c in survey.columns if c.startswith("q")]
+print(survey.isna().sum())
+print(survey[items].mean().round(2))
+print(len(survey.dropna()))               # 6
+# q2 has a blank -> NaN, and NaN is a float, so the whole column becomes float64.
+
+# Task 4
+long = survey.melt(id_vars="respondent", value_vars=items, var_name="item", value_name="rating")
+print(long.groupby("item")["rating"].agg(["mean", "count"]).round(2))
+print(pd.crosstab(long["item"], long["rating"]))
+
+# Task 5
+students["major_mean"] = students.groupby("major")["score"].transform("mean")
+print(students[students["score"] > students["major_mean"]]["name"].tolist())   # ['Ana', 'Eve']
+
+# Task 6
+advisors = pd.DataFrame({"major": ["Education", "Psychology"], "advisor": ["Dr. Lee", "Dr. Okafor"]})
+joined = students.merge(advisors, on="major", how="left", validate="many_to_one", indicator=True)
+print(joined[["name", "major", "advisor", "_merge"]])   # Dev (Sociology) -> NaN, left_only
+
+# Task 7
+rng = np.random.default_rng(1)
+logins = pd.Series(rng.integers(10, 50, size=21),
+                   index=pd.date_range("2026-09-01", periods=21, freq="D"))
+print(logins.resample("W").sum())
+print(logins.rolling(3).mean().round(1).tail())
+```
+
+### Homework
+
+```python
+# Task 1 — six lines
+survey = pd.read_csv("survey.csv", na_values=["N/A"])
+items = [c for c in survey.columns if c.startswith("q")]
+out = pd.DataFrame({"item": items,
+                    "mean": survey[items].mean().round(2).values,
+                    "n_valid": survey[items].count().values})
+out.to_csv("survey_summary_pandas.csv", index=False)
+print(out)
+
+# Task 2
+rng = np.random.default_rng(7)
+classes = np.clip(rng.normal(72, 12, size=(10_000, 30)), 0, 100)   # rows = classes
+print((classes.mean(axis=1) > 75).mean())   # ~0.08: a class mean above 75 is rare
+```
+
+Task 3 is yours: the pattern is `read_csv` → `info()` / `isna().sum()` → clean →
+`groupby(...).agg(...)`, plus the written list of decisions.
+
+</details>
+
+</script>
+<script type="text/markdown" id="practice-zh-md">
+## 练习与作业
+
+课堂练习和**课后作业**都在这里——作业**不**计入课堂时间。先自己动手做，再展开答案对照。想直接运行，就用上方**“练习 —— 运行本课笔记本”**。
+
+## 课堂练习
+
+提供的文件：`students.csv`、`survey.csv`（和第 8 课是同一份数据）。每个脚本开头都写上 `import numpy as np` 和 `import pandas as pd`。
+
+### 任务 1 —— 向量化第 8 课
+把分数 `[91, 58, 73, 64, 88, 79]` 放进一个 NumPy 数组。不用循环，打印：均值、每个分数加 5 分（用 `np.minimum` 封顶 100），以及及格（分数 >= 60）的人数。
+
+### 任务 2 —— 小测成绩表
+用你自己的数字建一个 3×4 数组（3 个学生、4 次小测）。打印每个学生的均值和每次小测的均值。哪个 `axis` 对应哪个？然后打印最高分，以及**是哪个学生**拿到的（在正确的轴上用 `np.argmax`）。
+
+### 任务 3 —— 读进来看一看
+`pd.read_csv("students.csv")`。打印 `.shape`、`.head()`、`.info()` 和
+`["score"].describe()`。把均值和你第 8 课手算的结果对比一下。
+
+### 任务 4 —— 筛选并打标签
+只显示分数低于 80 的 Education 学生。然后用 `pd.cut` 加一列 `grade`
+（A ≥ 90、B ≥ 80、C ≥ 70、D ≥ 60，否则 F），按分数排序后打印。
+
+### 任务 5 —— 按专业的描述统计
+用一次 `groupby(...).agg(...)`，做出每个专业的 `n`、`mean_score`、`min_score`、
+`max_score`，并按 `mean_score` 排序。
+
+### 陷阱检查
+先预测，再运行：`np.array([60, 75]) > 70 and np.array([60, 75]) < 90`。会发生什么？应该怎么写？
+
+### 加餐 —— Python 惯用法速练
+盖住 `# ->` 后面的答案，逐行预测，再运行。
+
+```python
+import numpy as np
+a = np.array([3, 1, 2])
+print(a * 2)                  # -> [6 2 4]        （列表会重复：[3, 1, 2, 3, 1, 2]）
+print(a[a > 1])               # -> [3 2]          （掩码：保留为 True 的位置）
+print(np.sort(a)[::-1])       # -> [3 2 1]        （先排序，再反转）
+print((a > 1).mean())         # -> 0.666...       （True 所占的比例）
+```
+
+## 课堂练习——更进一步（第二小时）
+
+### 任务 1 —— 用广播算 z 分数
+对任务 2 的小测成绩表，用一个表达式算出每个格子**在其所在小测列内**的 z 分数。检查每一列的均值现在是否约等于 0。
+
+### 任务 2 —— 视图带来的意外
+令 `a = np.arange(5)`，取 `b = a[1:3]`，执行 `b[:] = 0`。预测 `a`。再用
+`.copy()` 重做一遍，确认 `a` 安然无恙。
+
+### 任务 3 —— 清洗问卷
+读取 `survey.csv`，让 `"N/A"` 变成缺失值。打印每列的缺失数、每道 `q*` 题的均值，以及完整行的数量。为什么 `q2_clarity` 变成了 `float64`？
+
+### 任务 4 —— 变成长表
+把问卷 melt 成每行一个（受访者、题目、评分）。做出每道题的 `mean` 和 `count`
+表，再做一个题目 × 评分的 `crosstab`。
+
+### 任务 5 —— 谁高于本专业平均？
+用 `groupby(...).transform("mean")` 加一列 `major_mean`，然后列出分数高于本专业平均分的学生。
+
+### 任务 6 —— 连接导师信息
+创建 `advisors`（Education → Dr. Lee，Psychology → Dr. Okafor）。用
+`validate="many_to_one"` 把它左连接到学生表上。哪些学生得到了 `NaN`？加上
+`indicator=True` 再跑一次来确认。
+
+### 任务 7 —— 每周登录
+用 `rng = np.random.default_rng(1)` 构造 21 天的登录数（`pd.date_range` +
+`rng.integers(10, 50, size=21)`）。用 `resample("W")` 打印每周合计，再打印 3 天移动平均。
+
+## 课后作业（毕业项目之前）
+
+*约 30–45 分钟，课外完成——不计入课堂时间。先全部尝试，再看参考答案。*
+
+### 任务 1 —— 用 pandas 重写第 8 课
+拿出你第 8 课的问卷汇总（每题均值和 `n_valid`，写入 `survey_summary.csv`）。用 pandas **最多六行**重做一遍。对比两份输出文件：数字一致吗？
+
+### 任务 2 —— 一次模拟
+用带种子的生成器，模拟 10,000 个班级，每班 30 个学生，分数为
+`rng.normal(72, 12)`（截断到 0–100）。均值**高于 75** 的班级占多少比例？用同一个种子跑两次，再换一个种子跑。
+
+### 任务 3 —— 你自己的数据
+用 `pd.read_csv` 读入你自己工作中的一个 CSV。运行 `.info()` 和 `.isna().sum()`，然后做一张你会放进论文的 `groupby` 表。写下你做的每一个清洗决定（删了？填补了？改名了？），因为这份清单*就是*你方法部分的一部分。
+
+<details><summary><strong>展开参考答案</strong></summary>
+
+### 课堂练习
+
+```python
+import numpy as np
+import pandas as pd
+
+# 任务 1
+scores = np.array([91, 58, 73, 64, 88, 79])
+print(scores.mean())                      # 75.5
+print(np.minimum(scores + 5, 100))        # [96 63 78 69 93 84]
+print((scores >= 60).sum())               # 5
+
+# 任务 2
+q = np.array([[8, 9, 7, 10], [5, 6, 4, 7], [9, 9, 10, 8]])
+print(q.mean(axis=1))                     # 每个学生（压掉列）
+print(q.mean(axis=0))                     # 每次小测（压掉行）
+print(q.max(), "by student", q.max(axis=1).argmax())   # 10，学生 0（并列时取第一个）
+
+# 任务 3
+students = pd.read_csv("students.csv")
+print(students.shape)                     # (6, 3)
+students.info()
+print(students["score"].describe())       # 均值 75.5——和第 8 课一样
+
+# 任务 4
+print(students[(students["major"] == "Education") & (students["score"] < 80)])
+students["grade"] = pd.cut(students["score"], bins=[0, 59, 69, 79, 89, 100],
+                           labels=["F", "D", "C", "B", "A"])
+print(students.sort_values("score", ascending=False))
+
+# 任务 5
+table = students.groupby("major").agg(
+    n=("name", "count"), mean_score=("score", "mean"),
+    min_score=("score", "min"), max_score=("score", "max"),
+).sort_values("mean_score", ascending=False)
+print(table)
+```
+
+陷阱：`ValueError: The truth value of an array with more than one element is ambiguous`。
+`and` 需要**一个** True/False，但两边都是整个数组。写成
+`(a > 70) & (a < 90)`，括号不能少，因为 `&` 比 `>` 绑定得更紧。
+
+### 课堂练习——更进一步
+
+```python
+# 任务 1
+z = (q - q.mean(axis=0)) / q.std(axis=0)  # (3,4) - (4,) 沿行向下广播
+print(z.mean(axis=0).round(10))           # 全是 0（"-0." 也是 0）
+
+# 任务 2
+a = np.arange(5); b = a[1:3]; b[:] = 0
+print(a)                                  # [0 0 0 3 4] —— b 是视图
+a = np.arange(5); b = a[1:3].copy(); b[:] = 0
+print(a)                                  # [0 1 2 3 4]
+
+# 任务 3
+survey = pd.read_csv("survey.csv", na_values=["N/A"])
+items = [c for c in survey.columns if c.startswith("q")]
+print(survey.isna().sum())
+print(survey[items].mean().round(2))
+print(len(survey.dropna()))               # 6
+# q2 有一个空白 -> NaN，而 NaN 是浮点数，所以整列变成 float64。
+
+# 任务 4
+long = survey.melt(id_vars="respondent", value_vars=items, var_name="item", value_name="rating")
+print(long.groupby("item")["rating"].agg(["mean", "count"]).round(2))
+print(pd.crosstab(long["item"], long["rating"]))
+
+# 任务 5
+students["major_mean"] = students.groupby("major")["score"].transform("mean")
+print(students[students["score"] > students["major_mean"]]["name"].tolist())   # ['Ana', 'Eve']
+
+# 任务 6
+advisors = pd.DataFrame({"major": ["Education", "Psychology"], "advisor": ["Dr. Lee", "Dr. Okafor"]})
+joined = students.merge(advisors, on="major", how="left", validate="many_to_one", indicator=True)
+print(joined[["name", "major", "advisor", "_merge"]])   # Dev（Sociology）-> NaN，left_only
+
+# 任务 7
+rng = np.random.default_rng(1)
+logins = pd.Series(rng.integers(10, 50, size=21),
+                   index=pd.date_range("2026-09-01", periods=21, freq="D"))
+print(logins.resample("W").sum())
+print(logins.rolling(3).mean().round(1).tail())
+```
+
+### 课后作业
+
+```python
+# 任务 1 —— 六行
+survey = pd.read_csv("survey.csv", na_values=["N/A"])
+items = [c for c in survey.columns if c.startswith("q")]
+out = pd.DataFrame({"item": items,
+                    "mean": survey[items].mean().round(2).values,
+                    "n_valid": survey[items].count().values})
+out.to_csv("survey_summary_pandas.csv", index=False)
+print(out)
+
+# 任务 2
+rng = np.random.default_rng(7)
+classes = np.clip(rng.normal(72, 12, size=(10_000, 30)), 0, 100)   # 每行 = 一个班
+print((classes.mean(axis=1) > 75).mean())   # 约 0.08：班级均值超过 75 很少见
+```
+
+任务 3 由你自己完成：套路是 `read_csv` → `info()` / `isna().sum()` → 清洗 →
+`groupby(...).agg(...)`，再加上那份写下来的决定清单。
+
+</details>
+
+</script>
+<script type="text/markdown" id="traps-md">
+## Traps — predict, then reveal
+Read each snippet and decide what it does **before** you reveal the answer. To run and tinker with them line by line, open **&#9656; Traps — predict, then run** just below.
+
+<div class="trap">
+
+**1.**
+
+```python
+scores = [91, 58]   # a plain list, not an array
+scores * 2
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `[91, 58, 91, 58]`
+
+On a LIST, `* 2` repeats the list. Element-wise math is what NumPy arrays do: `np.array(scores) * 2` gives `array([182, 116])`.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**2.**
+
+```python
+import numpy as np
+scores = np.array([60, 75, 92])
+(scores > 70) and (scores < 90)
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()`
+
+`and` needs ONE True/False, but each side is a whole array of them, so NumPy refuses to guess. Combine masks with `&` (and `|`, `~`), keeping the parentheses: `(scores > 70) & (scores < 90)`.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**3.**
+
+```python
+import numpy as np
+scores = np.array([91, 58, 73])
+first_two = scores[:2]
+first_two[0] = 0
+scores
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `array([ 0, 58, 73])`
+
+Slicing an ARRAY makes a view onto the same memory (slicing a list copies). Use `scores[:2].copy()` when you need an independent piece.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**4.**
+
+```python
+import pandas as pd
+likert = pd.Series([4, None, 5])   # one blank survey cell
+likert.dtype
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `dtype('float64')`
+
+Missing values are stored as NaN, and NaN is a float, so one blank turns the whole column into float64 (your 4 prints as 4.0).
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**5.**
+
+```python
+import pandas as pd
+scores = pd.Series([91, 58, 73, 64])
+scores.loc[0:2].tolist()
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `[91, 58, 73]`
+
+`.loc` slices by LABEL and includes the end label. `.iloc[0:2]` slices by position and excludes the end, like normal Python.
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**6.**
+
+```python
+import pandas as pd
+fall = pd.Series({'Ana': 85, 'Ben': 70})
+spring = pd.Series({'Ben': 75, 'Cara': 90})
+(spring - fall).to_dict()
+```
+
+<details><summary>Reveal the result</summary>
+
+&rarr; `{'Ana': nan, 'Ben': 5.0, 'Cara': nan}`
+
+pandas lines Series up by their index LABELS, not by position. Labels present on only one side get NaN. Check with `.dropna()`, or fill first: `spring.sub(fall, fill_value=0)`.
+
+</details>
+
+</div>
+
+</script>
+<script type="text/markdown" id="traps-zh-md">
+## 陷阱 —— 先预测，再揭晓
+先读每段代码、想好它会做什么，**再**揭晓答案。想逐行运行、随手改动它们，请打开下方的 **▸ 陷阱 —— 先预测，再运行**。
+
+<div class="trap">
+
+**1.**
+
+```python
+scores = [91, 58]   # a plain list, not an array
+scores * 2
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `[91, 58, 91, 58]`
+
+对**列表**来说，`* 2` 是把列表重复一遍。逐元素运算是 NumPy 数组做的事：`np.array(scores) * 2` 得到 `array([182, 116])`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**2.**
+
+```python
+import numpy as np
+scores = np.array([60, 75, 92])
+(scores > 70) and (scores < 90)
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()`
+
+`and` 需要**一个** True/False，但两边都是一整个数组，NumPy 拒绝替你猜。组合掩码用 `&`（以及 `|`、`~`），括号保留：`(scores > 70) & (scores < 90)`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**3.**
+
+```python
+import numpy as np
+scores = np.array([91, 58, 73])
+first_two = scores[:2]
+first_two[0] = 0
+scores
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `array([ 0, 58, 73])`
+
+对**数组**切片得到的是同一块内存的视图（对列表切片才会复制）。需要独立的一段时用 `scores[:2].copy()`。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**4.**
+
+```python
+import pandas as pd
+likert = pd.Series([4, None, 5])   # one blank survey cell
+likert.dtype
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `dtype('float64')`
+
+缺失值存成 NaN，而 NaN 是浮点数，所以一个空白就让整列变成 float64（你的 4 显示成 4.0）。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**5.**
+
+```python
+import pandas as pd
+scores = pd.Series([91, 58, 73, 64])
+scores.loc[0:2].tolist()
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `[91, 58, 73]`
+
+`.loc` 按**标签**切片，并且包含结束标签。`.iloc[0:2]` 按位置切片、不包含结尾，和普通 Python 一样。
+
+</details>
+
+</div>
+
+<div class="trap">
+
+**6.**
+
+```python
+import pandas as pd
+fall = pd.Series({'Ana': 85, 'Ben': 70})
+spring = pd.Series({'Ben': 75, 'Cara': 90})
+(spring - fall).to_dict()
+```
+
+<details><summary>查看结果</summary>
+
+&rarr; `{'Ana': nan, 'Ben': 5.0, 'Cara': nan}`
+
+pandas 按索引**标签**对齐 Series，而不是按位置。只在一边出现的标签得到 NaN。用 `.dropna()` 检查，或先填充：`spring.sub(fall, fill_value=0)`。
+
+</details>
+
+</div>
+
+</script>
+<script type="text/markdown" id="quiz-md">
+### Quiz — NumPy & pandas for Research Data
+1. `[1, 2] * 2` vs `np.array([1, 2]) * 2` — what does each give, and why?
+2. Why does `(scores > 60) and (scores < 90)` raise an error on an array, and what do you
+   write instead?
+3. For a `(students, quizzes)` array, which gives one mean per student: `axis=0` or
+   `axis=1`?
+4. One cell of an integer survey column is blank. What happens to the column's dtype,
+   and what does `.mean()` do with the blank?
+5. `groupby(...).agg(...)` vs `groupby(...).transform(...)` — what shape does each return?
+6. Why does `df[df["score"] < 60]["grade"] = "D"` leave `df` unchanged, and what's the fix?
+
+<details><summary>Show answers</summary>
+
+**Answers:** 1. `[1, 2, 1, 2]` (a list repeats) vs `array([2, 4])` (an array does
+element-wise math). 2. `and` needs a single True/False, but the comparison gives a whole
+array of them, so NumPy refuses to guess (ValueError); write `(scores > 60) & (scores < 90)`,
+with the parentheses. 3. `axis=1`: the axis you name is the one that disappears, so
+collapsing the quiz columns leaves one value per student. 4. It becomes `float64`
+(NaN is a float); pandas skips NaN, so the mean is over the valid cells only. 5. `agg`
+returns one row per group; `transform` returns one value per original row, aligned to
+the index, ready to become a new column. 6. The filter makes a copy and the assignment
+lands on that copy (pandas warns); use one `.loc`: `df.loc[df["score"] < 60, "grade"] = "D"`.
+
+</details>
+</script>
+<script type="text/markdown" id="quiz-zh-md">
+### Quiz — NumPy 与 pandas：处理研究数据
+1. `[1, 2] * 2` 与 `np.array([1, 2]) * 2` 各得到什么？为什么？
+2. 为什么对数组写 `(scores > 60) and (scores < 90)` 会报错？应该怎么写？
+3. 对一个 `(学生, 小测)` 形状的数组，哪个给出每个学生一个均值：`axis=0` 还是 `axis=1`？
+4. 一个整数问卷列里有一个格子是空白。这一列的 dtype 会怎样？`.mean()` 怎么处理这个空白？
+5. `groupby(...).agg(...)` 与 `groupby(...).transform(...)`——各返回什么形状？
+6. 为什么 `df[df["score"] < 60]["grade"] = "D"` 不会改变 `df`？怎么修？
+
+<details><summary>Show answers</summary>
+
+**答案：** 1. `[1, 2, 1, 2]`（列表是重复）与 `array([2, 4])`（数组是逐元素运算）。2. `and` 需要单个 True/False，但比较得到的是一整个数组，NumPy 拒绝替你猜（ValueError）；写成 `(scores > 60) & (scores < 90)`，括号不能少。3. `axis=1`：你指定的轴就是会消失的那个，压掉小测这些列，剩下每个学生一个值。4. 变成 `float64`（NaN 是浮点数）；pandas 会跳过 NaN，所以均值只算有效的格子。5. `agg` 每组返回一行；`transform` 对原来的每一行返回一个值，并按索引对齐，可以直接做成新列。6. 筛选得到的是副本，赋值落在了副本上（pandas 会警告）；用一次 `.loc`：`df.loc[df["score"] < 60, "grade"] = "D"`。
+
+</details>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

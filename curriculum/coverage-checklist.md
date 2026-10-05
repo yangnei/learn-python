@@ -290,7 +290,39 @@
 
 ---
 
-## Session 11 (Optional) — Capstone
+## Session 11 — NumPy & pandas for Research Data
+
+**C — Core hour**
+- [ ] Why now: Session 8's by-hand loops are what these libraries do underneath
+- [ ] `np.array`: one dtype, `shape`; `zeros`/`arange`/`linspace`; list `* 2` repeats vs array `* 2` multiplies
+- [ ] Vectorized math and whole-array stats (`mean`, `std`, `np.sqrt`); int arrays truncate assigned floats
+- [ ] Boolean masks: `arr[arr >= 60]`, `.sum()` counts True, `&`/`|`/`~` with parentheses, `np.where`
+- [ ] 2D indexing `[r, c]`, `[:, c]`; `axis=0` vs `axis=1` ("the axis that disappears")
+- [ ] `pd.read_csv` infers types; `head`/`shape`/`info`/`describe`
+- [ ] Selecting: `df["col"]`, `df[[...]]`, `loc` (labels, end included) vs `iloc` (positions, end excluded)
+- [ ] Filtering with masks, `isin`, `query`
+- [ ] New columns, `pd.cut`, z-score column; `sort_values`, `value_counts`; vectorize before `.apply`
+- [ ] `groupby` + named aggregation = descriptives by condition
+
+**D — Going deeper**
+- [ ] Views vs copies: array slices are views, `.copy()`; mask/list indexing copies
+- [ ] Broadcasting rule (compare shapes from the right; size 1 stretches): weighted totals, column z-scores
+- [ ] `np.random.default_rng(seed)`: `integers`, `normal`, `choice`; a two-line simulation
+- [ ] Missing data: `na_values`, `isna().sum()`, pandas skips NaN, `dropna`/`fillna`; NaN → float64; report the decision
+- [ ] `transform` vs `agg` (row-aligned group stats)
+- [ ] Reshape: `melt` (wide → long), `pivot_table`, `crosstab`
+- [ ] `merge`: `how=`, `validate=`, `indicator=True`
+- [ ] Dates and text: `to_datetime`/`parse_dates`, `.dt`, `resample`, `rolling`; `.str`
+- [ ] Method chaining; one `.loc[rows, col]` for assignment (chained assignment edits a copy); `to_csv(index=False)`
+
+**T — Traps (6):** list `* 2` · `and` on arrays · array slice is a view · NaN makes float64 · `loc` slice includes end · index alignment → NaN
+
+**Practice:** C → vectorize Session 8, quiz grid + `axis`, load & inspect, filter + `pd.cut`, `groupby` table; D → broadcast z-scores, view surprise, clean the survey, melt + crosstab, `transform`, merge advisors, weekly resample
+**Homework:** Session 8 survey summary in six lines · seeded class-mean simulation · your own `groupby` table + cleaning log
+
+---
+
+## Session 12 (Optional) — Capstone
 
 - [ ] Brief restated by the student in pseudocode before any code
 - [ ] Reads both CSVs; cleans & validates (skip/flag dirty, range checks)

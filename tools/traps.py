@@ -293,6 +293,41 @@ TRAPS: dict[int, list[dict]] = {
          "why": "`students` is a CLASS variable shared by every instance. Give each its own in "
                 "`__init__`: `self.students = []`."},
     ],
+    # ---- Session 11 — NumPy & pandas -----------------------------------------
+    11: [
+        {"setup": "scores = [91, 58]   # a plain list, not an array",
+         "code": "scores * 2",
+         "expect": "[182, 116] — every score doubled",
+         "why": "On a LIST, `* 2` repeats the list. Element-wise math is what NumPy arrays do: "
+                "`np.array(scores) * 2` gives `array([182, 116])`."},
+        {"setup": "import numpy as np\nscores = np.array([60, 75, 92])",
+         "code": "(scores > 70) and (scores < 90)",
+         "expect": "array([False,  True, False])",
+         "why": "`and` needs ONE True/False, but each side is a whole array of them, so NumPy "
+                "refuses to guess. Combine masks with `&` (and `|`, `~`), keeping the "
+                "parentheses: `(scores > 70) & (scores < 90)`."},
+        {"setup": "import numpy as np\nscores = np.array([91, 58, 73])\nfirst_two = scores[:2]\nfirst_two[0] = 0",
+         "code": "scores",
+         "expect": "array([91, 58, 73]) — we only edited the slice",
+         "why": "Slicing an ARRAY makes a view onto the same memory (slicing a list copies). "
+                "Use `scores[:2].copy()` when you need an independent piece."},
+        {"setup": "import pandas as pd\nlikert = pd.Series([4, None, 5])   # one blank survey cell",
+         "code": "likert.dtype",
+         "expect": "int64 — they're whole numbers",
+         "why": "Missing values are stored as NaN, and NaN is a float, so one blank turns the "
+                "whole column into float64 (your 4 prints as 4.0)."},
+        {"setup": "import pandas as pd\nscores = pd.Series([91, 58, 73, 64])",
+         "code": "scores.loc[0:2].tolist()",
+         "expect": "[91, 58] — slices stop before the end",
+         "why": "`.loc` slices by LABEL and includes the end label. `.iloc[0:2]` slices by "
+                "position and excludes the end, like normal Python."},
+        {"setup": "import pandas as pd\nfall = pd.Series({'Ana': 85, 'Ben': 70})\nspring = pd.Series({'Ben': 75, 'Cara': 90})",
+         "code": "(spring - fall).to_dict()",
+         "expect": "{'Ben': 5} — or an error for the mismatched names",
+         "why": "pandas lines Series up by their index LABELS, not by position. Labels present on "
+                "only one side get NaN. Check with `.dropna()`, or fill first: "
+                "`spring.sub(fall, fill_value=0)`."},
+    ],
 }
 
 

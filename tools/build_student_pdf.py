@@ -139,7 +139,7 @@ def cover(lang: str) -> str:
   <div class="sub">Learn Python</div>
   <h1>学生版（中文）</h1>
   <div class="rule"></div>
-  <p style="font-size:12pt;color:#33415c">十次两小时课程 + 毕业项目 · 可运行示例 ·
+  <p style="font-size:12pt;color:#33415c">十一次两小时课程 + 毕业项目 · 可运行示例 ·
      课后作业 · 陷阱速查表 · 自测题</p>
   <div class="meta">
      为零编程基础的研究者定制的<br>
@@ -154,7 +154,7 @@ def cover(lang: str) -> str:
   <div class="sub">Learn Python</div>
   <h1>Student Edition</h1>
   <div class="rule"></div>
-  <p style="font-size:12pt;color:#33415c">10 two-hour sessions + capstone · runnable examples ·
+  <p style="font-size:12pt;color:#33415c">11 two-hour sessions + capstone · runnable examples ·
      homework · trap cheat sheets · self-check quizzes</p>
   <div class="meta">
      An accelerated, self-study Python course<br>
